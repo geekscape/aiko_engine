@@ -54,7 +54,7 @@ void aikoEmit(
   }
   else if (expression->type == ATOM) {
     int   size = expression->atom.name.size;
-    printf("%d:%.*s", size, size, expression->atom.name.ptr);
+    printf("%d:%.*s", size, size, (char *) expression->atom.name.ptr);
   }
   else if (expression->type == LAMBDA) {
     printf("LAMBDA ");
