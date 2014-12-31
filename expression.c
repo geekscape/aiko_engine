@@ -24,7 +24,6 @@ tExpression *parenthesisClose;
 tExpression *truth;
 
 /* ------------------------------------------------------------------------- */
-
 tExpression *aikoAllocateExpression(
   tType type,
   int   extra) {
@@ -142,7 +141,6 @@ int aikoIsList(
 }
 
 /* ------------------------------------------------------------------------- */
-
 tExpression *aikoLookup(
   tExpression *expression,
   tExpression *environment) {
@@ -224,7 +222,45 @@ tExpression *aikoEvaluate(
 }
 
 /* ------------------------------------------------------------------------- */
+void aikoEmit(
+  tExpression *expression) {
 
+  if (expression == NULL) {
+//  printf("NULL");
+  }
+  else if (expression->type == ATOM) {
+    int   size = expression->atom.name.size;
+    printf("%d:%.*s", size, size, (char *) expression->atom.name.ptr);
+  }
+  else if (expression->type == LAMBDA) {
+    printf("LAMBDA ");
+    aikoEmit(expression->lambda.arguments);
+    printf(" ");
+    aikoEmit(expression->lambda.expression);
+  }
+  else if (expression->type == LIST) {
+    printf("(");
+    aikoEmit(expression->list.car);
+    expression = expression->list.cdr;
+
+    while (aikoIsList(expression)) {
+      if (expression->list.car != NULL) {
+//      printf(" ");
+        aikoEmit(expression->list.car);
+      }
+      expression = expression->list.cdr;
+    }
+    printf(")");
+  }
+  else if (expression->type == PRIMITIVE) {
+    printf("PRIMITIVE");
+  }
+  else {
+    printf("UNKNOWN");
+  }
+}
+
+/* ------------------------------------------------------------------------- */
 tExpression *aikoExpressionInitialize(void) {
   nil              = aikoCreateList(NULL, NULL);
   parenthesisOpen  = aikoCreateAtom("(",  1);
