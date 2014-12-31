@@ -19,19 +19,16 @@
 
 #include "../aiko_engine.h"
 
+#define INPUT_BUFFER_SIZE  128
+
 tExpression *aikoEnvironment;
-tReader     *aikoIoInitialize(FILE *inputFile);
-//tReader   *aikoIoInitialize(char *buffer, int size);     // Contiki / Arduino
-
-#define LOCAL_PORT 4000
-
-int aikoError;
+tReader     *aikoIoInitialize(char *buffer, int size);
 
 void aikoUsage1(void);
 void aikoUsage2(void);
 
 /*---------------------------------------------------------------------------*/
-static tReader *
+static FILE *
 aikoInitialize(
   int   argc,
   char *argv[]) {
@@ -50,9 +47,8 @@ aikoInitialize(
 
   FILE *inputFile = stdin;
   if (argc > 1) inputFile = fopen(argv[1], "r");
-  tReader *reader = aikoIoInitialize(inputFile);
 
-  return(reader);
+  return(inputFile);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -60,13 +56,18 @@ int main(
   int   argc,
   char *argv[]) {
 
-  tReader *reader = aikoInitialize(argc, argv);
+  char buffer[INPUT_BUFFER_SIZE];
+
+  FILE *inputFile = aikoInitialize(argc, argv);
 
   while (aikoError == 0) {
 #ifdef AIKO_DEBUG
     aikoUsage2();
 #endif
     printf("> ");
+    if (fgets(buffer, sizeof(buffer), inputFile) == NULL) break;
+
+    tReader *reader = aikoIoInitialize(buffer, strlen(buffer));
     tExpression *expression = aikoParse(reader);
 
     if (aikoError != AIKO_ERROR_NONE) {

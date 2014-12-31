@@ -1,6 +1,6 @@
 CFLAGS += -DMMEM_CONF_SIZE=512
 
-OBJECTS =  unix/aiko_engine.o unix/io_serial.o
+OBJECTS =  unix/aiko_engine.o unix/io_buffer.o
 OBJECTS += expression.o parser.o primitives.o
 OBJECTS += memory/list.o memory/mmem.o 
 

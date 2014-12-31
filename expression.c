@@ -15,6 +15,8 @@
 
 tExpression aikoExpressions[AIKO_EXPRESSION_LIMIT];
 
+int aikoError = AIKO_ERROR_NONE;
+
 int aikoExpressionCurrent  = 0;
 int aikoExpressionBookmark = 0;
 
