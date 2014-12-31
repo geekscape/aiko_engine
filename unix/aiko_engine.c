@@ -15,6 +15,8 @@
  * - None, yet.
  */
 
+#include <stdlib.h>
+
 #include "../aiko_engine.h"
 
 tExpression *aikoEnvironment;
@@ -29,10 +31,11 @@ void aikoUsage1(void);
 void aikoUsage2(void);
 
 /*---------------------------------------------------------------------------*/
+static tReader *
+aikoInitialize(
+  int   argc,
+  char *argv[]) {
 
-static void
-aikoInitialize(void)
-{
   mmem_init();
 #ifdef AIKO_DEBUG
   aikoUsage1();
@@ -42,8 +45,14 @@ aikoInitialize(void)
   aikoEnvironment = aikoExpressionInitialize();
   if (aikoError != 0) {
     printf("Initialization error: %d\n", aikoError);
-    while (1) {}
+    exit(-1);
   }
+
+  FILE *inputFile = stdin;
+  if (argc > 1) inputFile = fopen(argv[1], "r");
+  tReader *reader = aikoIoInitialize(inputFile);
+
+  return(reader);
 }
 
 /*---------------------------------------------------------------------------*/
@@ -51,11 +60,7 @@ int main(
   int   argc,
   char *argv[]) {
 
-  aikoInitialize();
-
-  FILE *inputFile = stdin;
-  if (argc > 1) inputFile = fopen(argv[1], "r");
-  tReader *reader = aikoIoInitialize(inputFile);
+  tReader *reader = aikoInitialize(argc, argv);
 
   while (aikoError == 0) {
 #ifdef AIKO_DEBUG
