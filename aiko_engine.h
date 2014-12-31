@@ -91,7 +91,7 @@ typedef struct sExpression {
   tExpression;                                 // Intel: 32 bytes, AVR: 8 bytes
 
 extern int aikoExpressionCurrent;
-extern int aikoExpressionInitial;
+extern int aikoExpressionBookmark;
 
 extern tExpression  aikoExpressions[AIKO_EXPRESSION_LIMIT];
 

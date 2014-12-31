@@ -175,7 +175,7 @@ tExpression *aikoPrimitiveLabel(
     )
   );
 
-  aikoExpressionInitial = aikoExpressionCurrent;   // TODO: Memory management ?
+  aikoExpressionBookmark = aikoExpressionCurrent;  // TODO: Memory management ?
   return(truth);
 }
 

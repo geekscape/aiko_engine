@@ -80,7 +80,7 @@ int main(
       }
     }
 
-    aikoReset(aikoExpressionInitial);        // TODO: Breaks "primitiveLabel()"
+    aikoReset(aikoExpressionBookmark);       // TODO: Breaks "primitiveLabel()"
     aikoError = AIKO_ERROR_NONE;
   }
 

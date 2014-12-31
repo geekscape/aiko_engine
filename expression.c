@@ -15,8 +15,8 @@
 
 tExpression aikoExpressions[AIKO_EXPRESSION_LIMIT];
 
-int aikoExpressionCurrent = 0;
-int aikoExpressionInitial = 0;
+int aikoExpressionCurrent  = 0;
+int aikoExpressionBookmark = 0;
 
 tExpression *nil;
 tExpression *parenthesisOpen;
@@ -242,14 +242,14 @@ tExpression *aikoExpressionInitialize(void) {
   aikoAppend(environment, aikoCreatePrimitive("lambda", aikoPrimitiveLambda));
   aikoAppend(environment, aikoCreatePrimitive("label",  aikoPrimitiveLabel));
 
-  aikoExpressionInitial = aikoExpressionCurrent;
+  aikoExpressionBookmark = aikoExpressionCurrent;
   return(environment);
 }
 
 void aikoReset(
   int expressionIndex) {
 
-  while (aikoExpressionCurrent > aikoExpressionInitial) {
+  while (aikoExpressionCurrent > aikoExpressionBookmark) {
     tExpression *expression = & aikoExpressions[-- aikoExpressionCurrent];
     if (expression->type == ATOM) mmem_free(& expression->atom.name);
   }
