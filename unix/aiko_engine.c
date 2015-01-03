@@ -52,6 +52,31 @@ aikoInitialize(
 }
 
 /*---------------------------------------------------------------------------*/
+static int
+aikoMessageHandler(tReader *reader) {
+  tExpression *expression = aikoParse(reader);
+
+  if (aikoError != AIKO_ERROR_NONE) {
+//  printf("Parse error: %d\n", aikoError);
+  }
+  else {
+    expression = aikoEvaluate(expression, aikoEnvironment);
+
+    if (expression == NULL) {
+      printf("Evaluate error: %d\n", aikoError);
+    }
+    else {
+      aikoEmit(expression);
+      printf("\n");
+    }
+  }
+
+  aikoReset(aikoExpressionBookmark);         // TODO: Breaks "primitiveLabel()"
+
+  return(aikoError);
+}
+
+/*---------------------------------------------------------------------------*/
 int main(
   int   argc,
   char *argv[]) {
@@ -68,26 +93,8 @@ int main(
     if (fgets(buffer, sizeof(buffer), inputFile) == NULL) break;
 
     tReader *reader = aikoIoInitialize(buffer, strlen(buffer));
-    tExpression *expression = aikoParse(reader);
 
-    if (aikoError != AIKO_ERROR_NONE) {
-//    printf("Parse error: %d\n", aikoError);
-      break;
-    }
-    else {
-      expression = aikoEvaluate(expression, aikoEnvironment);
-
-      if (expression == NULL) {
-        printf("Evaluate error: %d\n", aikoError);
-      }
-      else {
-        aikoEmit(expression);
-        printf("\n");
-      }
-    }
-
-    aikoReset(aikoExpressionBookmark);       // TODO: Breaks "primitiveLabel()"
-    aikoError = AIKO_ERROR_NONE;
+    aikoError = aikoMessageHandler(reader);
   }
 
   return(0);
