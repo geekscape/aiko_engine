@@ -13,16 +13,16 @@
 
 #include "../aiko_engine.h"
 
-FILE *readerFile;
+FILE *aikoReaderFile;
 
 int fileGetC() {
-  return(getc(readerFile));
+  return(getc(aikoReaderFile));
 }
 
 void fileUngetC(
   int ch) {
 
-  ungetc(ch, readerFile);
+  ungetc(ch, aikoReaderFile);
 }
 
 int fileIsEmpty() {
@@ -33,14 +33,14 @@ int fileIsEmpty() {
   return(ch == EOF);
 }
 
-tReader reader = { fileGetC, fileIsEmpty, fileUngetC };
+tReader aikoBufferReader = { fileGetC, fileIsEmpty, fileUngetC };
 
 /* ------------------------------------------------------------------------- */
 tReader *aikoIoInitialize(
   FILE *inputFile) {
 
-  readerFile = inputFile;
-  return(& reader);
+  aikoReaderFile = inputFile;
+  return(& aikoBufferReader);
 }
 
 /* ------------------------------------------------------------------------- */
