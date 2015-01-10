@@ -16,9 +16,11 @@
  */
 
 #include <stdlib.h>
+#include <sys/select.h>
 
 #include "../aiko_engine.h"
 
+#define MAXIMUM_FILE_COUNT   2
 #define INPUT_BUFFER_SIZE  128
 
 tExpression *aikoEnvironment;
@@ -81,16 +83,41 @@ int main(
   int   argc,
   char *argv[]) {
 
-  char buffer[INPUT_BUFFER_SIZE];
+  char   buffer[INPUT_BUFFER_SIZE];
+  int    count, index, fdLargest;
+  int    fd[MAXIMUM_FILE_COUNT];
+  fd_set readSet;
+
+  for (index = 0;  index < MAXIMUM_FILE_COUNT;  index ++) fd[index] = -1;
 
   FILE *inputFile = aikoInitialize(argc, argv);
+  fd[0] = 0;
 
   while (aikoError == 0) {
 #ifdef AIKO_DEBUG
     aikoUsage2();
 #endif
-    printf("> ");
-    if (fgets(buffer, sizeof(buffer), inputFile) == NULL) break;
+    fdLargest = 0;
+    FD_ZERO(& readSet);
+
+    for (index = 0; index < MAXIMUM_FILE_COUNT; index ++) {
+      if (fd[index] != -1) {
+        if (fd[index] > fdLargest) fdLargest = fd[index];
+        FD_SET(fd[index], & readSet);
+      }
+    }
+
+    select(fdLargest + 1, & readSet, NULL, NULL, NULL);
+
+    for (index = 0; index < MAXIMUM_FILE_COUNT; index ++) {
+      if (fd[index] != -1  &&  FD_ISSET(fd[index], & readSet)) {
+        if (fd[index] == 0) {
+          if (fgets(buffer, sizeof(buffer), inputFile) == NULL) exit(0);
+        }
+        else {
+        }
+      }
+    }
 
     tReader *reader = aikoIoInitialize(buffer, strlen(buffer));
 
