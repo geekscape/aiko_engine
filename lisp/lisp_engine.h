@@ -18,7 +18,7 @@
 #include <string.h>                            // Defines memcmp() and memcpy()
 
 #define MMEM_CONF_SIZE  512                                      // Minimum: 80
-#include "memory/mmem.h"
+#include "../memory/mmem.h"
 extern unsigned int avail_memory;
 
 //#define AIKO_DEBUG

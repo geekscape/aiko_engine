@@ -1,23 +1,23 @@
 CFLAGS += -DMMEM_CONF_SIZE=512
 
-OBJECTS =  unix/aiko_engine.o unix/io_buffer.o
-OBJECTS += expression.o parser.o primitives.o
+OBJECTS =  unix/lisp_engine.o unix/io_buffer.o
+OBJECTS += lisp/expression.o lisp/parser.o lisp/primitives.o
 OBJECTS += memory/list.o memory/mmem.o 
 
-aiko_engine:	$(OBJECTS)
+lisp_engine:	$(OBJECTS)
 	gcc $^ -o $@
 
-$(OBJECTS):	aiko_engine.h memory/list.h memory/mmem.h
+$(OBJECTS):	lisp/lisp_engine.h memory/list.h memory/mmem.h
 
 clean:
 	-rm -f $(OBJECTS)
 
 clobber:	clean
-	-rm -f aiko_engine
+	-rm -f lisp_engine
 
 help :
 	@echo ""
-	@echo "make         - Build aiko_engine"
+	@echo "make         - Build lisp_engine"
 	@echo "make clean   - Remove binaries"
 	@echo "make clobber - Remove all generated files"
 	@echo "make help    - Display usage"
