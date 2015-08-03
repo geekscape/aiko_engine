@@ -21,6 +21,7 @@
 *.dylib
 
 # Executables
+aiko_engine
 *.exe
 *.out
 *.app

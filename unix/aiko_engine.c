@@ -15,13 +15,17 @@
  * - None, yet.
  */
 
+#include <arpa/inet.h>
+#include <netinet/in.h>
 #include <stdlib.h>
 #include <sys/select.h>
+#include <sys/socket.h>
 
 #include "../aiko_engine.h"
 
-#define MAXIMUM_FILE_COUNT   2
-#define INPUT_BUFFER_SIZE  128
+#define MAXIMUM_FILE_COUNT    2
+#define INPUT_BUFFER_SIZE   128
+#define AIKO_SERVER_PORT   4000
 
 tExpression *aikoEnvironment;
 tReader     *aikoIoInitialize(char *buffer, int size);
@@ -83,15 +87,36 @@ int main(
   int   argc,
   char *argv[]) {
 
-  char   buffer[INPUT_BUFFER_SIZE];
-  int    count, index, fdLargest;
-  int    fd[MAXIMUM_FILE_COUNT];
-  fd_set readSet;
+  char      buffer[INPUT_BUFFER_SIZE];
+  int       count, flags, index, fdLargest;
+  int       fd[MAXIMUM_FILE_COUNT];
+  fd_set    readSet;
+  struct    sockaddr_in6 clientAddr, serverAddr;
+  socklen_t clientAddrLen;
 
   for (index = 0;  index < MAXIMUM_FILE_COUNT;  index ++) fd[index] = -1;
 
   FILE *inputFile = aikoInitialize(argc, argv);
   fd[0] = 0;
+
+  clientAddrLen = sizeof(clientAddr);
+  flags = 0;
+  fd[1] = socket(PF_INET6, SOCK_DGRAM, 0);
+
+  if (fd[1] < 0) {
+    printf("ERROR: Opening socket\n");
+    exit(1);
+  }
+
+
+  memset(& serverAddr, 0, sizeof(serverAddr));
+  serverAddr.sin6_family = AF_INET6;
+  serverAddr.sin6_addr   = in6addr_any;
+
+  if (bind(fd[1], (struct sockaddr *) & serverAddr, sizeof(serverAddr)) < 0) {
+    printf("Cannot bind port number %d\n", AIKO_SERVER_PORT);
+    exit(1);
+  }
 
   while (aikoError == 0) {
 #ifdef AIKO_DEBUG
@@ -107,6 +132,7 @@ int main(
       }
     }
 
+// TODO: Need to check select() return value
     select(fdLargest + 1, & readSet, NULL, NULL, NULL);
 
     for (index = 0; index < MAXIMUM_FILE_COUNT; index ++) {
@@ -115,6 +141,11 @@ int main(
           if (fgets(buffer, sizeof(buffer), inputFile) == NULL) exit(0);
         }
         else {
+          count = recvfrom(
+            fd[index], buffer, sizeof(buffer), flags,
+            (struct sockaddr *) & clientAddr, & clientAddrLen
+          );
+printf("buffer: %s\n", buffer);
         }
       }
     }
