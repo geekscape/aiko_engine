@@ -11,7 +11,7 @@
  * - None, yet.
  */
 
-#include "../lisp/lisp_engine.h"
+#include "../lisp_engine.h"
 
 char *aikoReaderBuffer;
 int   aikoReaderBufferSize;

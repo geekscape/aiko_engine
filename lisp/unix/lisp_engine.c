@@ -21,7 +21,7 @@
 #include <sys/select.h>
 #include <sys/socket.h>
 
-#include "../lisp/lisp_engine.h"
+#include "../lisp_engine.h"
 
 #define MAXIMUM_FILE_COUNT    2
 #define INPUT_BUFFER_SIZE   128
