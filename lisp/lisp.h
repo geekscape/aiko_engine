@@ -1,7 +1,7 @@
 /**
  * Please do not remove the following notices.
  *
- * \file       lisp_engine.h
+ * \file       lisp.h
  * \author     Andy Gelme <andyg@geekscape.org>
  * \copyright  (c) 2014-2015 by Geekscape Pty. Ltd.
  * \license    AGPLv3 http://geekscape.org/static/aiko_license.html
@@ -11,11 +11,9 @@
  * - None, yet.
  */
 
-#ifndef __AIKO_ENGINE_H__
-#define __AIKO_ENGINE_H__
+#pragma once
 
-#include <stdio.h>
-#include <string.h>                            // Defines memcmp() and memcpy()
+#include "../include/compatibility.h"
 
 #define MMEM_CONF_SIZE  512                                      // Minimum: 80
 #include "../memory/mmem.h"
@@ -102,6 +100,9 @@ extern tExpression *truth;
 
 /* ------------------------------------------------------------------------- */
 
+uint8_t      lisp_initialize(void);
+uint8_t      lisp_message_handler(uint8_t *message, uint16_t length);
+
 void         aikoAppend(tExpression *expression, tExpression *appendee);
 tExpression *aikoCreateAtom(char* name, int size);
 tExpression *aikoCreateLambda(tExpression *arguments, tExpression *expression);
@@ -118,35 +119,24 @@ int          aikoIsList(tExpression *expression);
 tExpression *aikoParse(tReader *reader);
 
 tExpression *aikoPrimitiveAtom(
-               tExpression *expression, tExpression *environment
-             );
+               tExpression *expression, tExpression *environment);
 tExpression *aikoPrimitiveCar(
-               tExpression *expression, tExpression *environment
-             );
+               tExpression *expression, tExpression *environment);
 tExpression *aikoPrimitiveCdr(
-               tExpression *expression, tExpression *environment
-             );
+               tExpression *expression, tExpression *environment);
 tExpression *aikoPrimitiveCond(
-               tExpression *expression, tExpression *environment
-             );
+               tExpression *expression, tExpression *environment);
 tExpression *aikoPrimitiveCons(
-               tExpression *expression, tExpression *environment
-             );
+               tExpression *expression, tExpression *environment);
 tExpression *aikoPrimitiveEqual(
-               tExpression *expression, tExpression *environment
-             );
+               tExpression *expression, tExpression *environment);
 tExpression *aikoPrimitiveLambda(
-               tExpression *expression, tExpression *environment
-             );
+               tExpression *expression, tExpression *environment);
 tExpression *aikoPrimitiveLabel(
-               tExpression *expression, tExpression *environment
-             );
+               tExpression *expression, tExpression *environment);
 tExpression *aikoPrimitiveQuote(
-               tExpression *expression, tExpression *environment
-             );
+               tExpression *expression, tExpression *environment);
 
 void         aikoReset(int expressionIndex);
 
 /* ------------------------------------------------------------------------- */
-
-#endif /* __AIKO_ENGINE_H__ */
