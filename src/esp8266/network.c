@@ -73,7 +73,7 @@ udp_send_unicast(
   uint16_t  port,
   uint8_t  *buffer,
   uint16_t  size) {
-os_printf("udp_send_unicast(): %d\n", size);
+
   espconn_sent(udp_conn, buffer, size);
   return(0);
 }
