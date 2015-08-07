@@ -6,6 +6,14 @@
  * \copyright  (c) 2014-2015 by Geekscape Pty. Ltd.
  * \license    AGPLv3 http://geekscape.org/static/aiko_license.html
  *
+ * Dedication
+ * ~~~~~~~~~~
+ * This little Lisp implementation is dedicated to Steve Russell.
+ * Lisp, SpaceWar and MIT TMRC (first proto-hackerspace) ...
+ * - https://en.wikipedia.org/wiki/Steve_Russell
+ * - http://henryjenkins.org/2007/10/spacewars_and_beyond_how_the_t.html
+ * - http://venturebeat.com/2011/01/12/fifty-years-later-video-game-pioneer-steve-russell-demos-spacewar-video-interview
+ *
  * To Do
  * ~~~~~
  * - None, yet.
