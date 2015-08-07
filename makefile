@@ -1,7 +1,7 @@
 CFLAGS += -DMMEM_CONF_SIZE=512
 
 OBJECTS =  examples/unix/aiko_server.o
-OBJECTS += src/aiko_engine.o
+OBJECTS += src/common/aiko_engine.o
 OBJECTS += src/unix/network.o
 OBJECTS += src/unix/serial.o
 
