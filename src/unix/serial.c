@@ -28,7 +28,7 @@
 uint8_t        termios_saved = FALSE;
 struct termios termios_backup;
 
-int open_serial_port(
+int serial_port_open(
   const char *serial_port_name,
   speed_t     baud_rate) {
 

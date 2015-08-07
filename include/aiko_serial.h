@@ -15,4 +15,4 @@
 
 #include "aiko_compatibility.h"
 
-int open_serial_port(const char *serial_port_name, speed_t baud_rate);
+int serial_port_open(const char *serial_port_name, speed_t baud_rate);

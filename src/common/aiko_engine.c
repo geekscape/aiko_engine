@@ -70,7 +70,7 @@ aiko_source_t ICACHE_FLASH_ATTR
 
   aiko_source_t *aiko_source = NULL;
 
-  int fd = open_serial_port(serial_port_name, baud_rate);
+  int fd = serial_port_open(serial_port_name, baud_rate);
   if (fd >= 0) aiko_source = aiko_create_source(AIKO_SOURCE_SERIAL, fd);
 
   return(aiko_source);
