@@ -20,9 +20,9 @@
 #include <sys/select.h>
 #endif
 
-#include "../../include/aiko_engine.h"
-#include "../../include/network.h"
-#include "../../include/serial.h"
+#include "aiko_engine.h"
+#include "aiko_network.h"
+#include "aiko_serial.h"
 
 aiko_source_t *aiko_sources[AIKO_SOURCE_MAXIMUM];
 uint8_t        aiko_source_count = 0;

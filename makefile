@@ -1,4 +1,6 @@
 CFLAGS += -DMMEM_CONF_SIZE=512
+CFLAGS += -Iinclude
+CFLAGS += -Ilisp
 
 OBJECTS =  examples/unix/aiko_server.o
 OBJECTS += src/common/aiko_engine.o
@@ -17,9 +19,9 @@ aiko_server:	$(OBJECTS)
 
 $(OBJECTS):	\
 	include/aiko_engine.h   \
-	include/compatibility.h \
-	include/network.h       \
-	include/serial.h        \
+	include/aiko_compatibility.h \
+	include/aiko_network.h       \
+	include/aiko_serial.h        \
 	lisp/lisp.h             \
 	memory/list.h           \
 	memory/mmem.h

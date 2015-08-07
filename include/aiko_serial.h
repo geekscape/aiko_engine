@@ -1,7 +1,7 @@
 /**
  * Please do not remove the following notices.
  *
- * \file       serial.h
+ * \file       aiko_serial.h
  * \author     Andy Gelme <andyg@geekscape.org>
  * \copyright  (c) 2015 by Geekscape Pty. Ltd.
  * \license    AGPLv3 http://geekscape.org/static/aiko_license.html
@@ -13,6 +13,6 @@
 
 #pragma once
 
-#include "compatibility.h"
+#include "aiko_compatibility.h"
 
 int open_serial_port(const char *serial_port_name, speed_t baud_rate);

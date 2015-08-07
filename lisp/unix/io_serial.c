@@ -11,7 +11,7 @@
  * - None, yet.
  */
 
-#include "../aiko_engine.h"
+#include "aiko_engine.h"
 
 FILE *aikoReaderFile;
 

@@ -20,7 +20,7 @@
 #include <string.h>
 #include <termios.h>
 
-#include "../../include/serial.h"
+#include "aiko_serial.h"
 
 #define FALSE  0
 #define TRUE   1

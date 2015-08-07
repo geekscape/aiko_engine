@@ -21,7 +21,7 @@
 
 #pragma once
 
-#include "../include/compatibility.h"
+#include "aiko_compatibility.h"
 
 #define MMEM_CONF_SIZE  512                                      // Minimum: 80
 #include "../memory/mmem.h"

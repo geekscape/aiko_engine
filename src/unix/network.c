@@ -20,7 +20,7 @@
 #include <ifaddrs.h>
 #include <net/if.h>
 
-#include "../../include/network.h"
+#include "aiko_network.h"
 
 int udp_create_socket(
   uint8_t  bind_flag,

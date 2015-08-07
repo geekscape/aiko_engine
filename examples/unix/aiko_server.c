@@ -21,8 +21,8 @@
 
 #include <stdio.h>
 
-#include "../../include/aiko_engine.h"
-#include "../../lisp/lisp.h"
+#include "aiko_engine.h"
+#include "lisp.h"
 
 #define AIKO_SERVER_PORT  4000
 

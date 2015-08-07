@@ -13,7 +13,7 @@
 
 #pragma once
 
-#include "compatibility.h"
+#include "aiko_compatibility.h"
 
 #define AIKO_SOURCE_MAXIMUM    4
 #define MESSAGE_BUFFER_SIZE  256

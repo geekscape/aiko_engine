@@ -1,7 +1,7 @@
 /**
  * Please do not remove the following notices.
  *
- * \file       network.h
+ * \file       aiko_network.h
  * \author     Andy Gelme <andyg@geekscape.org>
  * \copyright  (c) 2015 by Geekscape Pty. Ltd.
  * \license    AGPLv3 http://geekscape.org/static/aiko_license.html
@@ -13,7 +13,7 @@
 
 #pragma once
 
-#include "compatibility.h"
+#include "aiko_compatibility.h"
 
 int udp_create_socket(uint8_t bind_flag, uint16_t port);
 
