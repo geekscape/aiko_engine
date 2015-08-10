@@ -19,7 +19,7 @@
 #include "espconn.h"
 #include "ets_sys.h"
 
-#include "compatibility.h"
+#include "aiko_compatibility.h"
 
 static struct espconn *udp_conn;
 
