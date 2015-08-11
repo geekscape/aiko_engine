@@ -18,12 +18,12 @@ aiko_server:	$(OBJECTS)
 	gcc $^ -o $@
 
 $(OBJECTS):	\
-	include/aiko_engine.h   \
+	include/aiko_engine.h        \
 	include/aiko_compatibility.h \
 	include/aiko_network.h       \
 	include/aiko_serial.h        \
-	lisp/lisp.h             \
-	memory/list.h           \
+	lisp/lisp.h                  \
+	memory/list.h                \
 	memory/mmem.h
 
 clean:
