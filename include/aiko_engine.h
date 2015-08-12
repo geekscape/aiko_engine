@@ -15,10 +15,14 @@
 
 #include "aiko_compatibility.h"
 
-#define AIKO_SOURCE_MAXIMUM    4
+#define AIKO_SOURCE_MAXIMUM    2
+#define AIKO_TIMER_MAXIMUM     2
 #define MESSAGE_BUFFER_SIZE  256
 
+#define AIKO_LOOP_FOREVER      0
+
 typedef uint8_t (aiko_handler_t)(uint8_t *message, uint16_t length);
+typedef uint8_t (aiko_timer_handler_t)(void *aiko_timer);
 
 typedef enum {
   AIKO_SOURCE_FILE,
@@ -34,7 +38,25 @@ typedef struct {
 }
   aiko_source_t;
 
+typedef struct {
+  uint32_t seconds;
+  uint32_t microseconds;
+}
+  aiko_time_t;
+
+typedef struct {
+  aiko_time_t           period;
+  aiko_timer_handler_t *handler;
+#ifndef __ets__
+  long long             timeout;
+#endif
+}
+  aiko_timer_t;
+
 void aiko_add_handler(aiko_source_t *source, aiko_handler_t *handler);
+
+aiko_timer_t *aiko_add_timer(
+  aiko_time_t *period, aiko_timer_handler_t *handler);
 
 aiko_source_t *aiko_create_source(aiko_source_type type, int fd);
 
@@ -48,6 +70,8 @@ aiko_source_t *aiko_create_serial_source(
 aiko_source_t *aiko_create_socket_source(
   aiko_source_type type, uint16_t port);
 
-void aiko_loop(void);
+void aiko_delete_timer(aiko_timer_t *aiko_timer);
+
+void aiko_loop(uint16_t loop_limit);
 
 void dump_buffer(const char *label, uint8_t *buffer, uint16_t length);

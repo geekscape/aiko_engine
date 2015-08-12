@@ -63,7 +63,7 @@ int main(
     lisp_message_handler
   );
 
-  aiko_loop();
+  aiko_loop(AIKO_LOOP_FOREVER);
 
   return(0);
 }

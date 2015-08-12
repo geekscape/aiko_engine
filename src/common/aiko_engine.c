@@ -96,14 +96,19 @@ aiko_source_t ICACHE_FLASH_ATTR
 
 #ifndef __ets__
 void ICACHE_FLASH_ATTR
-aiko_loop(void) {
+aiko_loop(
+  uint16_t loop_limit) {
+
   uint8_t  buffer[MESSAGE_BUFFER_SIZE];
   int      fd, fdLargest, index, length;
   fd_set   readSet;
 
-  int flags = 0;
+  int     flags = 0;
+  uint8_t no_loop_limit = (loop_limit == AIKO_LOOP_FOREVER);
 
-  while (aiko_source_count > 0) {
+  while (aiko_source_count > 0  &&  (no_loop_limit  ||  loop_limit > 0)) {
+    if (loop_limit > 0) loop_limit --;
+
     fdLargest = 0;
     FD_ZERO(& readSet);
 
