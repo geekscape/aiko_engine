@@ -14,6 +14,9 @@
  * ~~~~~
  *   ./aiko_server [ source_file ]
  *
+ *   nc -u localhost 4000
+ *   (3:car(1:a1:b))
+ *
  * To Do
  * ~~~~~
  * - None, yet.

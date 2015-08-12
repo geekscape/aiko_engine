@@ -35,12 +35,12 @@ extern unsigned int avail_memory;
 
 /* ------------------------------------------------------------------------- */
 
-static const int AIKO_ERROR_NONE              = 0;
-static const int AIKO_ERROR_END_OF_FILE       = 1;
-static const int AIKO_ERROR_LIMIT_EXPRESSIONS = 2;
-static const int AIKO_ERROR_LIMIT_MEMORY      = 3;
-static const int AIKO_ERROR_LIMIT_TOKEN       = 4;
-static const int AIKO_ERROR_PARSE_TOKEN       = 5;
+#define AIKO_ERROR_NONE               0
+#define AIKO_ERROR_END_OF_FILE        1
+#define AIKO_ERROR_LIMIT_EXPRESSIONS  2
+#define AIKO_ERROR_LIMIT_MEMORY       3
+#define AIKO_ERROR_LIMIT_TOKEN        4
+#define AIKO_ERROR_PARSE_TOKEN        5
 
 extern int aikoError;
 
