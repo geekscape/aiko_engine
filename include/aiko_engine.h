@@ -47,9 +47,11 @@ typedef struct {
   aiko_time_t;
 
 typedef struct {
+#ifdef __ets__
+  os_timer_t            esp8266_timer;
+#else
   aiko_time_t           period;
   aiko_timer_handler_t *handler;
-#ifndef __ets__
   long long             timeout;
 #endif
 }

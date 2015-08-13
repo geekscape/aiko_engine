@@ -39,6 +39,12 @@
 #endif
 
 #ifdef __ets__
+#include <os_type.h>
+#else
+#include <sys/time.h>
+#endif
+
+#ifdef __ets__
 #include <osapi.h>
 #define usleep(microseconds)  os_delay_us(microseconds)
 #else

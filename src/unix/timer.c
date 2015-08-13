@@ -18,7 +18,6 @@
  */
 
 #include <assert.h>
-#include <sys/time.h>
 
 #include "aiko_engine.h"
 

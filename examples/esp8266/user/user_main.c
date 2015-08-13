@@ -23,6 +23,22 @@
 
 #include "aiko_engine.h"
 
+/* ------------------------------------------------------------------------- */
+
+static uint8_t timer_counter = 0;
+
+uint8_t ICACHE_FLASH_ATTR
+timer_handler(
+  void *timer_self) {
+
+  os_printf("timer_handler(): %d\n", timer_counter ++);
+
+  if (timer_counter == 4) aiko_delete_timer((aiko_timer_t *) timer_self);
+  return(AIKO_HANDLED);
+}
+
+/* ------------------------------------------------------------------------- */
+
 void user_rf_pre_init(void) {
 }
 
@@ -34,4 +50,7 @@ user_init(void) {
   os_printf("# SDK version: %s\n", system_get_sdk_version());
   os_printf("# Heap free: %d\n", system_get_free_heap_size());
   os_printf("# CPU clock: %d\n", system_get_cpu_freq());
+
+  aiko_time_t   period = { 1, 0 };  // 1 second
+  aiko_timer_t *timer  = aiko_add_timer(& period, timer_handler);
 }

@@ -18,7 +18,6 @@
 #ifndef __ets__
 #include <assert.h>
 #include <sys/select.h>
-#include <sys/time.h>
 #endif
 
 #include "aiko_engine.h"
