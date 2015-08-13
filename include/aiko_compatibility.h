@@ -13,8 +13,10 @@
 
 #pragma once
 
-#ifndef __ets__
-#define ICACHE_FLASH_ATTR
+#ifdef __ets__
+#define ATTRIBUTES  ICACHE_FLASH_ATTR
+#else
+#define ATTRIBUTES
 #endif
 
 #ifdef __ets__

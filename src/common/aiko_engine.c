@@ -28,7 +28,7 @@
 aiko_source_t *aiko_sources[AIKO_SOURCE_MAXIMUM];
 uint8_t        aiko_source_count = 0;
 
-void ICACHE_FLASH_ATTR
+void ATTRIBUTES
 aiko_add_handler(
   aiko_source_t  *aiko_source,
   aiko_handler_t *aiko_handler) {
@@ -36,7 +36,7 @@ aiko_add_handler(
   aiko_source->handler = aiko_handler;
 }
 
-aiko_source_t ICACHE_FLASH_ATTR
+aiko_source_t ATTRIBUTES
 *aiko_create_source(
   aiko_source_type type,
   int              fd) {
@@ -51,7 +51,7 @@ aiko_source_t ICACHE_FLASH_ATTR
 }
 
 #ifndef __ets__
-aiko_source_t ICACHE_FLASH_ATTR
+aiko_source_t ATTRIBUTES
 *aiko_create_file_source(
   FILE *file) {
 
@@ -62,7 +62,7 @@ aiko_source_t ICACHE_FLASH_ATTR
 #endif
 
 #ifndef __ets__
-aiko_source_t ICACHE_FLASH_ATTR
+aiko_source_t ATTRIBUTES
 *aiko_create_serial_source(
   const char *serial_port_name,
   speed_t     baud_rate) {
@@ -78,7 +78,7 @@ aiko_source_t ICACHE_FLASH_ATTR
 }
 #endif
 
-aiko_source_t ICACHE_FLASH_ATTR
+aiko_source_t ATTRIBUTES
 *aiko_create_socket_source(
   aiko_source_type type,
   uint16_t         port) {
@@ -96,7 +96,7 @@ aiko_source_t ICACHE_FLASH_ATTR
 }
 
 #ifndef __ets__
-void ICACHE_FLASH_ATTR
+void ATTRIBUTES
 aiko_loop(
   uint16_t loop_limit) {
 
@@ -171,7 +171,7 @@ aiko_loop(
 }
 #endif
 
-void ICACHE_FLASH_ATTR
+void ATTRIBUTES
 dump_buffer(
   const char *label,
   uint8_t    *buffer,
