@@ -6,6 +6,7 @@ OBJECTS =  examples/unix/aiko_server.o
 OBJECTS += src/common/aiko_engine.o
 OBJECTS += src/unix/network.o
 OBJECTS += src/unix/serial.o
+OBJECTS += src/unix/timer.o
 
 OBJECTS += lisp/expression.o
 OBJECTS += lisp/interface.o

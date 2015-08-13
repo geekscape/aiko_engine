@@ -31,7 +31,8 @@ void aiko_timer_dump(
 
   printf("%s ----------\n", label);
 
-  for (int index = 0;  index < aiko_timer_count;  index ++) {
+  int index;
+  for (index = 0;  index < aiko_timer_count;  index ++) {
     aiko_timer_t *aiko_timer = aiko_timers[index];
 
     printf("aiko_timer[%d]: %d.%06d %c\n", index,
@@ -45,7 +46,8 @@ void aiko_timer_next_update(void) {
 
   aiko_timer_next = aiko_timers[0];
 
-  for (int index = 1;  index < aiko_timer_count;  index ++) {
+  int index;
+  for (index = 1;  index < aiko_timer_count;  index ++) {
     if (aiko_timers[index]->timeout < aiko_timer_next->timeout) {
       aiko_timer_next = aiko_timers[index];
     }
@@ -55,8 +57,9 @@ void aiko_timer_next_update(void) {
 void aiko_timer_update(
   aiko_timer_t *aiko_timer) {
 
-  for (int i = 0;  i < aiko_timer_count;  i ++) {
-    if (aiko_timers[i] == aiko_timer) {        // validate aiko_timer reference
+  int index;
+  for (index = 0;  index < aiko_timer_count;  index ++) {
+    if (aiko_timers[index] == aiko_timer) {    // validate aiko_timer reference
       struct timeval time_value;
       gettimeofday(& time_value, NULL);
 
@@ -89,13 +92,14 @@ aiko_timer_t *aiko_add_timer(
 void aiko_delete_timer(
   aiko_timer_t *aiko_timer) {
 
-  for (int i = 0;  i < aiko_timer_count;  i ++) {
-    if (aiko_timers[i] == aiko_timer) {        // validate aiko_timer reference
+  int index;
+  for (index = 0;  index < aiko_timer_count;  index ++) {
+    if (aiko_timers[index] == aiko_timer) {    // validate aiko_timer reference
       free(aiko_timer);
 
-      while ((i + 1) < aiko_timer_count) {
-        aiko_timers[i] = aiko_timers[i + 1];
-        i ++;
+      while ((index + 1) < aiko_timer_count) {
+        aiko_timers[index] = aiko_timers[index + 1];
+        index ++;
       }
 
       aiko_timers[-- aiko_timer_count] = NULL;
