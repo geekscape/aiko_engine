@@ -1,0 +1,30 @@
+CFLAGS += -I../../include
+
+OBJECTS =  aiko_timer.o
+OBJECTS += ../../src/common/aiko_engine.o
+OBJECTS += ../../src/unix/network.o
+OBJECTS += ../../src/unix/serial.o
+OBJECTS += ../../src/unix/timer.o
+
+aiko_timer:	$(OBJECTS)
+	gcc $^ -o $@
+
+$(OBJECTS):	\
+	../../include/aiko_engine.h        \
+	../../include/aiko_compatibility.h \
+	../../include/aiko_network.h       \
+	../../include/aiko_serial.h
+
+clean:
+	-rm -f $(OBJECTS)
+
+clobber:	clean
+	-rm -f aiko_timer
+
+help :
+	@echo ""
+	@echo "make         - Build aiko_timer"
+	@echo "make clean   - Remove binaries"
+	@echo "make clobber - Remove all generated files"
+	@echo "make help    - Display usage"
+	@echo ""

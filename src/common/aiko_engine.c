@@ -18,6 +18,7 @@
 #ifndef __ets__
 #include <assert.h>
 #include <sys/select.h>
+#include <sys/time.h>
 #endif
 
 #include "aiko_engine.h"
@@ -106,8 +107,23 @@ aiko_loop(
   int     flags = 0;
   uint8_t no_loop_limit = (loop_limit == AIKO_LOOP_FOREVER);
 
-  while (aiko_source_count > 0  &&  (no_loop_limit  ||  loop_limit > 0)) {
+  while ((no_loop_limit  ||  loop_limit > 0)  &&
+         (aiko_source_count > 0  ||  aiko_timer_count > 0)) {
+
     if (loop_limit > 0) loop_limit --;
+
+    if (aiko_timer_count > 0) {
+      struct timeval time_value;
+      gettimeofday(& time_value, NULL);
+      long long time_now = time_value.tv_sec * 1000000 + time_value.tv_usec;
+
+      aiko_timer_t *aiko_timer = aiko_next_timer();
+
+      if (time_now >= aiko_timer->timeout) {
+        uint8_t handled = aiko_timer->handler(aiko_timer);
+        aiko_timer_update(aiko_timer);
+      }
+    }
 
     fdLargest = 0;
     FD_ZERO(& readSet);

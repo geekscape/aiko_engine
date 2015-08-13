@@ -20,6 +20,8 @@
 #define MESSAGE_BUFFER_SIZE  256
 
 #define AIKO_LOOP_FOREVER      0
+#define AIKO_HANDLED           1
+#define AIKO_NOT_HANDLED       0
 
 typedef uint8_t (aiko_handler_t)(uint8_t *message, uint16_t length);
 typedef uint8_t (aiko_timer_handler_t)(void *aiko_timer);
@@ -53,10 +55,18 @@ typedef struct {
 }
   aiko_timer_t;
 
-void aiko_add_handler(aiko_source_t *source, aiko_handler_t *handler);
+extern uint8_t aiko_timer_count;
 
 aiko_timer_t *aiko_add_timer(
   aiko_time_t *period, aiko_timer_handler_t *handler);
+
+void aiko_delete_timer(aiko_timer_t *aiko_timer);
+
+aiko_timer_t *aiko_next_timer(void);
+
+void aiko_timer_update(aiko_timer_t *aiko_timer);
+
+void aiko_add_handler(aiko_source_t *source, aiko_handler_t *handler);
 
 aiko_source_t *aiko_create_source(aiko_source_type type, int fd);
 
@@ -69,8 +79,6 @@ aiko_source_t *aiko_create_serial_source(
 
 aiko_source_t *aiko_create_socket_source(
   aiko_source_type type, uint16_t port);
-
-void aiko_delete_timer(aiko_timer_t *aiko_timer);
 
 void aiko_loop(uint16_t loop_limit);
 

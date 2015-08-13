@@ -11,6 +11,7 @@
  * - None, yet.
  */
 
+#include "aiko_engine.h"
 #include "lisp.h"
 
 uint8_t  *aikoReaderBuffer;
@@ -66,7 +67,7 @@ uint8_t lisp_message_handler(
   uint8_t  *message,
   uint16_t  length) {
 
-  uint8_t handled = 0;
+  uint8_t handled = AIKO_NOT_HANDLED;
 
   aikoError = AIKO_ERROR_NONE;
 
@@ -86,6 +87,7 @@ uint8_t lisp_message_handler(
       printf("Evaluate error: %d\n", aikoError);
     }
     else {
+      handled = AIKO_HANDLED;
       aikoEmit(expression);
       printf("\n");
     }
