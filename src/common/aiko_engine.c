@@ -171,7 +171,7 @@ aiko_loop(
 #endif
 
 void ATTRIBUTES
-dump_buffer(
+aiko_buffer_dump(
   const char *label,
   uint8_t    *buffer,
   uint16_t    length) {

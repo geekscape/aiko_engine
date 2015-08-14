@@ -84,4 +84,4 @@ aiko_source_t *aiko_create_socket_source(
 
 void aiko_loop(uint16_t loop_limit);
 
-void dump_buffer(const char *label, uint8_t *buffer, uint16_t length);
+void aiko_buffer_dump(const char *label, uint8_t *buffer, uint16_t length);
