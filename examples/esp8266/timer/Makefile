@@ -32,11 +32,11 @@ TARGET		= app
 
 # which modules (subdirectories) of the project to include in compiling
 MODULES		=  driver user
-MODULES		+= ../../src/common
-MODULES		+= ../../src/esp8266
+MODULES		+= ../../../src/common
+MODULES		+= ../../../src/esp8266
 
 EXTRA_INCDIR    =  include
-EXTRA_INCDIR    += ../../include
+EXTRA_INCDIR    += ../../../include
 
 # libraries used in this project, mainly provided by the SDK
 LIBS		= c gcc hal pp phy net80211 lwip wpa main
