@@ -20,6 +20,8 @@
 #endif
 
 #ifdef __ets__
+#define EOF (-1)
+
 #include <c_types.h>
 #include <mem.h>
 

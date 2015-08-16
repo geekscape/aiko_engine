@@ -22,7 +22,8 @@ tExpression *aikoEnvironment = NULL;
 
 /* ------------------------------------------------------------------------- */
 
-int fileGetC() {
+int ATTRIBUTES
+fileGetC() {
   int ch = EOF;
 
   if (aikoReaderBufferIndex < aikoReaderBufferLength) {
@@ -32,13 +33,15 @@ int fileGetC() {
   return(ch);
 }
 
-void fileUngetC(
+void ATTRIBUTES
+fileUngetC(
   int ch) {
 
   if (aikoReaderBufferIndex > 0) aikoReaderBufferIndex --;
 }
 
-int fileIsEmpty() {
+int ATTRIBUTES
+fileIsEmpty() {
   return(aikoReaderBufferIndex == aikoReaderBufferLength);
 }
 
@@ -46,7 +49,8 @@ tReader aikoBufferReader = { fileGetC, fileIsEmpty, fileUngetC };
 
 /* ------------------------------------------------------------------------- */
 
-uint8_t lisp_initialize(void) {
+uint8_t ATTRIBUTES
+lisp_initialize(void) {
   mmem_init();  // Lisp engine memory management
 
 #ifdef AIKO_DEBUG
@@ -63,7 +67,8 @@ uint8_t lisp_initialize(void) {
   return(aikoError);
 }
 
-uint8_t lisp_message_handler(
+uint8_t ATTRIBUTES
+lisp_message_handler(
   uint8_t  *message,
   uint16_t  length) {
 

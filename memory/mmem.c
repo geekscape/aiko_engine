@@ -49,6 +49,8 @@
 // #include "contiki-conf.h"
 #include <string.h>
 
+#include "aiko_compatibility.h"
+
 #ifdef MMEM_CONF_SIZE
 #define MMEM_SIZE MMEM_CONF_SIZE
 #else
@@ -79,7 +81,7 @@ static char memory[MMEM_SIZE];
  *             allocated memory.
  *
  */
-int
+int ATTRIBUTES
 mmem_alloc(struct mmem *m, unsigned int size)
 {
   /* Check if we have enough memory left for this allocation. */
@@ -115,7 +117,7 @@ mmem_alloc(struct mmem *m, unsigned int size)
  *             previously has been allocated with mmem_alloc().
  *
  */
-void
+void ATTRIBUTES
 mmem_free(struct mmem *m)
 {
   struct mmem *n;
@@ -148,7 +150,7 @@ mmem_free(struct mmem *m)
  *             module.
  *
  */
-void
+void ATTRIBUTES
 mmem_init(void)
 {
   list_init(mmemlist);

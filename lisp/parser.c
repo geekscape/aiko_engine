@@ -11,11 +11,13 @@
  * - None, yet.
  */
 
+#include "aiko_compatibility.h"
 #include "lisp.h"
 
 /* ------------------------------------------------------------------------- */
 
-tExpression *aikoParseToken(
+tExpression ATTRIBUTES
+*aikoParseToken(
   tReader *reader) {
 
   char token[AIKO_ATOM_SIZE_LIMIT];  // TODO: Use mmem memory directly, no copy
@@ -75,7 +77,8 @@ tExpression *aikoParseToken(
   return(aikoCreateAtom(token, size));
 }
 
-tExpression *aikoParseList(
+tExpression ATTRIBUTES
+*aikoParseList(
   tReader *reader) {
 
   tExpression *expression = aikoParseToken(reader);
@@ -95,7 +98,8 @@ tExpression *aikoParseList(
   return(expression);
 }
 
-tExpression *aikoParse(
+tExpression ATTRIBUTES
+*aikoParse(
   tReader *reader) {
 
   tExpression *expression = aikoParseToken(reader);

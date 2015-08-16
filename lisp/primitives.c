@@ -11,32 +11,37 @@
  * - None, yet.
  */
 
+#include "aiko_compatibility.h"
 #include "lisp.h"
 
 /* ------------------------------------------------------------------------- */
 
-tExpression *aikoPrimitiveAtom(
+tExpression ATTRIBUTES
+*aikoPrimitiveAtom(
   tExpression *expression,
   tExpression *environment) {
 
   return(expression->list.car->type == ATOM  ?  truth  :  nil);
 }
 
-tExpression *aikoPrimitiveCar(
+tExpression ATTRIBUTES
+*aikoPrimitiveCar(
   tExpression *expression,
   tExpression *environment) {
 
   return(expression->list.car->list.car);
 }
 
-tExpression *aikoPrimitiveCdr(
+tExpression ATTRIBUTES
+*aikoPrimitiveCdr(
   tExpression *expression,
   tExpression *environment) {
 
   return(expression->list.car->list.cdr);
 }
 
-tExpression *aikoPrimitiveCond(
+tExpression ATTRIBUTES
+*aikoPrimitiveCond(
   tExpression *expression,
   tExpression *environment) {
 
@@ -58,7 +63,8 @@ tExpression *aikoPrimitiveCond(
   return(nil);
 }
 
-tExpression *aikoPrimitiveCons(
+tExpression ATTRIBUTES
+*aikoPrimitiveCons(
   tExpression *expression,
   tExpression *environment) {
 
@@ -76,7 +82,8 @@ tExpression *aikoPrimitiveCons(
   return(list);
 }
 
-tExpression *aikoPrimitiveEqual(
+tExpression ATTRIBUTES
+*aikoPrimitiveEqual(
   tExpression *expression,
   tExpression *environment) {
 
@@ -86,7 +93,8 @@ tExpression *aikoPrimitiveEqual(
   return(aikoIsAtom(expression->list.cdr->list.car, name, size) ? truth : nil);
 }
 
-tExpression *aikoInterleave(                   // TODO: Refactor duplicate code
+tExpression ATTRIBUTES
+*aikoInterleave(                   // TODO: Refactor duplicate code
   tExpression *list1,
   tExpression *list2) {
 
@@ -111,7 +119,8 @@ tExpression *aikoInterleave(                   // TODO: Refactor duplicate code
   return(result);
 }
 
-tExpression *aikoReplace(                      // TODO: Refactor duplicate code
+tExpression ATTRIBUTES
+*aikoReplace(                                  // TODO: Refactor duplicate code
   tExpression *expression,
   tExpression *replacement) {
 
@@ -146,7 +155,8 @@ tExpression *aikoReplace(                      // TODO: Refactor duplicate code
   }
 }
 
-tExpression *aikoPrimitiveLambda(
+tExpression ATTRIBUTES
+*aikoPrimitiveLambda(
   tExpression *expression,
   tExpression *environment) {
 
@@ -159,7 +169,8 @@ tExpression *aikoPrimitiveLambda(
   return(aikoEvaluate(result, environment));
 }
 
-tExpression *aikoPrimitiveLabel(
+tExpression ATTRIBUTES
+*aikoPrimitiveLabel(
   tExpression *expression,
   tExpression *environment) {
 
@@ -179,7 +190,8 @@ tExpression *aikoPrimitiveLabel(
   return(truth);
 }
 
-tExpression *aikoPrimitiveQuote(
+tExpression ATTRIBUTES
+*aikoPrimitiveQuote(
   tExpression *expression,
   tExpression *environment) {
 

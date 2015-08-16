@@ -46,6 +46,8 @@
  */
 #include "list.h"
 
+#include "aiko_compatibility.h"
+
 #ifndef NULL
 #define NULL 0
 #endif
@@ -63,7 +65,7 @@ struct list {
  *
  * \param list The list to be initialized.
  */
-void
+void ATTRIBUTES
 list_init(list_t list)
 {
   *list = NULL;
@@ -80,7 +82,7 @@ list_init(list_t list)
  *
  * \sa list_tail()
  */
-void *
+void ATTRIBUTES *
 list_head(list_t list)
 {
   return *list;
@@ -98,7 +100,7 @@ list_head(list_t list)
  * \param dest The destination list.
  * \param src The source list.
  */
-void
+void ATTRIBUTES
 list_copy(list_t dest, list_t src)
 {
   *dest = *src;
@@ -115,7 +117,7 @@ list_copy(list_t dest, list_t src)
  *
  * \sa list_head()
  */
-void *
+void ATTRIBUTES *
 list_tail(list_t list)
 {
   struct list *l;
@@ -140,7 +142,7 @@ list_tail(list_t list)
  * \sa list_push()
  *
  */
-void
+void ATTRIBUTES
 list_add(list_t list, void *item)
 {
   struct list *l;
@@ -162,7 +164,7 @@ list_add(list_t list, void *item)
 /**
  * Add an item to the start of the list.
  */
-void
+void ATTRIBUTES
 list_push(list_t list, void *item)
 {
   /*  struct list *l;*/
@@ -183,7 +185,7 @@ list_push(list_t list, void *item)
  * \return The removed object
  *
  */
-void *
+void ATTRIBUTES *
 list_chop(list_t list)
 {
   struct list *l, *r;
@@ -215,7 +217,7 @@ list_chop(list_t list)
  * \return Pointer to the removed element of list.
  */
 /*---------------------------------------------------------------------------*/
-void *
+void ATTRIBUTES *
 list_pop(list_t list)
 {
   struct list *l;
@@ -237,7 +239,7 @@ list_pop(list_t list)
  *
  */
 /*---------------------------------------------------------------------------*/
-void
+void ATTRIBUTES
 list_remove(list_t list, void *item)
 {
   struct list *l, *r;
@@ -272,7 +274,7 @@ list_remove(list_t list, void *item)
  * \return The length of the list.
  */
 /*---------------------------------------------------------------------------*/
-int
+int ATTRIBUTES
 list_length(list_t list)
 {
   struct list *l;
@@ -300,7 +302,7 @@ list_length(list_t list)
  *             start of the list.
  *
  */
-void
+void ATTRIBUTES
 list_insert(list_t list, void *previtem, void *newitem)
 {
   if(previtem == NULL) {
@@ -322,7 +324,7 @@ list_insert(list_t list, void *previtem, void *newitem)
  *             the list. This function is used when iterating through
  *             lists.
  */
-void *
+void ATTRIBUTES *
 list_item_next(void *item)
 {
   return item == NULL? NULL: ((struct list *)item)->next;

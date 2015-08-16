@@ -11,6 +11,7 @@
  * - None, yet.
  */
 
+#include "aiko_compatibility.h"
 #include "lisp.h"
 
 tExpression aikoExpressions[AIKO_EXPRESSION_LIMIT];
@@ -26,7 +27,8 @@ tExpression *parenthesisClose;
 tExpression *truth;
 
 /* ------------------------------------------------------------------------- */
-tExpression *aikoAllocateExpression(
+tExpression ATTRIBUTES
+*aikoAllocateExpression(
   tType type,
   int   extra) {
 
@@ -44,7 +46,8 @@ tExpression *aikoAllocateExpression(
   return(expression);
 }
 
-tExpression *aikoCreateAtom(
+tExpression ATTRIBUTES
+*aikoCreateAtom(
   char *name,
   int   size) {
 
@@ -65,7 +68,8 @@ tExpression *aikoCreateAtom(
   return(expression);
 }
 
-tExpression *aikoCreateLambda(
+tExpression ATTRIBUTES
+*aikoCreateLambda(
   tExpression *arguments,
   tExpression *expression) {
 
@@ -79,7 +83,8 @@ tExpression *aikoCreateLambda(
   return(lambdaExpression);
 }
 
-tExpression *aikoCreateList(
+tExpression ATTRIBUTES
+*aikoCreateList(
   tExpression *car,
   tExpression *cdr) {
 
@@ -93,7 +98,8 @@ tExpression *aikoCreateList(
   return(expression);
 }
 
-tExpression *aikoCreatePrimitive(
+tExpression ATTRIBUTES
+*aikoCreatePrimitive(
   char        *name,
   tExpression *(*handler)(tExpression *, tExpression *)) {
 
@@ -117,7 +123,8 @@ tExpression *aikoCreatePrimitive(
   return(expression);
 }
 
-void aikoAppend(
+void ATTRIBUTES
+aikoAppend(
   tExpression *expression,
   tExpression *appendee) {
 
@@ -126,7 +133,8 @@ void aikoAppend(
   expression->list.cdr = aikoCreateList(appendee, NULL);
 }
 
-int aikoIsAtom(
+int ATTRIBUTES
+aikoIsAtom(
   tExpression *expression,
   char        *name,
   int          size) {
@@ -136,14 +144,16 @@ int aikoIsAtom(
   return(memcmp(expression->atom.name.ptr, name, size) == 0);
 }
 
-int aikoIsList(
+int ATTRIBUTES
+aikoIsList(
   tExpression *expression) {
 
   return(expression != NULL  &&  expression->type == LIST);
 }
 
 /* ------------------------------------------------------------------------- */
-tExpression *aikoLookup(
+tExpression ATTRIBUTES
+*aikoLookup(
   tExpression *expression,
   tExpression *environment) {
 
@@ -166,7 +176,8 @@ tExpression *aikoLookup(
   return(result);
 }
 
-tExpression *aikoEvaluateFunction(
+tExpression ATTRIBUTES
+*aikoEvaluateFunction(
   tExpression *expression,
   tExpression *environment) {
 
@@ -183,7 +194,8 @@ tExpression *aikoEvaluateFunction(
   return(expression);
 }
 
-tExpression *aikoEvaluate(
+tExpression ATTRIBUTES
+*aikoEvaluate(
   tExpression *expression,
   tExpression *environment) {
 
@@ -224,7 +236,8 @@ tExpression *aikoEvaluate(
 }
 
 /* ------------------------------------------------------------------------- */
-void aikoEmit(
+void ATTRIBUTES
+aikoEmit(
   tExpression *expression) {
 
   if (expression == NULL) {
@@ -263,7 +276,8 @@ void aikoEmit(
 }
 
 /* ------------------------------------------------------------------------- */
-tExpression *aikoExpressionInitialize(void) {
+tExpression ATTRIBUTES
+*aikoExpressionInitialize(void) {
   nil              = aikoCreateList(NULL, NULL);
   parenthesisOpen  = aikoCreateAtom("(",  1);
   parenthesisClose = aikoCreateAtom(")",  1);
@@ -284,7 +298,8 @@ tExpression *aikoExpressionInitialize(void) {
   return(environment);
 }
 
-void aikoReset(
+void ATTRIBUTES
+aikoReset(
   int expressionIndex) {
 
   while (aikoExpressionCurrent > aikoExpressionBookmark) {
