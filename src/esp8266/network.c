@@ -12,7 +12,9 @@
  *
  * To Do
  * ~~~~~
- * - None, yet.
+ * - Refactor aiko_engine.c into common, Unix and ESP8266.
+ *   - Don't directly reference static variables in common/aiko_engine.c
+ * - Handle multiple UDP socket connections.
  */
 
 #include "ip_addr.h"
@@ -30,8 +32,6 @@ udp_handler(
   unsigned short  length) {
 
   if (buffer == NULL) return;
-
-//os_printf("udp_handler(): %d\n", length);
 }
 
 int ICACHE_FLASH_ATTR
@@ -54,7 +54,7 @@ udp_create_socket(
 
   sint8 result = espconn_create(udp_conn);
 
-  return(-1);
+  return(0);
 }
 
 int ICACHE_FLASH_ATTR
