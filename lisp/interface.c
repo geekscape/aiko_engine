@@ -98,6 +98,13 @@ lisp_message_handler(
 
   aikoReset(aikoExpressionBookmark);         // TODO: Breaks "primitiveLabel()"
 
+#ifdef AIKO_DEBUG
+  printf(
+    "Heap used: %d, Expressions used: %d\n",
+    MMEM_CONF_SIZE - avail_memory, aikoExpressionCurrent
+  );
+#endif
+
 //return(aikoError);
   return(handled);
 }
