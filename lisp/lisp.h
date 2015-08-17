@@ -108,7 +108,7 @@ extern tExpression *truth;
 
 /* ------------------------------------------------------------------------- */
 
-uint8_t      lisp_initialize(void);
+tExpression *lisp_initialize(void);
 uint8_t      lisp_message_handler(uint8_t *message, uint16_t length);
 
 void         aikoAppend(tExpression *expression, tExpression *appendee);

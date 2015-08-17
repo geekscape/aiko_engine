@@ -49,8 +49,8 @@ tReader aikoBufferReader = { fileGetC, fileIsEmpty, fileUngetC };
 
 /* ------------------------------------------------------------------------- */
 
-uint8_t ATTRIBUTES
-lisp_initialize(void) {
+tExpression ATTRIBUTES
+*lisp_initialize(void) {
   mmem_init();  // Lisp engine memory management
 
 #ifdef AIKO_DEBUG
@@ -60,11 +60,9 @@ lisp_initialize(void) {
   );
 #endif
 
-  aikoError = AIKO_ERROR_NONE;
-
+  aikoError       = AIKO_ERROR_NONE;
   aikoEnvironment = aikoExpressionInitialize();
-
-  return(aikoError);
+  return(aikoEnvironment);
 }
 
 uint8_t ATTRIBUTES

@@ -31,16 +31,49 @@
 
 /* ------------------------------------------------------------------------- */
 
+static uint8_t timer_counter = 0;
+static uint8_t timer_maximum = 4;
+
+uint8_t timer_handler(
+  void *timer_self) {
+
+  printf("timer_handler(): %d\n", timer_counter ++);
+
+  if (timer_counter == timer_maximum) {
+    aiko_delete_timer((aiko_timer_t *) timer_self);
+  }
+
+  return(AIKO_HANDLED);
+}
+
+tExpression *primitiveAddTimer(
+  tExpression *expression,
+  tExpression *environment) {
+
+  timer_counter = 0;
+  timer_maximum = 4;            // TODO: Assign value using the first parameter
+
+  aiko_time_t   period = { 1, 0 };  // 1 second
+  aiko_timer_t *timer  = aiko_add_timer(& period, timer_handler);
+
+  return(truth);
+}
+
+/* ------------------------------------------------------------------------- */
+
 static FILE *initialize(
   int   argc,
   char *argv[]) {
 
-  uint8_t error = lisp_initialize();
+  tExpression *lisp_environment = lisp_initialize();
 
-  if (error) {
-    printf("Initialization error: %d\n", error);  // TODO: Better error message
+  if (aikoError) {
+    printf("Initialization error: %d\n", aikoError);    // TODO: Better message
     exit(-1);
   }
+
+//aikoAppend(lisp_environment,
+//  aikoCreatePrimitive("addTimer", primitiveAddTimer));
 
   FILE *inputFile = stdin;
   if (argc > 1) inputFile = fopen(argv[1], "r");
