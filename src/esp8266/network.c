@@ -15,13 +15,18 @@
  * - Refactor aiko_engine.c into common, Unix and ESP8266.
  *   - Don't directly reference static variables in common/aiko_engine.c
  * - Handle multiple UDP socket connections.
+ * - Improve efficiency of udp_handler().
  */
 
 #include "ip_addr.h"
 #include "espconn.h"
 #include "ets_sys.h"
 
+#include "aiko_engine.h"  // define aiko_source_t
 #include "aiko_compatibility.h"
+
+extern aiko_source_t *aiko_sources[];
+extern uint8_t        aiko_source_count;
 
 static struct espconn *udp_conn;
 
@@ -32,6 +37,14 @@ udp_handler(
   unsigned short  length) {
 
   if (buffer == NULL) return;
+
+  int index;
+  for (index = 0;  index < aiko_source_count;  index ++) {
+    aiko_source_t *aiko_source = aiko_sources[index];
+    if (aiko_source->type == AIKO_SOURCE_SOCKET_UDP4) {
+      uint8_t handled = aiko_source->handler(buffer, length);
+    }
+  }
 }
 
 int ICACHE_FLASH_ATTR
