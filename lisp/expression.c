@@ -245,7 +245,15 @@ aikoEmit(
   }
   else if (expression->type == ATOM) {
     int   size = expression->atom.name.size;
+#ifdef __ets__
+    printf("%d:", size);
+    int index;
+    for (index = 0;  index < size;  index ++) {
+      printf("%c", ((char *) (expression->atom.name.ptr))[index]);
+    }
+#else
     printf("%d:%.*s", size, size, (char *) expression->atom.name.ptr);
+#endif
   }
   else if (expression->type == LAMBDA) {
     printf("LAMBDA ");
