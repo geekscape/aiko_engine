@@ -23,7 +23,7 @@
 
 #include "aiko_compatibility.h"
 
-#define MMEM_CONF_SIZE  512                                      // Minimum: 80
+//#define MMEM_CONF_SIZE  512                                    // Minimum: 80
 #include "../memory/mmem.h"
 extern unsigned int avail_memory;
 
@@ -57,7 +57,11 @@ typedef struct {
 
 static const int AIKO_ATOM_SIZE_LIMIT = 10;
 
-#define AIKO_EXPRESSION_LIMIT 512                                // Minimum: 72
+#ifdef __ets__
+#define AIKO_EXPRESSION_LIMIT  80                                // Minimum: 72
+#else
+#define AIKO_EXPRESSION_LIMIT 512
+#endif
 
 typedef enum {
   ATOM,
@@ -94,7 +98,7 @@ typedef struct sExpression {
       primitive;
   };
 }
-  tExpression;                                 // Intel: 32 bytes, AVR: 8 bytes
+  tExpression;              // Intel: 32 bytes, ESP8266: 16 bytes, AVR: 8 bytes
 
 extern int aikoExpressionCurrent;
 extern int aikoExpressionBookmark;
