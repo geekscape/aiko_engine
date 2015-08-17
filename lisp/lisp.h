@@ -8,8 +8,8 @@
  *
  * Dedication
  * ~~~~~~~~~~
- * This little Lisp implementation is dedicated to Steve Russell.
- * Lisp, SpaceWar and MIT TMRC (first proto-hackerspace) ...
+ * This little Lisp implementation is dedicated to Steve Russell ...
+ * First Lisp implementations, SpaceWar and MIT TMRC (first proto-hackerspace)
  * - https://en.wikipedia.org/wiki/Steve_Russell
  * - http://henryjenkins.org/2007/10/spacewars_and_beyond_how_the_t.html
  * - http://venturebeat.com/2011/01/12/fifty-years-later-video-game-pioneer-steve-russell-demos-spacewar-video-interview
@@ -23,7 +23,10 @@
 
 #include "aiko_compatibility.h"
 
-//#define MMEM_CONF_SIZE  512                                    // Minimum: 80
+#ifndef MMEM_CONF_SIZE
+#define MMEM_CONF_SIZE  80                                       // Minimum: 80
+#endif
+
 #include "../memory/mmem.h"
 extern unsigned int avail_memory;
 
