@@ -30,6 +30,7 @@ typedef enum {
   AIKO_SOURCE_FILE,
   AIKO_SOURCE_SERIAL,
   AIKO_SOURCE_SOCKET_UDP4,
+  AIKO_SOURCE_USER_DEFINED = 64
 }
   aiko_source_type;
 
