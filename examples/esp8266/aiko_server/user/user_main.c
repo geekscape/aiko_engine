@@ -66,7 +66,7 @@ user_init(void) {
   lisp_initialize();
 
   aiko_add_handler(
-    aiko_create_serial_source(NULL, 38400), lisp_message_handler
+    aiko_create_serial_source(NULL, 38400, '\r'), lisp_message_handler
   );
 
   os_delay_us(5000);

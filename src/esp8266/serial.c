@@ -31,26 +31,35 @@
 extern aiko_source_t *aiko_sources[];
 extern uint8_t        aiko_source_count;
 
-static uint8_t serial_buffer[AIKO_SERIAL_BUFFER_SIZE];
-static int     serial_buffer_index = 0;
+static uint8_t  serial_buffer[AIKO_SERIAL_BUFFER_SIZE];
+static uint16_t serial_length = 0;
+static uint8_t  serial_record_delimiter = 0x00;
 
 uint8_t ICACHE_FLASH_ATTR
 serial_timer_handler(
   void *timer_self) {
 
+  int index;
+
   uint16_t length = rx_buff_deq(
-    & serial_buffer[serial_buffer_index],
-    sizeof(serial_buffer) - serial_buffer_index
+    & serial_buffer[serial_length], sizeof(serial_buffer) - serial_length
   );
 
   if (length > 0) {
-    int index;
+    serial_length += length;
 
-    for (index = 0;  index < aiko_source_count;  index ++) {
-      aiko_source_t *aiko_source = aiko_sources[index];
-      if (aiko_source->type == AIKO_SOURCE_SERIAL) {
-        uint8_t handled = aiko_source->handler(serial_buffer, length);
+    if (serial_record_delimiter == 0x00  ||
+        serial_buffer[serial_length - 1] == serial_record_delimiter  ||
+        serial_length == AIKO_SERIAL_BUFFER_SIZE) {
+
+      for (index = 0;  index < aiko_source_count;  index ++) {
+        aiko_source_t *aiko_source = aiko_sources[index];
+        if (aiko_source->type == AIKO_SOURCE_SERIAL) {
+          uint8_t handled = aiko_source->handler(serial_buffer, serial_length);
+        }
       }
+
+      serial_length = 0;
     }
   }
 }
@@ -58,7 +67,10 @@ serial_timer_handler(
 int ICACHE_FLASH_ATTR
 serial_port_open(
   const char *serial_port_name,
-  speed_t     baud_rate) {
+  speed_t     baud_rate,
+  uint8_t     record_delimiter) {
+
+  serial_record_delimiter = record_delimiter;
 
   uart_init(baud_rate, baud_rate);
 

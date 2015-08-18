@@ -25,12 +25,13 @@
 #define FALSE  0
 #define TRUE   1
 
-uint8_t        termios_saved = FALSE;
-struct termios termios_backup;
+static uint8_t        termios_saved = FALSE;
+static struct termios termios_backup;
 
 int serial_port_open(
   const char *serial_port_name,
-  speed_t     baud_rate) {
+  speed_t     baud_rate,
+  uint8_t     record_delimiter) {
 
   int fd = open(serial_port_name, O_RDWR | O_NOCTTY | O_NONBLOCK);
 

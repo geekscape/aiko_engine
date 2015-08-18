@@ -78,7 +78,7 @@ aiko_source_t *aiko_create_file_source(FILE *file);
 #endif
 
 aiko_source_t *aiko_create_serial_source(
-  const char *serial_port_name, speed_t baud_rate);
+  const char *serial_port_name, speed_t baud_rate, uint8_t record_delimiter);
 
 aiko_source_t *aiko_create_socket_source(
   aiko_source_type type, uint16_t port);

@@ -51,7 +51,7 @@ void user_rf_pre_init(void) {
 void ICACHE_FLASH_ATTR
 user_init(void) {
   aiko_add_handler(
-    aiko_create_serial_source(NULL, 38400), serial_handler
+    aiko_create_serial_source(NULL, 38400, 0x00), serial_handler
   );
 
   os_delay_us(5000);

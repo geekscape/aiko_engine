@@ -17,4 +17,5 @@
 
 #define AIKO_SERIAL_BUFFER_SIZE 128
 
-int serial_port_open(const char *serial_port_name, speed_t baud_rate);
+int serial_port_open(
+  const char *serial_port_name, speed_t baud_rate, uint8_t record_delimiter);
