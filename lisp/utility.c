@@ -27,7 +27,7 @@ aikoToInteger(
     uint8_t size = expression->atom.name.size;
     memcpy(name, expression->atom.name.ptr, expression->atom.name.size);
     name[size] = 0x00;
-    result = atoi(name);
+    result = atoi((const char *) name);
   }
 
   return(result);
