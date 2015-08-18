@@ -60,13 +60,14 @@ aiko_source_t ATTRIBUTES
 }
 #endif
 
-#ifndef __ets__
 aiko_source_t ATTRIBUTES
 *aiko_create_serial_source(
   const char *serial_port_name,
   speed_t     baud_rate) {
 
+#ifndef __ets__
   assert(aiko_source_count < AIKO_SOURCE_MAXIMUM);
+#endif
 
   aiko_source_t *aiko_source = NULL;
 
@@ -75,7 +76,6 @@ aiko_source_t ATTRIBUTES
 
   return(aiko_source);
 }
-#endif
 
 aiko_source_t ATTRIBUTES
 *aiko_create_socket_source(

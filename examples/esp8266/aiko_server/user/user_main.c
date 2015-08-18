@@ -22,8 +22,6 @@
 
 #include "user_interface.h"
 
-#include "driver/uart.h"
-
 #include "user_config.h"
 
 #include "aiko_engine.h"
@@ -64,13 +62,18 @@ void user_rf_pre_init(void) {
 void ICACHE_FLASH_ATTR
 user_init(void) {
   ets_wdt_disable();
-  uart_init(BIT_RATE_38400, BIT_RATE_38400);
+
+  lisp_initialize();
+
+  aiko_add_handler(
+    aiko_create_serial_source(NULL, 38400), lisp_message_handler
+  );
 
   os_delay_us(5000);
   os_printf("# ---------------\n");
   os_printf("# SDK version: %s\n", system_get_sdk_version());
-  os_printf("# Heap free: %d\n", system_get_free_heap_size());
-  os_printf("# CPU clock: %d\n", system_get_cpu_freq());
+  os_printf("# CPU clock:   %d\n", system_get_cpu_freq());
+  os_printf("# Heap free:   %d\n", system_get_free_heap_size());
 
   wifi_set_opmode(STATION_MODE);
   system_init_done_cb(system_ready);
@@ -82,8 +85,6 @@ user_init(void) {
   os_memcpy(& station_configuration.ssid, ssid, 32);
   os_memcpy(& station_configuration.password, password, 64);
   wifi_station_set_config(& station_configuration);
-
-  lisp_initialize();
 
   aiko_add_handler(
     aiko_create_socket_source(AIKO_SOURCE_SOCKET_UDP4, AIKO_SERVER_PORT),
