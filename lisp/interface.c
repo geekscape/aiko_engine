@@ -71,6 +71,8 @@ tExpression ATTRIBUTES
   return(aikoEnvironment);
 }
 
+/* ------------------------------------------------------------------------- */
+
 uint8_t ATTRIBUTES
 lisp_message_handler(
   uint8_t  *message,

@@ -28,7 +28,7 @@
 /* ------------------------------------------------------------------------- */
 
 static uint8_t timer_counter = 0;
-static uint8_t timer_maximum = 4;
+static uint8_t timer_maximum = 1;
 
 uint8_t ATTRIBUTES
 timer_handler(
@@ -49,9 +49,22 @@ tExpression ATTRIBUTES
   tExpression *environment) {
 
   timer_counter = 0;
-  timer_maximum = 4;            // TODO: Assign value using the first parameter
+  timer_maximum = 1;
 
-  aiko_time_t   period = { 1, 0 };  // 1 second
+  uint32_t microseconds = 1000000;  // default timer period: 1 second
+
+  if (expression != NULL) {
+    tExpression *parameter1 = expression->list.car;   // milliseconds
+    tExpression *parameter2 = expression->list.cdr;   // (timer_maximum)
+
+    microseconds = aikoToInteger(parameter1) * 1000;
+
+    if (parameter2 != NULL) {
+      timer_maximum = aikoToInteger(parameter2->list.car);
+    }
+  }
+
+  aiko_time_t   period = { 0, microseconds };
   aiko_timer_t *timer  = aiko_add_timer(& period, timer_handler);
 
   return(truth);

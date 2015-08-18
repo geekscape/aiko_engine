@@ -157,4 +157,7 @@ tExpression *aikoPrimitiveQuote(
 
 void         aikoReset(uint16_t expressionIndex);
 
+int32_t      aikoToInteger(tExpression *expression);
+
+
 /* ------------------------------------------------------------------------- */

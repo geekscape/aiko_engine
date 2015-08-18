@@ -177,7 +177,7 @@ tExpression ATTRIBUTES
   tExpression *labelName = aikoCreateAtom(
     (char *) expression->list.car->atom.name.ptr,  // TODO: Check argument type
     expression->list.car->atom.name.size
-   );
+  );
 
   aikoAppend(                             // TODO: Replace existing "labelName"
     environment,

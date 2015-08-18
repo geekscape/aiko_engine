@@ -11,6 +11,7 @@ OBJECTS += lisp/expression.o
 OBJECTS += lisp/interface.o
 OBJECTS += lisp/parser.o
 OBJECTS += lisp/primitives.o
+OBJECTS += lisp/utility.o
 OBJECTS += memory/list.o
 OBJECTS += memory/mmem.o 
 

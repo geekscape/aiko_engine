@@ -244,16 +244,11 @@ aikoEmit(
 //  printf("NULL");
   }
   else if (expression->type == ATOM) {
+    uint8_t name[AIKO_ATOM_SIZE_LIMIT + 1];
     uint8_t size = expression->atom.name.size;
-#ifdef __ets__
-    printf("%d:", size);
-    uint8_t index;
-    for (index = 0;  index < size;  index ++) {
-      printf("%c", ((char *) (expression->atom.name.ptr))[index]);
-    }
-#else
-    printf("%d:%.*s", size, size, (char *) expression->atom.name.ptr);
-#endif
+    memcpy(name, expression->atom.name.ptr, size);
+    name[size] = 0x00;
+    printf("%d:%s", size, name);
   }
   else if (expression->type == LAMBDA) {
     printf("LAMBDA ");
