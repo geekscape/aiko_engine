@@ -70,7 +70,7 @@ tExpression *primitiveDebug(
 
 /* ------------------------------------------------------------------------- */
 
-static FILE *initialize(
+FILE *initialize(
   int   argc,
   char *argv[]) {
 
@@ -82,8 +82,10 @@ static FILE *initialize(
   }
 
   aikoAppend(lisp_environment, aikoCreatePrimitive("debug", primitiveDebug));
-  aikoAppend(lisp_environment,
-    aikoCreatePrimitive("addTimer", primitiveAddTimer));
+
+  aikoAppend(
+    lisp_environment, aikoCreatePrimitive("addTimer", primitiveAddTimer)
+  );
 
 // TODO: Ultimately, shouldn't need to do this ...
   aikoExpressionBookmark = aikoExpressionCurrent;
