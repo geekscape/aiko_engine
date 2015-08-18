@@ -2,7 +2,7 @@ CFLAGS += -DMMEM_CONF_SIZE=512
 CFLAGS += -Iinclude
 CFLAGS += -Ilisp
 
-OBJECTS =  src/common/aiko_engine.o
+OBJECTS  = src/common/aiko_engine.o
 OBJECTS += src/unix/network.o
 OBJECTS += src/unix/serial.o
 OBJECTS += src/unix/timer.o
@@ -14,15 +14,17 @@ OBJECTS += lisp/primitives.o
 OBJECTS += memory/list.o
 OBJECTS += memory/mmem.o 
 
-AIKO_SERVER_OBJECT = examples/unix/aiko_server.o
-AIKO_TIMER_OBJECT = examples/unix/aiko_timer.o
+AIKO_SERVER_OBJECTS  = examples/unix/aiko_server.o
+AIKO_SERVER_OBJECTS += examples/common/aiko_server/lisp_extend.o
+
+AIKO_TIMER_OBJECTS   = examples/unix/aiko_timer.o
 
 all:	aiko_server aiko_timer
 
-aiko_server:	$(AIKO_SERVER_OBJECT) $(OBJECTS)
+aiko_server:	$(AIKO_SERVER_OBJECTS) $(OBJECTS)
 	gcc $^ -o $@
 
-aiko_timer:	$(AIKO_TIMER_OBJECT) $(OBJECTS)
+aiko_timer:	$(AIKO_TIMER_OBJECTS) $(OBJECTS)
 	gcc $^ -o $@
 
 $(OBJECTS):	\
@@ -32,12 +34,13 @@ $(OBJECTS):	\
 	include/aiko_serial.h        \
 	lisp/lisp.h                  \
 	memory/list.h                \
-	memory/mmem.h
+	memory/mmem.h                \
+	examples/common/aiko_server/lisp_extend.h
 
 clean:
 	-rm -f $(OBJECTS)
-	-rm -f $(AIKO_SERVER_OBJECT)
-	-rm -f $(AIKO_TIMER_OBJECT)
+	-rm -f $(AIKO_SERVER_OBJECTS)
+	-rm -f $(AIKO_TIMER_OBJECTS)
 
 clobber:	clean
 	-rm -f aiko_server aiko_timer

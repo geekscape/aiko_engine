@@ -8,14 +8,16 @@
  *
  * Description
  * ~~~~~~~~~~~
- * Main Aiko (Lisp) server: Unix implementation
+ * Aiko (Lisp) server: Unix implementation
  *
  * Usage
  * ~~~~~
  *   ./aiko_server [ source_file ]
  *
  *   nc -u localhost 4000
+ *   (5:debug)        // toggle lispDebug flag
  *   (3:car(1:a1:b))
+ *   (8:addTimer)
  *
  * To Do
  * ~~~~~
@@ -27,46 +29,9 @@
 #include "aiko_engine.h"
 #include "lisp.h"
 
+#include "../common/aiko_server/lisp_extend.h"
+
 #define AIKO_SERVER_PORT  4000
-
-/* ------------------------------------------------------------------------- */
-
-static uint8_t timer_counter = 0;
-static uint8_t timer_maximum = 4;
-
-uint8_t timer_handler(
-  void *timer_self) {
-
-  printf("timer_handler(): %d\n", timer_counter ++);
-
-  if (timer_counter == timer_maximum) {
-    aiko_delete_timer((aiko_timer_t *) timer_self);
-  }
-
-  return(AIKO_HANDLED);
-}
-
-tExpression *primitiveAddTimer(
-  tExpression *expression,
-  tExpression *environment) {
-
-  timer_counter = 0;
-  timer_maximum = 4;            // TODO: Assign value using the first parameter
-
-  aiko_time_t   period = { 1, 0 };  // 1 second
-  aiko_timer_t *timer  = aiko_add_timer(& period, timer_handler);
-
-  return(truth);
-}
-
-tExpression *primitiveDebug(
-  tExpression *expression,
-  tExpression *environment) {
-
-  lispDebug = ! lispDebug;
-
-  return(truth);
-}
 
 /* ------------------------------------------------------------------------- */
 
@@ -76,19 +41,12 @@ FILE *initialize(
 
   tExpression *lisp_environment = lisp_initialize(LISP_DEBUG);
 
+  lisp_extend(lisp_environment);
+
   if (aikoError) {
     printf("Initialization error: %d\n", aikoError);    // TODO: Better message
     exit(-1);
   }
-
-  aikoAppend(lisp_environment, aikoCreatePrimitive("debug", primitiveDebug));
-
-  aikoAppend(
-    lisp_environment, aikoCreatePrimitive("addTimer", primitiveAddTimer)
-  );
-
-// TODO: Ultimately, shouldn't need to do this ...
-  aikoExpressionBookmark = aikoExpressionCurrent;
 
   FILE *inputFile = stdin;
   if (argc > 1) inputFile = fopen(argv[1], "r");

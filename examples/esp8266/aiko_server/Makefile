@@ -36,11 +36,13 @@ MODULES		+= ../../../src/common
 MODULES		+= ../../../src/esp8266
 MODULES		+= ../../../lisp
 MODULES		+= ../../../memory
+MODULES		+= ../../common/aiko_server
 
 EXTRA_INCDIR    =  include
 EXTRA_INCDIR    += ../../../include
 EXTRA_INCDIR    += ../../../lisp
 EXTRA_INCDIR	+= ../../../memory
+EXTRA_INCDIR	+= ../../common/aiko_server
 
 # libraries used in this project, mainly provided by the SDK
 LIBS		= c gcc hal pp phy net80211 lwip wpa main

@@ -13,7 +13,7 @@
  * Usage (on remote machine)
  * ~~~~~
  *  nc -u ESP8266_IP_ADDRESS 4000
- *  (5:debug)
+ *  (5:debug)        // toggle lispDebug flag
  *  (3:cdr(1:a1:b))
  *  (8:addTimer)
  *
@@ -28,6 +28,8 @@
 
 #include "aiko_engine.h"
 #include "lisp.h"
+
+#include "lisp_extend.h"
 
 #define AIKO_SERVER_PORT  4000
 
@@ -58,62 +60,13 @@ system_ready(void) {
 
 /* ------------------------------------------------------------------------- */
 
-static uint8_t timer_counter = 0;
-static uint8_t timer_maximum = 4;
-
-uint8_t ICACHE_FLASH_ATTR
-timer_handler(
-  void *timer_self) {
-
-  printf("timer_handler(): %d\n", timer_counter ++);
-
-  if (timer_counter == timer_maximum) {
-    aiko_delete_timer((aiko_timer_t *) timer_self);
-  }
-
-  return(AIKO_HANDLED);
-}
-
-tExpression ICACHE_FLASH_ATTR
-*primitiveAddTimer(
-  tExpression *expression,
-  tExpression *environment) {
-
-  timer_counter = 0;
-  timer_maximum = 4;            // TODO: Assign value using the first parameter
-
-  aiko_time_t   period = { 1, 0 };  // 1 second
-  aiko_timer_t *timer  = aiko_add_timer(& period, timer_handler);
-
-  return(truth);
-}
-
-tExpression ICACHE_FLASH_ATTR
-*primitiveDebug(
-  tExpression *expression,
-  tExpression *environment) {
-
-  lispDebug = ! lispDebug;
-
-  return(truth);
-}
-
-/* ------------------------------------------------------------------------- */
-
 void ICACHE_FLASH_ATTR
 initialize(
   uint8_t debug_flag) {
 
   tExpression *lisp_environment = lisp_initialize(debug_flag);
 
-  aikoAppend(lisp_environment, aikoCreatePrimitive("debug", primitiveDebug));
-
-  aikoAppend(
-    lisp_environment, aikoCreatePrimitive("addTimer", primitiveAddTimer)
-  );
-
-// TODO: Ultimately, shouldn't need to do this ...
-  aikoExpressionBookmark = aikoExpressionCurrent;
+  lisp_extend(lisp_environment);
 }
 
 /* ------------------------------------------------------------------------- */
@@ -153,3 +106,5 @@ user_init(void) {
     lisp_message_handler
   );
 }
+
+/* ------------------------------------------------------------------------- */
