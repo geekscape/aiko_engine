@@ -15,11 +15,12 @@
 
 #include "aiko_compatibility.h"
 
-int udp_create_socket(uint8_t bind_flag, uint16_t port);
+int aiko_udp_create_socket(uint8_t bind_flag, uint16_t port);
 
-int udp_read(int fd, uint8_t *buffer, uint16_t size);
+int aiko_udp_read(int fd, uint8_t *buffer, uint16_t size);
 
-int udp_send_unicast(
+int aiko_udp_send_unicast(
   int fd, uint32_t address_ipv4, uint16_t port, uint8_t *buffer, uint16_t size);
 
-void udp_send_broadcast(int fd, uint16_t port, uint8_t *buffer, uint16_t size);
+void aiko_udp_send_broadcast(
+  int fd, uint16_t port, uint8_t *buffer, uint16_t size);

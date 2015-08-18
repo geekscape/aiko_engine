@@ -89,7 +89,7 @@ aiko_source_t ATTRIBUTES
 
   aiko_source_t *aiko_source = NULL;
 
-  int fd = udp_create_socket(1, port);
+  int fd = aiko_udp_create_socket(1, port);
   if (fd >= 0) aiko_source = aiko_create_source(type, fd);
 
   return(aiko_source);
@@ -155,7 +155,7 @@ aiko_loop(
               break;
 
             case AIKO_SOURCE_SOCKET_UDP4:
-              length = udp_read(fd, buffer, sizeof(buffer));
+              length = aiko_udp_read(fd, buffer, sizeof(buffer));
               break;
 
             default:
