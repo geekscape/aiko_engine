@@ -15,4 +15,4 @@
 
 #include "lisp.h"
 
-void *lisp_extend(tExpression *lisp_environment);
+void lisp_extend(tExpression *lisp_environment);

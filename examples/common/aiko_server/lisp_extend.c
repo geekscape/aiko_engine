@@ -70,7 +70,7 @@ tExpression ATTRIBUTES
 /* ------------------------------------------------------------------------- */
 
 void ATTRIBUTES
-*lisp_extend(
+lisp_extend(
   tExpression *lisp_environment) {
 
   aikoAppend(
