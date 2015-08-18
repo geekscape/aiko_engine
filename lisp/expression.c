@@ -14,12 +14,12 @@
 #include "aiko_compatibility.h"
 #include "lisp.h"
 
+uint8_t aikoError = AIKO_ERROR_NONE;
+
+uint16_t aikoExpressionCurrent  = 0;
+uint16_t aikoExpressionBookmark = 0;
+
 tExpression aikoExpressions[AIKO_EXPRESSION_LIMIT];
-
-int aikoError = AIKO_ERROR_NONE;
-
-int aikoExpressionCurrent  = 0;
-int aikoExpressionBookmark = 0;
 
 tExpression *nil;
 tExpression *parenthesisOpen;
@@ -29,8 +29,8 @@ tExpression *truth;
 /* ------------------------------------------------------------------------- */
 tExpression ATTRIBUTES
 *aikoAllocateExpression(
-  tType type,
-  int   extra) {
+  tType   type,
+  uint8_t extra) {
 
   tExpression *expression = NULL;
 
@@ -48,8 +48,8 @@ tExpression ATTRIBUTES
 
 tExpression ATTRIBUTES
 *aikoCreateAtom(
-  char *name,
-  int   size) {
+  char    *name,
+  uint8_t  size) {
 
   tExpression *expression = aikoAllocateExpression(ATOM, 0);
 
@@ -133,18 +133,18 @@ aikoAppend(
   expression->list.cdr = aikoCreateList(appendee, NULL);
 }
 
-int ATTRIBUTES
+uint8_t ATTRIBUTES
 aikoIsAtom(
   tExpression *expression,
   char        *name,
-  int          size) {
+  uint8_t      size) {
 
   if (expression == NULL  ||  expression->type != ATOM) return(0);
   if (expression->atom.name.size != size) return(0);
   return(memcmp(expression->atom.name.ptr, name, size) == 0);
 }
 
-int ATTRIBUTES
+uint8_t ATTRIBUTES
 aikoIsList(
   tExpression *expression) {
 
@@ -157,8 +157,8 @@ tExpression ATTRIBUTES
   tExpression *expression,
   tExpression *environment) {
 
-  char *name = (char *) expression->atom.name.ptr;
-  int   size = expression->atom.name.size;
+  char    *name = (char *) expression->atom.name.ptr;
+  uint8_t  size = expression->atom.name.size;
 
   tExpression *result = NULL;
 
@@ -244,10 +244,10 @@ aikoEmit(
 //  printf("NULL");
   }
   else if (expression->type == ATOM) {
-    int   size = expression->atom.name.size;
+    uint8_t size = expression->atom.name.size;
 #ifdef __ets__
     printf("%d:", size);
-    int index;
+    uint8_t index;
     for (index = 0;  index < size;  index ++) {
       printf("%c", ((char *) (expression->atom.name.ptr))[index]);
     }
@@ -308,7 +308,7 @@ tExpression ATTRIBUTES
 
 void ATTRIBUTES
 aikoReset(
-  int expressionIndex) {
+  uint16_t expressionIndex) {
 
   while (aikoExpressionCurrent > aikoExpressionBookmark) {
     tExpression *expression = & aikoExpressions[-- aikoExpressionCurrent];

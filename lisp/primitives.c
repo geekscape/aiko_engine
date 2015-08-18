@@ -87,8 +87,8 @@ tExpression ATTRIBUTES
   tExpression *expression,
   tExpression *environment) {
 
-  char *name = (char *) expression->list.car->atom.name.ptr;
-  int   size = expression->list.car->atom.name.size;
+  char    *name = (char *) expression->list.car->atom.name.ptr;
+  uint8_t  size = expression->list.car->atom.name.size;
 
   return(aikoIsAtom(expression->list.cdr->list.car, name, size) ? truth : nil);
 }
@@ -143,8 +143,8 @@ tExpression ATTRIBUTES
       tExpression *item = replacement->list.car;
       tExpression *atom = item->list.car;
 
-      char *name = (char *) expression->atom.name.ptr;
-      int   size = expression->atom.name.size;
+      char    *name = (char *) expression->atom.name.ptr;
+      uint8_t  size = expression->atom.name.size;
 
       if (aikoIsAtom(atom, name, size)) return(item->list.cdr->list.car);
 

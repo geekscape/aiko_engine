@@ -63,7 +63,7 @@ void ICACHE_FLASH_ATTR
 user_init(void) {
   ets_wdt_disable();
 
-  lisp_initialize();
+  lisp_initialize(LISP_DEBUG);
 
   aiko_add_handler(
     aiko_create_serial_source(NULL, 38400, '\r'), lisp_message_handler

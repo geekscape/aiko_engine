@@ -14,17 +14,19 @@
 #include "aiko_engine.h"
 #include "lisp.h"
 
-uint8_t  *aikoReaderBuffer;
-uint16_t  aikoReaderBufferLength;
-uint16_t  aikoReaderBufferIndex;
+uint8_t lispDebug = 0;
 
-tExpression *aikoEnvironment = NULL;
+static uint8_t     *aikoReaderBuffer;
+static uint16_t     aikoReaderBufferLength;
+static uint16_t     aikoReaderBufferIndex;
+
+static tExpression *aikoEnvironment = NULL;
 
 /* ------------------------------------------------------------------------- */
 
-int ATTRIBUTES
+uint8_t ATTRIBUTES
 fileGetC() {
-  int ch = EOF;
+  uint8_t ch = EOF;
 
   if (aikoReaderBufferIndex < aikoReaderBufferLength) {
     ch = aikoReaderBuffer[aikoReaderBufferIndex ++];
@@ -35,12 +37,12 @@ fileGetC() {
 
 void ATTRIBUTES
 fileUngetC(
-  int ch) {
+  uint8_t ch) {
 
   if (aikoReaderBufferIndex > 0) aikoReaderBufferIndex --;
 }
 
-int ATTRIBUTES
+uint8_t ATTRIBUTES
 fileIsEmpty() {
   return(aikoReaderBufferIndex == aikoReaderBufferLength);
 }
@@ -50,15 +52,19 @@ tReader aikoBufferReader = { fileGetC, fileIsEmpty, fileUngetC };
 /* ------------------------------------------------------------------------- */
 
 tExpression ATTRIBUTES
-*lisp_initialize(void) {
+*lisp_initialize(
+  uint8_t debug_flag) {
+
+  lispDebug = debug_flag;
+
   mmem_init();  // Lisp engine memory management
 
-#ifdef AIKO_DEBUG
-  printf(
-    "Heap memory: %d, Expression memory: %lu, sizeof: %lu, available: %d\n",
-    avail_memory, sizeof(aikoExpressions), sizeof(tExpression), AIKO_EXPRESSION_LIMIT
-  );
-#endif
+  if (lispDebug) {
+    printf(
+      "Heap memory: %d, Expression memory: %lu, sizeof: %lu, available: %d\n",
+      avail_memory, sizeof(aikoExpressions), sizeof(tExpression), AIKO_EXPRESSION_LIMIT
+    );
+  }
 
   aikoError       = AIKO_ERROR_NONE;
   aikoEnvironment = aikoExpressionInitialize();
@@ -98,12 +104,12 @@ lisp_message_handler(
 
   aikoReset(aikoExpressionBookmark);         // TODO: Breaks "primitiveLabel()"
 
-#ifdef AIKO_DEBUG
-  printf(
-    "Heap used: %d, Expressions used: %d\n",
-    MMEM_CONF_SIZE - avail_memory, aikoExpressionCurrent
-  );
-#endif
+  if (lispDebug) {
+    printf(
+      "Heap used: %d, Expressions used: %d\n",
+      MMEM_CONF_SIZE - avail_memory, aikoExpressionCurrent
+    );
+  }
 
 //return(aikoError);
   return(handled);

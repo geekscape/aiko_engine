@@ -21,9 +21,9 @@ tExpression ATTRIBUTES
   tReader *reader) {
 
   char token[AIKO_ATOM_SIZE_LIMIT];  // TODO: Use mmem memory directly, no copy
-  int size = 0;
+  uint8_t size = 0;
 
-  int ch = reader->getCh();
+  uint8_t ch = reader->getCh();
 
   if (ch == '\n') ch = reader->getCh();
 
@@ -61,7 +61,7 @@ tExpression ATTRIBUTES
     aikoError = AIKO_ERROR_LIMIT_TOKEN;
   }
 
-  int count;
+  uint8_t count;
   for (count = 0;  count < size;  count ++) {
     if (reader->isFileEOF()) {
       printf("aikoParseToken(): Error: Truncated token\n");

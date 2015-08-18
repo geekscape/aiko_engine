@@ -59,21 +59,34 @@ tExpression *primitiveAddTimer(
   return(truth);
 }
 
+tExpression *primitiveDebug(
+  tExpression *expression,
+  tExpression *environment) {
+
+  lispDebug = ! lispDebug;
+
+  return(truth);
+}
+
 /* ------------------------------------------------------------------------- */
 
 static FILE *initialize(
   int   argc,
   char *argv[]) {
 
-  tExpression *lisp_environment = lisp_initialize();
+  tExpression *lisp_environment = lisp_initialize(LISP_DEBUG);
 
   if (aikoError) {
     printf("Initialization error: %d\n", aikoError);    // TODO: Better message
     exit(-1);
   }
 
-//aikoAppend(lisp_environment,
-//  aikoCreatePrimitive("addTimer", primitiveAddTimer));
+  aikoAppend(lisp_environment, aikoCreatePrimitive("debug", primitiveDebug));
+  aikoAppend(lisp_environment,
+    aikoCreatePrimitive("addTimer", primitiveAddTimer));
+
+// TODO: Ultimately, shouldn't need to do this ...
+  aikoExpressionBookmark = aikoExpressionCurrent;
 
   FILE *inputFile = stdin;
   if (argc > 1) inputFile = fopen(argv[1], "r");

@@ -40,7 +40,7 @@ aikoInitialize(
   char *argv[]) {
 
   mmem_init();
-#ifdef AIKO_DEBUG
+#ifdef LISP_DEBUG
   aikoUsage1();
 #endif
 
@@ -119,7 +119,7 @@ int main(
   }
 
   while (aikoError == 0) {
-#ifdef AIKO_DEBUG
+#ifdef LISP_DEBUG
     aikoUsage2();
 #endif
     fdLargest = 0;
