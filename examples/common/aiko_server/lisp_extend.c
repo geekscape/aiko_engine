@@ -12,8 +12,10 @@
  *
  * Usage
  * ~~~~~
- *   (5:debug)     // toggle lispDebug flag
- *   (8:addTimer)
+ * (5:debug)               // toggle lispDebug flag
+ * (8:addTimer)            // add timer every 1 second  for a single count
+ * (8:addTimer4:2000)      // add timer every 2 seconds for a single count
+ * (8:addtimer4:2000:1:4)  // add timer every 2 seconds for 4 counts
  *
  * To Do
  * ~~~~~

@@ -10,16 +10,18 @@
  * ~~~~~~~~~~~
  * Aiko engine: ESP8266 implementation
  *
- * Usage (on remote machine)
+ * Usage
  * ~~~~~
- *  nc -u ESP8266_IP_ADDRESS 4000
- *  (5:debug)        // toggle lispDebug flag
- *  (3:cdr(1:a1:b))
- *  (8:addTimer)
+ * nc -u ESP8266_IP_ADDRESS 4000
+ * (3:cdr(1:a1:b))
+ * (5:debug)               // toggle lispDebug flag
+ * (8:addTimer)            // add timer every 1 second  for a single count
+ * (8:addTimer4:2000)      // add timer every 2 seconds for a single count
+ * (8:addtimer4:2000:1:4)  // add timer every 2 seconds for 4 counts
  *
  * To Do
  * ~~~~~
- * - Refactor .../examples/unix/aiko_server.c common code into examples/
+ * - None, yet.
  */
 
 #include "user_interface.h"
