@@ -72,7 +72,7 @@ aiko_source_t ATTRIBUTES
 
   aiko_source_t *aiko_source = NULL;
 
-  int fd = serial_port_open(serial_port_name, baud_rate, record_delimiter);
+  int fd = aiko_serial_port_open(serial_port_name, baud_rate, record_delimiter);
   if (fd >= 0) aiko_source = aiko_create_source(AIKO_SOURCE_SERIAL, fd);
 
   return(aiko_source);

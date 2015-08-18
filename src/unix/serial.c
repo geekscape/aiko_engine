@@ -25,10 +25,10 @@
 #define FALSE  0
 #define TRUE   1
 
-static uint8_t        termios_saved = FALSE;
-static struct termios termios_backup;
+static uint8_t        aiko_termios_saved = FALSE;
+static struct termios aiko_termios_backup;
 
-int serial_port_open(
+int aiko_serial_port_open(
   const char *serial_port_name,
   speed_t     baud_rate,
   uint8_t     record_delimiter) {
@@ -43,8 +43,8 @@ int serial_port_open(
     struct termios options;
     tcgetattr(fd, & options);
 
-    memcpy(& termios_backup, & options, sizeof(options));
-    termios_saved  = TRUE;
+    memcpy(& aiko_termios_backup, & options, sizeof(options));
+    aiko_termios_saved  = TRUE;
 
     cfsetispeed(& options, baud_rate);
     cfsetospeed(& options, baud_rate);
