@@ -29,8 +29,8 @@
 
 /* ------------------------------------------------------------------------- */
 
-static uint8_t timer_counter = 0;
-static uint8_t timer_maximum = 1;
+static uint32_t timer_counter = 0;
+static uint32_t timer_maximum = 1;
 
 uint8_t ATTRIBUTES
 timer_handler(
