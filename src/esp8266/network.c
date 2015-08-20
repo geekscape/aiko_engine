@@ -21,12 +21,15 @@
 #include "ip_addr.h"
 #include "espconn.h"
 #include "ets_sys.h"
+#include "user_interface.h"
 
 #include "aiko_engine.h"  // define aiko_source_t
 #include "aiko_compatibility.h"
 
 extern aiko_source_t *aiko_sources[];
 extern uint8_t        aiko_source_count;
+
+static uint32_t aiko_broadcast_ipv4 = 0;
 
 static struct espconn *aiko_udp_conn;
 
@@ -60,14 +63,10 @@ aiko_udp_create_socket(
   if (bind_flag) {
     aiko_udp_conn->proto.udp->local_port  = port;  // espconn_port();
     aiko_udp_conn->proto.udp->remote_port = port;
-    uint32_t server_ip = 0xffffff00;  // 0xffffffff;
-    os_memcpy(
-      aiko_udp_conn->proto.udp->remote_ip, & server_ip, sizeof(server_ip)
-    );
     espconn_regist_recvcb(aiko_udp_conn, aiko_udp_handler);
   }
 
-  sint8 result = espconn_create(aiko_udp_conn);
+  int8_t result = espconn_create(aiko_udp_conn);
 
   return(0);
 }
@@ -89,7 +88,12 @@ aiko_udp_send_unicast(
   uint8_t  *buffer,
   uint16_t  size) {
 
+  os_memcpy(
+    aiko_udp_conn->proto.udp->remote_ip, & address_ipv4, sizeof(address_ipv4)
+  );
+
   espconn_sent(aiko_udp_conn, buffer, size);
+
   return(0);
 }
 
@@ -100,5 +104,11 @@ aiko_udp_send_broadcast(
   uint8_t  *buffer,
   uint16_t  size) {
 
-  aiko_udp_send_unicast(fd, 0xffffff00, port, buffer, size);
+  if (aiko_broadcast_ipv4 == 0) {
+    struct ip_info wifi_ip_info;
+    wifi_get_ip_info(STATION_IF, & wifi_ip_info);
+    aiko_broadcast_ipv4 = wifi_ip_info.ip.addr | (~ wifi_ip_info.netmask.addr);
+  }
+
+  aiko_udp_send_unicast(fd, aiko_broadcast_ipv4, port, buffer, size);
 }
