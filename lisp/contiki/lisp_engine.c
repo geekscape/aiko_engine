@@ -33,7 +33,7 @@
 tExpression *environment;
 tReader     *ioInitialize(char *buffer, int size);
 
-#define LOCAL_PORT 4000
+#define LOCAL_PORT 4149
 
 static struct uip_udp_conn *socket;
 

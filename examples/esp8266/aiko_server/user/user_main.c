@@ -12,7 +12,7 @@
  *
  * Usage
  * ~~~~~
- * nc -u ESP8266_IP_ADDRESS 4000
+ * nc -u ESP8266_IP_ADDRESS 4149
  * (3:cdr(1:a1:b))
  * (5:debug)               // toggle lispDebug flag
  * (8:addTimer)            // add timer every 1 second  for a single count
@@ -32,8 +32,6 @@
 #include "lisp.h"
 
 #include "lisp_extend.h"
-
-#define AIKO_SERVER_PORT  4000
 
 /* ------------------------------------------------------------------------- */
 
@@ -104,7 +102,7 @@ user_init(void) {
   wifi_station_set_config(& station_configuration);
 
   aiko_add_handler(
-    aiko_create_socket_source(AIKO_SOURCE_SOCKET_UDP4, AIKO_SERVER_PORT),
+    aiko_create_socket_source(AIKO_SOURCE_SOCKET_UDP4, AIKO_PORT),
     lisp_message_handler
   );
 }

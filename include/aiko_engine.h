@@ -15,9 +15,10 @@
 
 #include "aiko_compatibility.h"
 
-#define AIKO_SOURCE_MAXIMUM    2
-#define AIKO_TIMER_MAXIMUM     2
-#define MESSAGE_BUFFER_SIZE  256
+#define AIKO_PORT            4149
+#define AIKO_SOURCE_MAXIMUM     2
+#define AIKO_TIMER_MAXIMUM      2
+#define MESSAGE_BUFFER_SIZE   256
 
 #define AIKO_LOOP_FOREVER      0
 #define AIKO_HANDLED           1

@@ -14,7 +14,7 @@
  * ~~~~~
  * ./aiko_server [ source_file ]
  *
- * nc -u localhost 4000
+ * nc -u localhost 4149
  * (3:car(1:a1:b))
  * (5:debug)               // toggle lispDebug flag
  * (8:addTimer)            // add timer every 1 second  for a single count
@@ -32,8 +32,6 @@
 #include "lisp.h"
 
 #include "../common/aiko_server/lisp_extend.h"
-
-#define AIKO_SERVER_PORT  4000
 
 /* ------------------------------------------------------------------------- */
 
@@ -67,7 +65,7 @@ int main(
   aiko_add_handler(aiko_create_file_source(input_file), lisp_message_handler);
 
   aiko_add_handler(
-    aiko_create_socket_source(AIKO_SOURCE_SOCKET_UDP4, AIKO_SERVER_PORT),
+    aiko_create_socket_source(AIKO_SOURCE_SOCKET_UDP4, AIKO_PORT),
     lisp_message_handler
   );
 

@@ -23,9 +23,9 @@
 
 #include "lisp.h"
 
-#define MAXIMUM_FILE_COUNT    2
-#define INPUT_BUFFER_SIZE   128
-#define AIKO_SERVER_PORT   4000
+#define AIKO_PORT           4149
+#define MAXIMUM_FILE_COUNT     2
+#define INPUT_BUFFER_SIZE    128
 
 tExpression *aikoEnvironment;
 tReader     *aikoIoInitialize(char *buffer, int size);
@@ -114,7 +114,7 @@ int main(
   serverAddr.sin6_addr   = in6addr_any;
 
   if (bind(fd[1], (struct sockaddr *) & serverAddr, sizeof(serverAddr)) < 0) {
-    printf("Cannot bind port number %d\n", AIKO_SERVER_PORT);
+    printf("Cannot bind port number %d\n", AIKO_PORT);
     exit(1);
   }
 
