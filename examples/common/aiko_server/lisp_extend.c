@@ -12,14 +12,20 @@
  *
  * Usage
  * ~~~~~
- * (5:debug)               // toggle lispDebug flag
  * (8:addTimer)            // add timer every 1 second  for a single count
  * (8:addTimer4:2000)      // add timer every 2 seconds for a single count
  * (8:addtimer4:2000:1:4)  // add timer every 2 seconds for 4 counts
+ * (5:debug)               // toggle lispDebug flag
  *
  * To Do
  * ~~~~~
- * - None, yet.
+ * - Reserve prefix "core*()" for later use, e.g core language features.
+ * - Reserve prefix "esp*()"  for later use, e.g ESP8266 SDK wrapper.
+ * - Rename all "primitive*()" to "extend*()".
+ * - (8:addTimer) first parameter should be the Lisp expression to invoke.
+ *   - Default: (8:addTimer(12:timerHandler)4:10001:1)
+ *   - Rename timer_handler() to extensionTimerHandler(), add to environment.
+ *   - Change parameters to extensionTimerHandler(expression, environment).
  */
 
 #include "aiko_engine.h"
