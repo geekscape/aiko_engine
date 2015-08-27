@@ -22,10 +22,10 @@
 /* ------------------------------------------------------------------------- */
 
 int32_t ATTRIBUTES
-aikoToInteger(
+lispToInteger(
   tExpression *expression) {
 
-  uint8_t name[AIKO_ATOM_SIZE_LIMIT + 1];
+  uint8_t name[LISP_ATOM_SIZE_LIMIT + 1];
   int32_t result = 0;
 
   if (expression != NULL  &&  expression->type == ATOM) {

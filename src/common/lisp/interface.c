@@ -21,11 +21,11 @@
 
 uint8_t lispDebug = 0;
 
-static uint8_t     *aikoReaderBuffer;
-static uint16_t     aikoReaderBufferLength;
-static uint16_t     aikoReaderBufferIndex;
+static uint8_t     *lispReaderBuffer;
+static uint16_t     lispReaderBufferLength;
+static uint16_t     lispReaderBufferIndex;
 
-static tExpression *aikoEnvironment = NULL;
+static tExpression *lispEnvironment = NULL;
 
 /* ------------------------------------------------------------------------- */
 
@@ -33,8 +33,8 @@ uint8_t ATTRIBUTES
 fileGetC() {
   uint8_t ch = EOF;
 
-  if (aikoReaderBufferIndex < aikoReaderBufferLength) {
-    ch = aikoReaderBuffer[aikoReaderBufferIndex ++];
+  if (lispReaderBufferIndex < lispReaderBufferLength) {
+    ch = lispReaderBuffer[lispReaderBufferIndex ++];
   }
 
   return(ch);
@@ -44,15 +44,15 @@ void ATTRIBUTES
 fileUngetC(
   uint8_t ch) {
 
-  if (aikoReaderBufferIndex > 0) aikoReaderBufferIndex --;
+  if (lispReaderBufferIndex > 0) lispReaderBufferIndex --;
 }
 
 uint8_t ATTRIBUTES
 fileIsEmpty() {
-  return(aikoReaderBufferIndex == aikoReaderBufferLength);
+  return(lispReaderBufferIndex == lispReaderBufferLength);
 }
 
-tReader aikoBufferReader = { fileGetC, fileIsEmpty, fileUngetC };
+tReader lispBufferReader = { fileGetC, fileIsEmpty, fileUngetC };
 
 /* ------------------------------------------------------------------------- */
 
@@ -65,26 +65,26 @@ tExpression ATTRIBUTES
   mmem_init();  // Lisp engine memory management
 
   if (lispDebug) {
-#if ARDUINO
+#ifdef ARDUINO
     Serial.print("Heap memory: ");
     Serial.println(avail_memory);
     Serial.print("Expression memory: ");
-    Serial.println(sizeof(aikoExpressions));
+    Serial.println(sizeof(lispExpressions));
     Serial.print("Expression sizeof: ");
     Serial.println(sizeof(tExpression));
     Serial.print("Expressions available: ");
-    Serial.println(AIKO_EXPRESSION_LIMIT);
+    Serial.println(LISP_EXPRESSION_LIMIT);
 #else
     printf(
       "Heap memory: %d, Expression memory: %lu, sizeof: %lu, available: %d\n",
-      avail_memory, sizeof(aikoExpressions), sizeof(tExpression), AIKO_EXPRESSION_LIMIT
+      avail_memory, sizeof(lispExpressions), sizeof(tExpression), LISP_EXPRESSION_LIMIT
     );
 #endif
   }
 
-  aikoError       = AIKO_ERROR_NONE;
-  aikoEnvironment = aikoExpressionInitialize();
-  return(aikoEnvironment);
+  lispError       = LISP_ERROR_NONE;
+  lispEnvironment = lispExpressionInitialize();
+  return(lispEnvironment);
 }
 
 /* ------------------------------------------------------------------------- */
@@ -96,55 +96,55 @@ lisp_message_handler(
 
   uint8_t handled = AIKO_NOT_HANDLED;
 
-  aikoError = AIKO_ERROR_NONE;
+  lispError = LISP_ERROR_NONE;
 
-  aikoReaderBuffer        = message;
-  aikoReaderBufferLength  = length;
-  aikoReaderBufferIndex   = 0;
+  lispReaderBuffer        = message;
+  lispReaderBufferLength  = length;
+  lispReaderBufferIndex   = 0;
 
-  tExpression *expression = aikoParse(& aikoBufferReader);
+  tExpression *expression = lispParse(& lispBufferReader);
 
-  if (aikoError != AIKO_ERROR_NONE) {
+  if (lispError != LISP_ERROR_NONE) {
 #ifdef ARDUINO
-//  Serial.print("Parse error: ");  Serial.println(aikoError);
+//  Serial.print("Parse error: ");  Serial.println(lispError);
 #else
-//  printf("Parse error: %d\n", aikoError);
+//  printf("Parse error: %d\n", lispError);
 #endif
   }
   else {
-    expression = aikoEvaluate(expression, aikoEnvironment);
+    expression = lispEvaluate(expression, lispEnvironment);
 
     if (expression == NULL) {
-#if ARDUINO
-//    Serial.print("Evaluate error: ");  Serial.println(aikoError);
+#ifdef ARDUINO
+//    Serial.print("Evaluate error: ");  Serial.println(lispError);
 #else
-//    printf("Evaluate error: %d\n", aikoError);
+//    printf("Evaluate error: %d\n", lispError);
 #endif
     }
     else {
       handled = AIKO_HANDLED;
-      aikoEmit(expression);
+      lispEmit(expression);
       PRINT("\n");
     }
   }
 
-  aikoReset(aikoExpressionBookmark);         // TODO: Breaks "primitiveLabel()"
+  lispReset(lispExpressionBookmark);         // TODO: Breaks "primitiveLabel()"
 
   if (lispDebug) {
-#if ARDUINO
+#ifdef ARDUINO
     Serial.print("Heap used: ");
     Serial.println(MMEM_CONF_SIZE - avail_memory);
     Serial.print("Expressions used: ");
-    Serial.println(aikoExpressionCurrent);
+    Serial.println(lispExpressionCurrent);
 #else
     printf(
       "Heap used: %d, Expressions used: %d\n",
-      MMEM_CONF_SIZE - avail_memory, aikoExpressionCurrent
+      MMEM_CONF_SIZE - avail_memory, lispExpressionCurrent
     );
 #endif
   }
 
-//return(aikoError);
+//return(lispError);
   return(handled);
 }
 

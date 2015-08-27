@@ -22,7 +22,7 @@
 /* ------------------------------------------------------------------------- */
 
 tExpression ATTRIBUTES
-*aikoPrimitiveAtom(
+*lispPrimitiveAtom(
   tExpression *expression,
   tExpression *environment) {
 
@@ -30,7 +30,7 @@ tExpression ATTRIBUTES
 }
 
 tExpression ATTRIBUTES
-*aikoPrimitiveCar(
+*lispPrimitiveCar(
   tExpression *expression,
   tExpression *environment) {
 
@@ -38,7 +38,7 @@ tExpression ATTRIBUTES
 }
 
 tExpression ATTRIBUTES
-*aikoPrimitiveCdr(
+*lispPrimitiveCdr(
   tExpression *expression,
   tExpression *environment) {
 
@@ -46,21 +46,21 @@ tExpression ATTRIBUTES
 }
 
 tExpression ATTRIBUTES
-*aikoPrimitiveCond(
+*lispPrimitiveCond(
   tExpression *expression,
   tExpression *environment) {
 
-  while (aikoIsList(expression)) {
+  while (lispIsList(expression)) {
     tExpression *list = expression->list.car;
     tExpression *predicate = nil;
 
     if (list->list.car != nil) {
-      predicate = aikoEvaluate(list->list.car, environment);
+      predicate = lispEvaluate(list->list.car, environment);
     }
 
     tExpression *result = list->list.cdr->list.car;
 
-    if (predicate != nil) return(aikoEvaluate(result, environment));
+    if (predicate != nil) return(lispEvaluate(result, environment));
 
     expression = expression->list.cdr;
   }
@@ -69,17 +69,17 @@ tExpression ATTRIBUTES
 }
 
 tExpression ATTRIBUTES
-*aikoPrimitiveCons(
+*lispPrimitiveCons(
   tExpression *expression,
   tExpression *environment) {
 
-  tExpression *list = aikoCreateList(expression->list.car, NULL);
+  tExpression *list = lispCreateList(expression->list.car, NULL);
 
   if (list != NULL) {
     expression = expression->list.cdr->list.car;
 
-    while (aikoIsList(expression)) {
-      aikoAppend(list, expression->list.car);
+    while (lispIsList(expression)) {
+      lispAppend(list, expression->list.car);
       expression = expression->list.cdr;
     }
   }
@@ -88,33 +88,33 @@ tExpression ATTRIBUTES
 }
 
 tExpression ATTRIBUTES
-*aikoPrimitiveEqual(
+*lispPrimitiveEqual(
   tExpression *expression,
   tExpression *environment) {
 
   char    *name = (char *) expression->list.car->atom.name.ptr;
   uint8_t  size = expression->list.car->atom.name.size;
 
-  return(aikoIsAtom(expression->list.cdr->list.car, name, size) ? truth : nil);
+  return(lispIsAtom(expression->list.cdr->list.car, name, size) ? truth : nil);
 }
 
 tExpression ATTRIBUTES
-*aikoInterleave(                   // TODO: Refactor duplicate code
+*lispInterleave(                   // TODO: Refactor duplicate code
   tExpression *list1,
   tExpression *list2) {
 
-  tExpression *result = aikoCreateList(
-    aikoCreateList(list1->list.car, aikoCreateList(list2->list.car, NULL)),
+  tExpression *result = lispCreateList(
+    lispCreateList(list1->list.car, lispCreateList(list2->list.car, NULL)),
     NULL
   );
 
   list1 = list1->list.cdr;
   list2 = list2->list.cdr;
 
-  while (aikoIsList(list1)) {
-    aikoAppend(
+  while (lispIsList(list1)) {
+    lispAppend(
       result,
-      aikoCreateList(list1->list.car, aikoCreateList(list2->list.car, NULL))
+      lispCreateList(list1->list.car, lispCreateList(list2->list.car, NULL))
     );
 
     list1 = list1->list.cdr;
@@ -125,33 +125,33 @@ tExpression ATTRIBUTES
 }
 
 tExpression ATTRIBUTES
-*aikoReplace(                                  // TODO: Refactor duplicate code
+*lispReplace(                                  // TODO: Refactor duplicate code
   tExpression *expression,
   tExpression *replacement) {
 
-  if (aikoIsList(expression)) {
-    tExpression *result = aikoCreateList(
-      aikoReplace(expression->list.car, replacement), NULL
+  if (lispIsList(expression)) {
+    tExpression *result = lispCreateList(
+      lispReplace(expression->list.car, replacement), NULL
     );
 
     expression = expression->list.cdr;
 
-    while (aikoIsList(expression)) {
-      aikoAppend(result, aikoReplace(expression->list.car, replacement));
+    while (lispIsList(expression)) {
+      lispAppend(result, lispReplace(expression->list.car, replacement));
       expression = expression->list.cdr;
     }
 
     return(result);
   }
   else {
-    while (aikoIsList(replacement)) {
+    while (lispIsList(replacement)) {
       tExpression *item = replacement->list.car;
       tExpression *atom = item->list.car;
 
       char    *name = (char *) expression->atom.name.ptr;
       uint8_t  size = expression->atom.name.size;
 
-      if (aikoIsAtom(atom, name, size)) return(item->list.cdr->list.car);
+      if (lispIsAtom(atom, name, size)) return(item->list.cdr->list.car);
 
       replacement = replacement->list.cdr;
     }
@@ -161,42 +161,42 @@ tExpression ATTRIBUTES
 }
 
 tExpression ATTRIBUTES
-*aikoPrimitiveLambda(
+*lispPrimitiveLambda(
   tExpression *expression,
   tExpression *environment) {
 
   tExpression *lambda = expression->list.car;
   tExpression *values = expression->list.cdr;
 
-  tExpression *arguments = aikoInterleave(lambda->lambda.arguments, values);
-  tExpression *result    = aikoReplace(lambda->lambda.expression, arguments);
+  tExpression *arguments = lispInterleave(lambda->lambda.arguments, values);
+  tExpression *result    = lispReplace(lambda->lambda.expression, arguments);
 
-  return(aikoEvaluate(result, environment));
+  return(lispEvaluate(result, environment));
 }
 
 tExpression ATTRIBUTES
-*aikoPrimitiveLabel(
+*lispPrimitiveLabel(
   tExpression *expression,
   tExpression *environment) {
 
-  tExpression *labelName = aikoCreateAtom(
+  tExpression *labelName = lispCreateAtom(
     (char *) expression->list.car->atom.name.ptr,  // TODO: Check argument type
     expression->list.car->atom.name.size
   );
 
-  aikoAppend(                             // TODO: Replace existing "labelName"
+  lispAppend(                             // TODO: Replace existing "labelName"
     environment,
-    aikoCreateList(
-      labelName, aikoCreateList(expression->list.cdr->list.car, NULL)
+    lispCreateList(
+      labelName, lispCreateList(expression->list.cdr->list.car, NULL)
     )
   );
 
-  aikoExpressionBookmark = aikoExpressionCurrent;  // TODO: Memory management ?
+  lispExpressionBookmark = lispExpressionCurrent;  // TODO: Memory management ?
   return(truth);
 }
 
 tExpression ATTRIBUTES
-*aikoPrimitiveQuote(
+*lispPrimitiveQuote(
   tExpression *expression,
   tExpression *environment) {
 

@@ -44,14 +44,14 @@ extern unsigned int avail_memory;
 
 /* ------------------------------------------------------------------------- */
 
-#define AIKO_ERROR_NONE               0
-#define AIKO_ERROR_END_OF_FILE        1
-#define AIKO_ERROR_LIMIT_EXPRESSIONS  2
-#define AIKO_ERROR_LIMIT_MEMORY       3
-#define AIKO_ERROR_LIMIT_TOKEN        4
-#define AIKO_ERROR_PARSE_TOKEN        5
+#define LISP_ERROR_NONE               0
+#define LISP_ERROR_END_OF_FILE        1
+#define LISP_ERROR_LIMIT_EXPRESSIONS  2
+#define LISP_ERROR_LIMIT_MEMORY       3
+#define LISP_ERROR_LIMIT_TOKEN        4
+#define LISP_ERROR_PARSE_TOKEN        5
 
-extern uint8_t aikoError;                                       // expression.c
+extern uint8_t lispError;                                       // expression.c
 
 /* ------------------------------------------------------------------------- */
 
@@ -64,14 +64,14 @@ typedef struct {
 
 /* ------------------------------------------------------------------------- */
 
-static const uint8_t AIKO_ATOM_SIZE_LIMIT = 10;
+static const uint8_t LISP_ATOM_SIZE_LIMIT = 10;
 
 #ifdef ARDUINO
-#define AIKO_EXPRESSION_LIMIT  80                                // Minimum: 72
+#define LISP_EXPRESSION_LIMIT  80                                // Minimum: 72
 #elif __ets__
-#define AIKO_EXPRESSION_LIMIT  80
+#define LISP_EXPRESSION_LIMIT  80
 #else
-#define AIKO_EXPRESSION_LIMIT 512
+#define LISP_EXPRESSION_LIMIT 512
 #endif
 
 typedef enum {
@@ -113,9 +113,9 @@ typedef struct sExpression {
 
 extern uint8_t      lispDebug;                                  // interface.c
 
-extern uint16_t     aikoExpressionCurrent;                      // expression.c
-extern uint16_t     aikoExpressionBookmark;                     // expression.c
-extern tExpression  aikoExpressions[AIKO_EXPRESSION_LIMIT];     // expression.c
+extern uint16_t     lispExpressionCurrent;                      // expression.c
+extern uint16_t     lispExpressionBookmark;                     // expression.c
+extern tExpression  lispExpressions[LISP_EXPRESSION_LIMIT];     // expression.c
 
 extern tExpression *nil;                                        // expression.c
 extern tExpression *parenthesisOpen;                            // expression.c
@@ -127,55 +127,55 @@ extern tExpression *truth;                                      // expression.c
 tExpression *lisp_initialize(uint8_t debugFlag);
 uint8_t      lisp_message_handler(uint8_t *message, uint16_t length);
 
-void         aikoAppend(tExpression *expression, tExpression *appendee);
-tExpression *aikoCreateAtom(const char* name, uint8_t size);
-tExpression *aikoCreateLambda(tExpression *arguments, tExpression *expression);
-tExpression *aikoCreateList(tExpression *car, tExpression *cdr);
-tExpression *aikoCreatePrimitive(
+void         lispAppend(tExpression *expression, tExpression *appendee);
+tExpression *lispCreateAtom(const char* name, uint8_t size);
+tExpression *lispCreateLambda(tExpression *arguments, tExpression *expression);
+tExpression *lispCreateList(tExpression *car, tExpression *cdr);
+tExpression *lispCreatePrimitive(
                const char *name,
                tExpression *(*handler)(tExpression *, tExpression *)
              );
 
-void         aikoEmit(tExpression *expression);
-tExpression *aikoEvaluate(tExpression *expression, tExpression *environment);
-tExpression *aikoExpressionInitialize(void);
-uint8_t      aikoIsAtom(
+void         lispEmit(tExpression *expression);
+tExpression *lispEvaluate(tExpression *expression, tExpression *environment);
+tExpression *lispExpressionInitialize(void);
+uint8_t      lispIsAtom(
                tExpression *expression, const char *name, uint8_t size
              );
-uint8_t      aikoIsList(tExpression *expression);
-tExpression *aikoParse(tReader *reader);
+uint8_t      lispIsList(tExpression *expression);
+tExpression *lispParse(tReader *reader);
 
-tExpression *aikoPrimitiveAtom(
+tExpression *lispPrimitiveAtom(
                tExpression *expression, tExpression *environment
              );
-tExpression *aikoPrimitiveCar(
+tExpression *lispPrimitiveCar(
                tExpression *expression, tExpression *environment
              );
-tExpression *aikoPrimitiveCdr(
+tExpression *lispPrimitiveCdr(
                tExpression *expression, tExpression *environment
              );
-tExpression *aikoPrimitiveCond(
+tExpression *lispPrimitiveCond(
                tExpression *expression, tExpression *environment
              );
-tExpression *aikoPrimitiveCons(
+tExpression *lispPrimitiveCons(
                tExpression *expression, tExpression *environment
              );
-tExpression *aikoPrimitiveEqual(
+tExpression *lispPrimitiveEqual(
                tExpression *expression, tExpression *environment
              );
-tExpression *aikoPrimitiveLambda(
+tExpression *lispPrimitiveLambda(
                tExpression *expression, tExpression *environment
              );
-tExpression *aikoPrimitiveLabel(
+tExpression *lispPrimitiveLabel(
                tExpression *expression, tExpression *environment
              );
-tExpression *aikoPrimitiveQuote(
+tExpression *lispPrimitiveQuote(
                tExpression *expression, tExpression *environment
              );
 
-void         aikoReset(uint16_t expressionIndex);
+void         lispReset(uint16_t expressionIndex);
 
-int32_t      aikoToInteger(tExpression *expression);
+int32_t      lispToInteger(tExpression *expression);
 
 
 /* ------------------------------------------------------------------------- */

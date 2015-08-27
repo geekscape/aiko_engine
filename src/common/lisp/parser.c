@@ -22,10 +22,10 @@
 /* ------------------------------------------------------------------------- */
 
 tExpression ATTRIBUTES
-*aikoParseToken(
+*lispParseToken(
   tReader *reader) {
 
-  char token[AIKO_ATOM_SIZE_LIMIT];  // TODO: Use mmem memory directly, no copy
+  char token[LISP_ATOM_SIZE_LIMIT];  // TODO: Use mmem memory directly, no copy
   uint8_t size = 0;
 
   uint8_t ch = reader->getCh();
@@ -33,8 +33,8 @@ tExpression ATTRIBUTES
   if (ch == '\n') ch = reader->getCh();
 
   if (reader->isFileEOF()) {
-    PRINTLN("aikoParseToken(): End of file");
-    aikoError = AIKO_ERROR_END_OF_FILE;
+    PRINTLN("lispParseToken(): End of file");
+    lispError = LISP_ERROR_END_OF_FILE;
     return(NULL);
   }
 
@@ -45,8 +45,8 @@ tExpression ATTRIBUTES
     size = size * 10 + (ch - '0');    // TODO: What if size too large for "int"
 
     if (reader->isFileEOF()) {
-      PRINTLN("aikoParseToken(): Error: Truncated token size");
-      aikoError = AIKO_ERROR_PARSE_TOKEN;
+      PRINTLN("lispParseToken(): Error: Truncated token size");
+      lispError = LISP_ERROR_PARSE_TOKEN;
       return(NULL);
     }
 
@@ -54,54 +54,54 @@ tExpression ATTRIBUTES
   }
 
   if (ch != ':') {
-    PRINTLN("aikoParseToken(): Error: Should be 'n:token'");
-    aikoError = AIKO_ERROR_PARSE_TOKEN;
+    PRINTLN("lispParseToken(): Error: Should be 'n:token'");
+    lispError = LISP_ERROR_PARSE_TOKEN;
     return(NULL);
   }
 
-// If AIKO_ATOM_SIZE_LIMIT exceeded, still attempt to read token, throw it away
+// If LISP_ATOM_SIZE_LIMIT exceeded, still attempt to read token, throw it away
 
-  if (size > AIKO_ATOM_SIZE_LIMIT) {
-#if ARDUINO
-    Serial.print("aikoParseToken(): Error: Token length >");
-    Serial.println(AIKO_ATOM_SIZE_LIMIT);
+  if (size > LISP_ATOM_SIZE_LIMIT) {
+#ifdef ARDUINO
+    Serial.print("lispParseToken(): Error: Token length >");
+    Serial.println(LISP_ATOM_SIZE_LIMIT);
 #else
-    printf("aikoParseToken(): Error: Token length >%d\n", AIKO_ATOM_SIZE_LIMIT);
+    printf("lispParseToken(): Error: Token length >%d\n", LISP_ATOM_SIZE_LIMIT);
 #endif
-    aikoError = AIKO_ERROR_LIMIT_TOKEN;
+    lispError = LISP_ERROR_LIMIT_TOKEN;
   }
 
   uint8_t count;
   for (count = 0;  count < size;  count ++) {
     if (reader->isFileEOF()) {
-      PRINTLN("aikoParseToken(): Error: Truncated token");
-      aikoError = AIKO_ERROR_PARSE_TOKEN;
+      PRINTLN("lispParseToken(): Error: Truncated token");
+      lispError = LISP_ERROR_PARSE_TOKEN;
       return(NULL);
     }
 
     token[count] = reader->getCh();
   }
 
-  if (aikoError != 0) return(NULL);
+  if (lispError != 0) return(NULL);
 
-  return(aikoCreateAtom(token, size));
+  return(lispCreateAtom(token, size));
 }
 
 tExpression ATTRIBUTES
-*aikoParseList(
+*lispParseList(
   tReader *reader) {
 
-  tExpression *expression = aikoParseToken(reader);
+  tExpression *expression = lispParseToken(reader);
 
   if (expression != NULL) {
     if (expression == parenthesisClose) {
       expression = NULL;
     }
     else {
-      if (expression == parenthesisOpen) expression = aikoParseList(reader);
+      if (expression == parenthesisOpen) expression = lispParseList(reader);
 
-      tExpression *list = aikoParseList(reader);
-      expression = aikoCreateList(expression, list);
+      tExpression *list = lispParseList(reader);
+      expression = lispCreateList(expression, list);
     }
   }
 
@@ -109,13 +109,13 @@ tExpression ATTRIBUTES
 }
 
 tExpression ATTRIBUTES
-*aikoParse(
+*lispParse(
   tReader *reader) {
 
-  tExpression *expression = aikoParseToken(reader);
+  tExpression *expression = lispParseToken(reader);
 
   if (expression != NULL  &&  expression == parenthesisOpen) {
-    expression = aikoParseList(reader);
+    expression = lispParseList(reader);
   }
 
   return(expression);

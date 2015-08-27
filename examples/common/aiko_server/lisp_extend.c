@@ -65,10 +65,10 @@ tExpression ATTRIBUTES
     tExpression *parameter1 = expression->list.car;   // milliseconds
     tExpression *parameter2 = expression->list.cdr;   // (timer_maximum)
 
-    microseconds = aikoToInteger(parameter1) * 1000;
+    microseconds = lispToInteger(parameter1) * 1000;
 
     if (parameter2 != NULL) {
-      timer_maximum = aikoToInteger(parameter2->list.car);
+      timer_maximum = lispToInteger(parameter2->list.car);
     }
   }
 
@@ -94,12 +94,12 @@ void ATTRIBUTES
 lisp_extend(
   tExpression *lisp_environment) {
 
-  aikoAppend(
-    lisp_environment, aikoCreatePrimitive("addTimer", primitiveAddTimer)
+  lispAppend(
+    lisp_environment, lispCreatePrimitive("addTimer", primitiveAddTimer)
   );
 
-  aikoAppend(lisp_environment, aikoCreatePrimitive("debug", primitiveDebug));
+  lispAppend(lisp_environment, lispCreatePrimitive("debug", primitiveDebug));
 
 // TODO: Ultimately, shouldn't need to do this ...
-  aikoExpressionBookmark = aikoExpressionCurrent;
+  lispExpressionBookmark = lispExpressionCurrent;
 }

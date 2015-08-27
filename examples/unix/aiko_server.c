@@ -43,8 +43,8 @@ FILE *initialize(
 
   lisp_extend(lisp_environment);
 
-  if (aikoError) {
-    printf("Initialization error: %d\n", aikoError);    // TODO: Better message
+  if (lispError) {
+    printf("Initialization error: %d\n", lispError);    // TODO: Better message
     exit(-1);
   }
 
