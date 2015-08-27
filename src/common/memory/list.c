@@ -44,7 +44,7 @@
  * Author: Adam Dunkels <adam@sics.se>
  *
  */
-#include "list.h"
+#include "memory/list.h"
 
 #include "aiko_compatibility.h"
 

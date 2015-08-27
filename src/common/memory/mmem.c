@@ -44,8 +44,8 @@
  */
 
 
-#include "mmem.h"
-#include "list.h"
+#include "memory/mmem.h"
+#include "memory/list.h"
 // #include "contiki-conf.h"
 #include <string.h>
 

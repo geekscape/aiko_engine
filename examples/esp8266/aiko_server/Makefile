@@ -33,15 +33,13 @@ TARGET		= app
 # which modules (subdirectories) of the project to include in compiling
 MODULES		=  driver user
 MODULES		+= ../../../src/common
+MODULES		+= ../../../src/common/lisp
+MODULES		+= ../../../src/common/memory
 MODULES		+= ../../../src/esp8266
-MODULES		+= ../../../lisp
-MODULES		+= ../../../memory
 MODULES		+= ../../common/aiko_server
 
 EXTRA_INCDIR    =  include
 EXTRA_INCDIR    += ../../../include
-EXTRA_INCDIR    += ../../../lisp
-EXTRA_INCDIR	+= ../../../memory
 EXTRA_INCDIR	+= ../../common/aiko_server
 
 # libraries used in this project, mainly provided by the SDK

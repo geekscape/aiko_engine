@@ -1,19 +1,18 @@
 CFLAGS += -DMMEM_CONF_SIZE=512
 CFLAGS += -Iinclude
-CFLAGS += -Ilisp
 
 OBJECTS  = src/common/aiko_engine.o
 OBJECTS += src/unix/network.o
 OBJECTS += src/unix/serial.o
 OBJECTS += src/unix/timer.o
 
-OBJECTS += lisp/expression.o
-OBJECTS += lisp/interface.o
-OBJECTS += lisp/parser.o
-OBJECTS += lisp/primitives.o
-OBJECTS += lisp/utility.o
-OBJECTS += memory/list.o
-OBJECTS += memory/mmem.o 
+OBJECTS += src/common/lisp/expression.o
+OBJECTS += src/common/lisp/interface.o
+OBJECTS += src/common/lisp/parser.o
+OBJECTS += src/common/lisp/primitives.o
+OBJECTS += src/common/lisp/utility.o
+OBJECTS += src/common/memory/list.o
+OBJECTS += src/common/memory/mmem.o 
 
 AIKO_SERVER_OBJECTS  = examples/unix/aiko_server.o
 AIKO_SERVER_OBJECTS += examples/common/aiko_server/lisp_extend.o
@@ -33,9 +32,9 @@ $(OBJECTS):	\
 	include/aiko_compatibility.h \
 	include/aiko_network.h       \
 	include/aiko_serial.h        \
-	lisp/lisp.h                  \
-	memory/list.h                \
-	memory/mmem.h                \
+	include/lisp.h               \
+	include/memory/list.h        \
+	include/memory/mmem.h        \
 	examples/common/aiko_server/lisp_extend.h
 
 clean:

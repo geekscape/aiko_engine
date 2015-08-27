@@ -27,7 +27,7 @@
 #define MMEM_CONF_SIZE  80                                       // Minimum: 80
 #endif
 
-#include "../memory/mmem.h"
+#include "memory/mmem.h"
 extern uint16_t avail_memory;
 
 #ifndef NULL
