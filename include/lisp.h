@@ -21,14 +21,18 @@
 
 #pragma once
 
+#ifdef ARDUINO
+#include "vendor/aiko_engine/include/aiko_compatibility.h"
+#else
 #include "aiko_compatibility.h"
+#endif
 
 #ifndef MMEM_CONF_SIZE
 #define MMEM_CONF_SIZE  80                                       // Minimum: 80
 #endif
 
 #include "memory/mmem.h"
-extern uint16_t avail_memory;
+extern unsigned int avail_memory;
 
 #ifndef NULL
 #define NULL 0
@@ -62,8 +66,10 @@ typedef struct {
 
 static const uint8_t AIKO_ATOM_SIZE_LIMIT = 10;
 
-#ifdef __ets__
+#ifdef ARDUINO
 #define AIKO_EXPRESSION_LIMIT  80                                // Minimum: 72
+#elif __ets__
+#define AIKO_EXPRESSION_LIMIT  80
 #else
 #define AIKO_EXPRESSION_LIMIT 512
 #endif
@@ -122,38 +128,50 @@ tExpression *lisp_initialize(uint8_t debugFlag);
 uint8_t      lisp_message_handler(uint8_t *message, uint16_t length);
 
 void         aikoAppend(tExpression *expression, tExpression *appendee);
-tExpression *aikoCreateAtom(char* name, uint8_t size);
+tExpression *aikoCreateAtom(const char* name, uint8_t size);
 tExpression *aikoCreateLambda(tExpression *arguments, tExpression *expression);
 tExpression *aikoCreateList(tExpression *car, tExpression *cdr);
 tExpression *aikoCreatePrimitive(
-               char *name, tExpression *(*handler)(tExpression *, tExpression *)
+               const char *name,
+               tExpression *(*handler)(tExpression *, tExpression *)
              );
 
 void         aikoEmit(tExpression *expression);
 tExpression *aikoEvaluate(tExpression *expression, tExpression *environment);
 tExpression *aikoExpressionInitialize(void);
-uint8_t      aikoIsAtom(tExpression *expression, char *name, uint8_t size);
+uint8_t      aikoIsAtom(
+               tExpression *expression, const char *name, uint8_t size
+             );
 uint8_t      aikoIsList(tExpression *expression);
 tExpression *aikoParse(tReader *reader);
 
 tExpression *aikoPrimitiveAtom(
-               tExpression *expression, tExpression *environment);
+               tExpression *expression, tExpression *environment
+             );
 tExpression *aikoPrimitiveCar(
-               tExpression *expression, tExpression *environment);
+               tExpression *expression, tExpression *environment
+             );
 tExpression *aikoPrimitiveCdr(
-               tExpression *expression, tExpression *environment);
+               tExpression *expression, tExpression *environment
+             );
 tExpression *aikoPrimitiveCond(
-               tExpression *expression, tExpression *environment);
+               tExpression *expression, tExpression *environment
+             );
 tExpression *aikoPrimitiveCons(
-               tExpression *expression, tExpression *environment);
+               tExpression *expression, tExpression *environment
+             );
 tExpression *aikoPrimitiveEqual(
-               tExpression *expression, tExpression *environment);
+               tExpression *expression, tExpression *environment
+             );
 tExpression *aikoPrimitiveLambda(
-               tExpression *expression, tExpression *environment);
+               tExpression *expression, tExpression *environment
+             );
 tExpression *aikoPrimitiveLabel(
-               tExpression *expression, tExpression *environment);
+               tExpression *expression, tExpression *environment
+             );
 tExpression *aikoPrimitiveQuote(
-               tExpression *expression, tExpression *environment);
+               tExpression *expression, tExpression *environment
+             );
 
 void         aikoReset(uint16_t expressionIndex);
 

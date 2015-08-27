@@ -11,8 +11,13 @@
  * - None, yet.
  */
 
+#ifdef ARDUINO
+#include "vendor/aiko_engine/include/aiko_engine.h"
+#include "vendor/aiko_engine/include/lisp.h"
+#else
 #include "aiko_engine.h"
 #include "lisp.h"
+#endif
 
 uint8_t lispDebug = 0;
 
@@ -60,10 +65,21 @@ tExpression ATTRIBUTES
   mmem_init();  // Lisp engine memory management
 
   if (lispDebug) {
+#if ARDUINO
+    Serial.print("Heap memory: ");
+    Serial.println(avail_memory);
+    Serial.print("Expression memory: ");
+    Serial.println(sizeof(aikoExpressions));
+    Serial.print("Expression sizeof: ");
+    Serial.println(sizeof(tExpression));
+    Serial.print("Expressions available: ");
+    Serial.println(AIKO_EXPRESSION_LIMIT);
+#else
     printf(
       "Heap memory: %d, Expression memory: %lu, sizeof: %lu, available: %d\n",
       avail_memory, sizeof(aikoExpressions), sizeof(tExpression), AIKO_EXPRESSION_LIMIT
     );
+#endif
   }
 
   aikoError       = AIKO_ERROR_NONE;
@@ -89,28 +105,43 @@ lisp_message_handler(
   tExpression *expression = aikoParse(& aikoBufferReader);
 
   if (aikoError != AIKO_ERROR_NONE) {
+#ifdef ARDUINO
+//  Serial.print("Parse error: ");  Serial.println(aikoError);
+#else
 //  printf("Parse error: %d\n", aikoError);
+#endif
   }
   else {
     expression = aikoEvaluate(expression, aikoEnvironment);
 
     if (expression == NULL) {
-      printf("Evaluate error: %d\n", aikoError);
+#if ARDUINO
+//    Serial.print("Evaluate error: ");  Serial.println(aikoError);
+#else
+//    printf("Evaluate error: %d\n", aikoError);
+#endif
     }
     else {
       handled = AIKO_HANDLED;
       aikoEmit(expression);
-      printf("\n");
+      PRINT("\n");
     }
   }
 
   aikoReset(aikoExpressionBookmark);         // TODO: Breaks "primitiveLabel()"
 
   if (lispDebug) {
+#if ARDUINO
+    Serial.print("Heap used: ");
+    Serial.println(MMEM_CONF_SIZE - avail_memory);
+    Serial.print("Expressions used: ");
+    Serial.println(aikoExpressionCurrent);
+#else
     printf(
       "Heap used: %d, Expressions used: %d\n",
       MMEM_CONF_SIZE - avail_memory, aikoExpressionCurrent
     );
+#endif
   }
 
 //return(aikoError);

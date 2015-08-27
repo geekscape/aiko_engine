@@ -44,9 +44,14 @@
  * Author: Adam Dunkels <adam@sics.se>
  *
  */
-#include "memory/list.h"
 
+#ifdef ARDUINO
+#include "vendor/aiko_engine/include/aiko_compatibility.h"
+#include "vendor/aiko_engine/include/memory/list.h"
+#else
 #include "aiko_compatibility.h"
+#include "memory/list.h"
+#endif
 
 #ifndef NULL
 #define NULL 0

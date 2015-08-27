@@ -2,6 +2,7 @@ CFLAGS += -DMMEM_CONF_SIZE=512
 CFLAGS += -Iinclude
 
 OBJECTS  = src/common/aiko_engine.o
+OBJECTS += src/unix/engine.o
 OBJECTS += src/unix/network.o
 OBJECTS += src/unix/serial.o
 OBJECTS += src/unix/timer.o

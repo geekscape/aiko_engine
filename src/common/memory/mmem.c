@@ -43,13 +43,18 @@
  * 
  */
 
-
+#ifdef ARDUINO
+#include "vendor/aiko_engine/include/aiko_compatibility.h"
+#include "vendor/aiko_engine/include/memory/mmem.h"
+#include "vendor/aiko_engine/include/memory/list.h"
+#else
+#include "aiko_compatibility.h"
 #include "memory/mmem.h"
 #include "memory/list.h"
+#endif
+
 // #include "contiki-conf.h"
 #include <string.h>
-
-#include "aiko_compatibility.h"
 
 #ifdef MMEM_CONF_SIZE
 #define MMEM_SIZE MMEM_CONF_SIZE

@@ -11,8 +11,13 @@
  * - None, yet.
  */
 
+#ifdef ARDUINO
+#include "vendor/aiko_engine/include/aiko_compatibility.h"
+#include "vendor/aiko_engine/include/lisp.h"
+#else
 #include "aiko_compatibility.h"
 #include "lisp.h"
+#endif
 
 /* ------------------------------------------------------------------------- */
 

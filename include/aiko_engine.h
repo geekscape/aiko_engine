@@ -42,6 +42,9 @@ typedef struct {
 }
   aiko_source_t;
 
+extern aiko_source_t *aiko_sources[];
+extern uint8_t        aiko_source_count;
+
 typedef struct {
   uint32_t seconds;
   uint32_t microseconds;
@@ -49,7 +52,8 @@ typedef struct {
   aiko_time_t;
 
 typedef struct {
-#ifdef __ets__
+#ifdef ARDUINO
+#elif __ets__
   os_timer_t            esp8266_timer;
 #else
   aiko_time_t           period;
@@ -74,7 +78,9 @@ void aiko_add_handler(aiko_source_t *source, aiko_handler_t *handler);
 
 aiko_source_t *aiko_create_source(aiko_source_type type, int fd);
 
-#ifndef __ets__
+#ifdef ARDUINO
+#elif __ets__
+#else
 aiko_source_t *aiko_create_file_source(FILE *file);
 #endif
 

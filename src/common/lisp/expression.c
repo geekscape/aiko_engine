@@ -11,8 +11,13 @@
  * - None, yet.
  */
 
+#ifdef ARDUINO
+#include "vendor/aiko_engine/include/aiko_compatibility.h"
+#include "vendor/aiko_engine/include/lisp.h"
+#else
 #include "aiko_compatibility.h"
 #include "lisp.h"
+#endif
 
 uint8_t aikoError = AIKO_ERROR_NONE;
 
@@ -35,7 +40,7 @@ tExpression ATTRIBUTES
   tExpression *expression = NULL;
 
   if (aikoExpressionCurrent + extra >= AIKO_EXPRESSION_LIMIT) {
-    printf("aikoAllocateExpression(): Error: No more expressions available\n");
+    PRINTLN("aikoAllocateExpression(): Error: No more expressions available");
     aikoError = AIKO_ERROR_LIMIT_EXPRESSIONS;
   }
   else {
@@ -48,8 +53,8 @@ tExpression ATTRIBUTES
 
 tExpression ATTRIBUTES
 *aikoCreateAtom(
-  char    *name,
-  uint8_t  size) {
+  const char *name,
+  uint8_t     size) {
 
   tExpression *expression = aikoAllocateExpression(ATOM, 0);
 
@@ -58,7 +63,7 @@ tExpression ATTRIBUTES
       memcpy(expression->atom.name.ptr, name, size);
     }
     else {
-      printf("aikoCreateAtom(): Error: No more memory available\n");
+      PRINTLN("aikoCreateAtom(): Error: No more memory available");
       aikoExpressionCurrent --;
       expression = NULL;
       aikoError = AIKO_ERROR_LIMIT_MEMORY;
@@ -100,7 +105,7 @@ tExpression ATTRIBUTES
 
 tExpression ATTRIBUTES
 *aikoCreatePrimitive(
-  char        *name,
+  const char  *name,
   tExpression *(*handler)(tExpression *, tExpression *)) {
 
   tExpression *expression = NULL;
@@ -136,7 +141,7 @@ aikoAppend(
 uint8_t ATTRIBUTES
 aikoIsAtom(
   tExpression *expression,
-  char        *name,
+  const char  *name,
   uint8_t      size) {
 
   if (expression == NULL  ||  expression->type != ATOM) return(0);
@@ -241,40 +246,46 @@ aikoEmit(
   tExpression *expression) {
 
   if (expression == NULL) {
-//  printf("NULL");
+//  PRINT("NULL");
   }
   else if (expression->type == ATOM) {
     uint8_t name[AIKO_ATOM_SIZE_LIMIT + 1];
     uint8_t size = expression->atom.name.size;
     memcpy(name, expression->atom.name.ptr, size);
     name[size] = 0x00;
+#ifdef ARDUINO
+    Serial.print(size);
+    Serial.print(":");
+    Serial.print((char *) name);
+#else
     printf("%d:%s", size, name);
+#endif
   }
   else if (expression->type == LAMBDA) {
-    printf("LAMBDA ");
+    PRINT("LAMBDA ");
     aikoEmit(expression->lambda.arguments);
-    printf(" ");
+    PRINT(" ");
     aikoEmit(expression->lambda.expression);
   }
   else if (expression->type == LIST) {
-    printf("(");
+    PRINT("(");
     aikoEmit(expression->list.car);
     expression = expression->list.cdr;
 
     while (aikoIsList(expression)) {
       if (expression->list.car != NULL) {
-//      printf(" ");
+//      PRINT(" ");
         aikoEmit(expression->list.car);
       }
       expression = expression->list.cdr;
     }
-    printf(")");
+    PRINT(")");
   }
   else if (expression->type == PRIMITIVE) {
-    printf("PRIMITIVE");
+    PRINT("PRIMITIVE");
   }
   else {
-    printf("UNKNOWN");
+    PRINT("UNKNOWN");
   }
 }
 

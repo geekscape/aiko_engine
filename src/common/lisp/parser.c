@@ -11,8 +11,13 @@
  * - None, yet.
  */
 
+#ifdef ARDUINO
+#include "vendor/aiko_engine/include/aiko_compatibility.h"
+#include "vendor/aiko_engine/include/lisp.h"
+#else
 #include "aiko_compatibility.h"
 #include "lisp.h"
+#endif
 
 /* ------------------------------------------------------------------------- */
 
@@ -28,7 +33,7 @@ tExpression ATTRIBUTES
   if (ch == '\n') ch = reader->getCh();
 
   if (reader->isFileEOF()) {
-    printf("aikoParseToken(): End of file\n");
+    PRINTLN("aikoParseToken(): End of file");
     aikoError = AIKO_ERROR_END_OF_FILE;
     return(NULL);
   }
@@ -40,7 +45,7 @@ tExpression ATTRIBUTES
     size = size * 10 + (ch - '0');    // TODO: What if size too large for "int"
 
     if (reader->isFileEOF()) {
-      printf("aikoParseToken(): Error: Truncated token size\n");
+      PRINTLN("aikoParseToken(): Error: Truncated token size");
       aikoError = AIKO_ERROR_PARSE_TOKEN;
       return(NULL);
     }
@@ -49,7 +54,7 @@ tExpression ATTRIBUTES
   }
 
   if (ch != ':') {
-    printf("aikoParseToken(): Error: Should be 'n:token'\n");
+    PRINTLN("aikoParseToken(): Error: Should be 'n:token'");
     aikoError = AIKO_ERROR_PARSE_TOKEN;
     return(NULL);
   }
@@ -57,14 +62,19 @@ tExpression ATTRIBUTES
 // If AIKO_ATOM_SIZE_LIMIT exceeded, still attempt to read token, throw it away
 
   if (size > AIKO_ATOM_SIZE_LIMIT) {
+#if ARDUINO
+    Serial.print("aikoParseToken(): Error: Token length >");
+    Serial.println(AIKO_ATOM_SIZE_LIMIT);
+#else
     printf("aikoParseToken(): Error: Token length >%d\n", AIKO_ATOM_SIZE_LIMIT);
+#endif
     aikoError = AIKO_ERROR_LIMIT_TOKEN;
   }
 
   uint8_t count;
   for (count = 0;  count < size;  count ++) {
     if (reader->isFileEOF()) {
-      printf("aikoParseToken(): Error: Truncated token\n");
+      PRINTLN("aikoParseToken(): Error: Truncated token");
       aikoError = AIKO_ERROR_PARSE_TOKEN;
       return(NULL);
     }
