@@ -27,8 +27,17 @@
 #include "aiko_compatibility.h"
 #endif
 
-#ifndef MMEM_CONF_SIZE
-#define MMEM_CONF_SIZE  80                                       // Minimum: 80
+// Bare minimum heap for Lisp environment is 68 bytes, so start with 80 bytes.
+// Wi-Fi configuration requires around +100 bytes and +20 expressions.
+
+#ifndef MMEM_CONF_SIZE          // Makefile may have overridden these constants
+#ifdef ARDUINO
+#define MMEM_CONF_SIZE   80                                      // Minimum: 80
+#elif __ets__
+#define MMEM_CONF_SIZE  256
+#else
+#define MMEM_CONF_SIZE  256
+#endif
 #endif
 
 #include "memory/mmem.h"
@@ -70,12 +79,14 @@ static const uint8_t LISP_ATOM_SIZE_LIMIT = 10;
 static const uint8_t LISP_ATOM_SIZE_LIMIT = 64;       // Wi-Fi password maximum
 #endif
 
+// Bare minimum expression count for Lisp environment is 72.
+
 #ifdef ARDUINO
 #define LISP_EXPRESSION_LIMIT   80                               // Minimum: 72
 #elif __ets__
-#define LISP_EXPRESSION_LIMIT   80
+#define LISP_EXPRESSION_LIMIT  128
 #else
-#define LISP_EXPRESSION_LIMIT  256
+#define LISP_EXPRESSION_LIMIT  128
 #endif
 
 typedef enum {

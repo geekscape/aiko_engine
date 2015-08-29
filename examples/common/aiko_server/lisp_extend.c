@@ -26,6 +26,12 @@
  * - Reserve prefix "os*()"   for later use, e.g Operating System features
  * - Reserve prefix "esp*()"  for later use, e.g ESP8266 SDK wrapper.
  * - Rename all "primitive*()" to "extend*()".
+ *
+ * - primtiiveLoad/Save(): Refactor common into .../src/common/aiko_engine.c
+ * - primitiveLoad(): Store per application "size" and "magic" for checks
+ * - primitiveLoad(): Check existing expected size  versus size  afterwards.
+ * - primitiveLoad(): Check existing expected magic versus magic afterwards.
+ *
  * - (8:addTimer) first parameter should be the Lisp expression to invoke.
  *   - Default: (8:addTimer(12:timerHandler)4:10001:1)
  *   - Rename timer_handler() to extensionTimerHandler(), add to environment.
@@ -112,7 +118,8 @@ tExpression ATTRIBUTES
   }
 
   if (result == nil) {
-    memset(& aiko_store, 0x00, aiko_store->size);
+    memset(& aiko_store, 0x00, sizeof(aiko_store_t));     // TODO: correct size
+    aiko_store->size  = sizeof(aiko_store_t);
     aiko_store->magic = AIKO_STORE_MAGIC;
   }
 

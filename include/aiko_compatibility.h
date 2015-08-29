@@ -13,11 +13,6 @@
 
 #pragma once
 
-#ifndef FALSE
-#define FALSE  0
-#define TRUE   1
-#endif
-
 #ifdef __ets__
 #define ATTRIBUTES  ICACHE_FLASH_ATTR
 #else
@@ -52,6 +47,14 @@
 
 #define PRINT(output)    printf(output)
 #define PRINTLN(output)  printf(output"\n")
+#endif
+
+#ifndef FALSE
+#define FALSE  (0)
+#endif
+
+#ifndef TRUE
+#define TRUE   (1)
 #endif
 
 #ifdef ARDUINO

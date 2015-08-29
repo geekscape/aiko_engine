@@ -18,8 +18,8 @@
 #define AIKO_STORE_MAGIC  0x41494b4f
 
 typedef struct {
-  uint32_t magic;
   uint16_t size;
+  uint32_t magic;
   uint8_t  wifi_ssid[33];                                    // null-terminated
   uint8_t  wifi_password[65];                                // null-terminated
 

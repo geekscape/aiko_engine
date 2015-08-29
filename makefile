@@ -1,4 +1,4 @@
-CFLAGS += -DMMEM_CONF_SIZE=512
+CFLAGS += -DMMEM_CONF_SIZE=256
 CFLAGS += -Iinclude
 
 OBJECTS  = src/common/aiko_engine.o

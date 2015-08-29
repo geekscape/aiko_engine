@@ -14,10 +14,13 @@
  * ~~~~~
  * nc -u ESP8266_IP_ADDRESS 4149
  * (3:cdr(1:a1:b))
- * (5:debug)               // toggle lispDebug flag
- * (8:addTimer)            // add timer every 1 second  for a single count
- * (8:addTimer4:2000)      // add timer every 2 seconds for a single count
- * (8:addtimer4:2000:1:4)  // add timer every 2 seconds for 4 counts
+ * (5:debug)                   // toggle lispDebug flag
+ * (8:addTimer)                // add timer every 1 second  for a single count
+ * (8:addTimer4:2000)          // add timer every 2 seconds for a single count
+ * (8:addtimer4:2000:1:4)      // add timer every 2 seconds for 4 counts
+ * (4:load)                    // load "aikoStore" from persistant storage
+ * (4:save)                    // save "aikoStore" to persistent storage
+ * (4:wifi(4:ssid8:password))  // set Wi-Fi station SSID and password
  *
  * To Do
  * ~~~~~
@@ -25,8 +28,6 @@
  */
 
 #include "user_interface.h"
-
-#include "user_config.h"
 
 #include "aiko_engine.h"
 #include "lisp.h"
@@ -93,9 +94,9 @@ user_init(void) {
   os_printf("# CPU clock:   %d\n", system_get_cpu_freq());
   os_printf("# Heap free:   %d\n", system_get_free_heap_size());
 
-  wifi_set_opmode(STATION_MODE);
+  wifi_set_opmode(STATIONAP_MODE);
   system_init_done_cb(system_ready);
-
+#if 0
   char ssid[32] = SSID;
   char password[64] = SSID_PASSWORD;
   struct station_config station_configuration;
@@ -103,7 +104,7 @@ user_init(void) {
   os_memcpy(& station_configuration.ssid, ssid, 32);
   os_memcpy(& station_configuration.password, password, 64);
   wifi_station_set_config(& station_configuration);
-
+#endif
   aiko_add_handler(
     aiko_create_socket_source(AIKO_SOURCE_SOCKET_UDP4, AIKO_PORT),
     lisp_message_handler

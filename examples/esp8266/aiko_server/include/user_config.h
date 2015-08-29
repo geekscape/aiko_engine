@@ -1,2 +1,0 @@
-#define SSID          "CHANGE_SSID"
-#define SSID_PASSWORD "CHANGE_PASSWORD"
