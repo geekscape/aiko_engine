@@ -13,6 +13,11 @@
 
 #pragma once
 
+#ifndef FALSE
+#define FALSE  0
+#define TRUE   1
+#endif
+
 #ifdef __ets__
 #define ATTRIBUTES  ICACHE_FLASH_ATTR
 #else

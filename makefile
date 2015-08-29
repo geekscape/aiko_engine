@@ -5,6 +5,7 @@ OBJECTS  = src/common/aiko_engine.o
 OBJECTS += src/unix/engine.o
 OBJECTS += src/unix/network.o
 OBJECTS += src/unix/serial.o
+OBJECTS += src/unix/store.o
 OBJECTS += src/unix/timer.o
 
 OBJECTS += src/common/lisp/expression.o
@@ -33,6 +34,7 @@ $(OBJECTS):	\
 	include/aiko_compatibility.h \
 	include/aiko_network.h       \
 	include/aiko_serial.h        \
+	include/aiko_store.h         \
 	include/lisp.h               \
 	include/memory/list.h        \
 	include/memory/mmem.h        \

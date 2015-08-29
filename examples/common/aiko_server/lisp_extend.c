@@ -12,14 +12,18 @@
  *
  * Usage
  * ~~~~~
- * (8:addTimer)            // add timer every 1 second  for a single count
- * (8:addTimer4:2000)      // add timer every 2 seconds for a single count
- * (8:addtimer4:2000:1:4)  // add timer every 2 seconds for 4 counts
- * (5:debug)               // toggle lispDebug flag
+ * (8:addTimer)                // add timer every 1 second  for a single count
+ * (8:addTimer4:2000)          // add timer every 2 seconds for a single count
+ * (8:addtimer4:2000:1:4)      // add timer every 2 seconds for 4 counts
+ * (5:debug)                   // toggle lispDebug flag
+ * (4:load)                    // load "aikoStore" from persistant storage
+ * (4:save)                    // save "aikoStore" to persistent storage
+ * (4:wifi(4:ssid8:password))  // set Wi-Fi station SSID and password
  *
  * To Do
  * ~~~~~
  * - Reserve prefix "core*()" for later use, e.g core language features.
+ * - Reserve prefix "os*()"   for later use, e.g Operating System features
  * - Reserve prefix "esp*()"  for later use, e.g ESP8266 SDK wrapper.
  * - Rename all "primitive*()" to "extend*()".
  * - (8:addTimer) first parameter should be the Lisp expression to invoke.
@@ -29,9 +33,12 @@
  */
 
 #include "aiko_engine.h"
+#include "aiko_store.h"
 #include "lisp.h"
 
 #include "lisp_extend.h"
+
+static aiko_store_t *aiko_store;
 
 /* ------------------------------------------------------------------------- */
 
@@ -88,17 +95,94 @@ tExpression ATTRIBUTES
   return(truth);
 }
 
+tExpression ATTRIBUTES
+*primitiveLoad(
+  tExpression *expression,
+  tExpression *environment) {
+
+  tExpression *result = nil;
+
+  if (aiko_store_load(aiko_store, aiko_store->size)) {
+    if (aiko_store->magic != AIKO_STORE_MAGIC) {
+      PRINTLN("Error: Storage corrupt");
+    }
+    else {
+      result = truth;
+    }
+  }
+
+  if (result == nil) {
+    memset(& aiko_store, 0x00, aiko_store->size);
+    aiko_store->magic = AIKO_STORE_MAGIC;
+  }
+
+  return(result);
+}
+
+tExpression ATTRIBUTES
+*primitiveSave(
+  tExpression *expression,
+  tExpression *environment) {
+
+  tExpression *result = nil;
+
+  if (aiko_store_save(aiko_store, aiko_store->size)) result = truth;
+
+  return(result);
+}
+
+tExpression ATTRIBUTES
+*primitiveWifi(
+  tExpression *expression,
+  tExpression *environment) {
+
+  tExpression *result = nil;
+
+  if (expression != NULL) {
+    tExpression *credentials = expression->list.car;
+
+    if (lispIsList(credentials)) {
+      tExpression *ssid       = credentials->list.car;  // ssid
+      tExpression *parameter2 = credentials->list.cdr;  // (password)
+
+      lispToString(
+        ssid, & aiko_store->wifi_ssid, sizeof(aiko_store->wifi_ssid)
+      );
+
+      if (parameter2 != NULL) {
+        tExpression *password = parameter2->list.car;
+
+        lispToString(
+          password,
+          & aiko_store->wifi_password,
+          sizeof(aiko_store->wifi_password)
+        );
+
+        result = truth;                        // TODO: Configure Wi-Fi Station
+      }
+    }
+  }
+
+  return(result);
+}
+
 /* ------------------------------------------------------------------------- */
 
 void ATTRIBUTES
 lisp_extend(
-  tExpression *lisp_environment) {
+  tExpression  *lisp_environment,
+  aiko_store_t *store) {                   // store->size *must* be initialized
+
+  aiko_store        = store;
+  aiko_store->magic = AIKO_STORE_MAGIC;
 
   lispAppend(
     lisp_environment, lispCreatePrimitive("addTimer", primitiveAddTimer)
   );
-
   lispAppend(lisp_environment, lispCreatePrimitive("debug", primitiveDebug));
+  lispAppend(lisp_environment, lispCreatePrimitive("load",  primitiveLoad));
+  lispAppend(lisp_environment, lispCreatePrimitive("save",  primitiveSave));
+  lispAppend(lisp_environment, lispCreatePrimitive("wifi",  primitiveWifi));
 
 // TODO: Ultimately, shouldn't need to do this ...
   lispExpressionBookmark = lispExpressionCurrent;

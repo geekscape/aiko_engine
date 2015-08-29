@@ -19,9 +19,15 @@
 #include <assert.h>
 #endif
 
+#ifdef ARDUINO
+#include "vendor/aiko_engine/include/aiko_engine.h"
+#include "vendor/aiko_engine/include/aiko_network.h"
+#include "vendor/aiko_engine/include/aiko_serial.h"
+#else
 #include "aiko_engine.h"
 #include "aiko_network.h"
 #include "aiko_serial.h"
+#endif
 
 aiko_source_t *aiko_sources[AIKO_SOURCE_MAXIMUM];
 uint8_t        aiko_source_count = 0;

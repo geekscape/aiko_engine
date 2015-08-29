@@ -64,14 +64,18 @@ typedef struct {
 
 /* ------------------------------------------------------------------------- */
 
+#ifdef ARDUINO
 static const uint8_t LISP_ATOM_SIZE_LIMIT = 10;
+#else
+static const uint8_t LISP_ATOM_SIZE_LIMIT = 64;       // Wi-Fi password maximum
+#endif
 
 #ifdef ARDUINO
-#define LISP_EXPRESSION_LIMIT  80                                // Minimum: 72
+#define LISP_EXPRESSION_LIMIT   80                               // Minimum: 72
 #elif __ets__
-#define LISP_EXPRESSION_LIMIT  80
+#define LISP_EXPRESSION_LIMIT   80
 #else
-#define LISP_EXPRESSION_LIMIT 512
+#define LISP_EXPRESSION_LIMIT  256
 #endif
 
 typedef enum {
@@ -176,6 +180,6 @@ tExpression *lispPrimitiveQuote(
 void         lispReset(uint16_t expressionIndex);
 
 int32_t      lispToInteger(tExpression *expression);
-
+uint8_t      lispToString(tExpression *expression, void *output, uint8_t size);
 
 /* ------------------------------------------------------------------------- */

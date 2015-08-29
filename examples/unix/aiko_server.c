@@ -16,10 +16,13 @@
  *
  * nc -u localhost 4149
  * (3:car(1:a1:b))
- * (5:debug)               // toggle lispDebug flag
- * (8:addTimer)            // add timer every 1 second  for a single count
- * (8:addTimer4:2000)      // add timer every 2 seconds for a single count
- * (8:addtimer4:2000:1:4)  // add timer every 2 seconds for 4 counts
+ * (5:debug)                   // toggle lispDebug flag
+ * (8:addTimer)                // add timer every 1 second  for a single count
+ * (8:addTimer4:2000)          // add timer every 2 seconds for a single count
+ * (8:addtimer4:2000:1:4)      // add timer every 2 seconds for 4 counts
+ * (4:load)                    // load "aikoStore" from persistant storage
+ * (4:save)                    // save "aikoStore" to persistent storage
+ * (4:wifi(4:ssid8:password))  // set Wi-Fi station SSID and password
  *
  * To Do
  * ~~~~~
@@ -27,11 +30,14 @@
  */
 
 #include <stdio.h>
+#include <string.h>
 
 #include "aiko_engine.h"
 #include "lisp.h"
 
 #include "../common/aiko_server/lisp_extend.h"
+
+aiko_store_t aiko_server_store;
 
 /* ------------------------------------------------------------------------- */
 
@@ -41,12 +47,15 @@ FILE *initialize(
 
   tExpression *lisp_environment = lisp_initialize(LISP_DEBUG);
 
-  lisp_extend(lisp_environment);
-
   if (lispError) {
     printf("Initialization error: %d\n", lispError);    // TODO: Better message
     exit(-1);
   }
+
+  memset(& aiko_server_store, 0x00, sizeof(aiko_server_store));
+  aiko_server_store.size = sizeof(aiko_server_store);
+
+  lisp_extend(lisp_environment, & aiko_server_store);
 
   FILE *inputFile = stdin;
   if (argc > 1) inputFile = fopen(argv[1], "r");

@@ -22,9 +22,6 @@
 
 #include "aiko_serial.h"
 
-#define FALSE  0
-#define TRUE   1
-
 static uint8_t        aiko_termios_saved = FALSE;
 static struct termios aiko_termios_backup;
 

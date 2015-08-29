@@ -52,13 +52,16 @@ typedef struct {
   aiko_time_t;
 
 typedef struct {
-#ifdef ARDUINO
-#elif __ets__
+#ifdef __ets__
   os_timer_t            esp8266_timer;
 #else
   aiko_time_t           period;
   aiko_timer_handler_t *handler;
+#ifdef ARDUINO
+  long                  timeout;
+#else
   long long             timeout;
+#endif
 #endif
 }
   aiko_timer_t;

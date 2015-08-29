@@ -15,4 +15,16 @@
 
 #include "lisp.h"
 
-void lisp_extend(tExpression *lisp_environment);
+#define AIKO_STORE_MAGIC  0x41494b4f
+
+typedef struct {
+  uint32_t magic;
+  uint16_t size;
+  uint8_t  wifi_ssid[33];                                    // null-terminated
+  uint8_t  wifi_password[65];                                // null-terminated
+
+// Additional storage may follow ...
+}
+  aiko_store_t;
+
+void lisp_extend(tExpression *lisp_environment, aiko_store_t *store);

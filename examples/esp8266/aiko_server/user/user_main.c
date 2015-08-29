@@ -33,6 +33,8 @@
 
 #include "lisp_extend.h"
 
+aiko_store_t aiko_store;
+
 /* ------------------------------------------------------------------------- */
 
 void ICACHE_FLASH_ATTR
@@ -66,7 +68,8 @@ initialize(
 
   tExpression *lisp_environment = lisp_initialize(debug_flag);
 
-  lisp_extend(lisp_environment);
+  aiko_store.size = sizeof(aiko_store);
+  lisp_extend(lisp_environment, & aiko_store);
 }
 
 /* ------------------------------------------------------------------------- */
