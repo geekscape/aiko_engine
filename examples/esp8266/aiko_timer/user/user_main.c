@@ -19,8 +19,6 @@
 
 #include "driver/uart.h"
 
-#include "user_config.h"
-
 #include "aiko_engine.h"
 
 /* ------------------------------------------------------------------------- */

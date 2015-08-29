@@ -13,7 +13,7 @@
  * Usage
  * ~~~~~
  * nc -u ESP8266_IP_ADDRESS 4149
- * (3:cdr(1:a1:b))
+ * (3:cdr(1:a1:b))             // Lisp 1.5 with canonical S-expressions :)
  * (5:debug)                   // toggle lispDebug flag
  * (8:addTimer)                // add timer every 1 second  for a single count
  * (8:addTimer4:2000)          // add timer every 2 seconds for a single count
@@ -30,48 +30,14 @@
 #include "user_interface.h"
 
 #include "aiko_engine.h"
-#include "lisp.h"
+#include "aiko_serial.h"
 
+#include "lisp.h"
 #include "lisp_extend.h"
 
-aiko_store_t aiko_store;
+#define BAUD_RATE  38400
 
-/* ------------------------------------------------------------------------- */
-
-void ICACHE_FLASH_ATTR
-wifi_ap_scan_done(
-  void   *arg,
-  STATUS  status) {
-
-  if (status == OK) {
-    os_printf("wifi_ap_scan_done():\n");
-    struct bss_info *bss_item = (struct bss_info *) arg;
-
-    while (bss_item != NULL) {
-      os_printf("  ssid: %s\n", bss_item->ssid);
-      bss_item = bss_item->next.stqe_next;
-    }
-  }
-}
-
-void ICACHE_FLASH_ATTR
-system_ready(void) {
-  if (wifi_get_opmode() != SOFTAP_MODE) {
-    wifi_station_scan(NULL, wifi_ap_scan_done);
-  }
-}
-
-/* ------------------------------------------------------------------------- */
-
-void ICACHE_FLASH_ATTR
-initialize(
-  uint8_t debug_flag) {
-
-  tExpression *lisp_environment = lisp_initialize(debug_flag);
-
-  aiko_store.size = sizeof(aiko_store);
-  lisp_extend(lisp_environment, & aiko_store);
-}
+aiko_store_t aiko_server_store;
 
 /* ------------------------------------------------------------------------- */
 
@@ -79,32 +45,41 @@ void user_rf_pre_init(void) {
 }
 
 void ICACHE_FLASH_ATTR
-user_init(void) {
-  ets_wdt_disable();
+initialize(
+  uint8_t debug_flag) {
 
-  initialize(LISP_DEBUG);
+  uart_init(BAUD_RATE, BAUD_RATE);
+  os_delay_us(5000);               // Allow time to settle before using UART :(
 
-  aiko_add_handler(
-    aiko_create_serial_source(NULL, 38400, '\r'), lisp_message_handler
-  );
-
-  os_delay_us(5000);
   os_printf("# ---------------\n");
   os_printf("# SDK version: %s\n", system_get_sdk_version());
   os_printf("# CPU clock:   %d\n", system_get_cpu_freq());
   os_printf("# Heap free:   %d\n", system_get_free_heap_size());
 
-  wifi_set_opmode(STATIONAP_MODE);
-  system_init_done_cb(system_ready);
-#if 0
-  char ssid[32] = SSID;
-  char password[64] = SSID_PASSWORD;
-  struct station_config station_configuration;
+  tExpression *lisp_environment = lisp_initialize(debug_flag);
 
-  os_memcpy(& station_configuration.ssid, ssid, 32);
-  os_memcpy(& station_configuration.password, password, 64);
-  wifi_station_set_config(& station_configuration);
-#endif
+  memset(& aiko_server_store, 0x00, sizeof(aiko_server_store));
+  aiko_server_store.size = sizeof(aiko_server_store);
+
+  lisp_extend(lisp_environment, & aiko_server_store);
+
+  aiko_wifi_softap_configure();
+
+  system_init_done_cb(aiko_system_ready);
+}
+
+/* ------------------------------------------------------------------------- */
+
+void ICACHE_FLASH_ATTR
+user_init(void) {
+  ets_wdt_disable();                                   // TODO: Reinstate WDT ?
+
+  initialize(LISP_DEBUG);
+
+  aiko_add_handler(
+    aiko_create_serial_source(NULL, BAUD_NO_CHANGE, '\r'), lisp_message_handler
+  );
+
   aiko_add_handler(
     aiko_create_socket_source(AIKO_SOURCE_SOCKET_UDP4, AIKO_PORT),
     lisp_message_handler

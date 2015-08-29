@@ -43,8 +43,10 @@ int aiko_serial_port_open(
     memcpy(& aiko_termios_backup, & options, sizeof(options));
     aiko_termios_saved  = TRUE;
 
-    cfsetispeed(& options, baud_rate);
-    cfsetospeed(& options, baud_rate);
+    if (baud_rate != BAUD_NO_CHANGE) {
+      cfsetispeed(& options, baud_rate);
+      cfsetospeed(& options, baud_rate);
+    }
 
     options.c_cflag |= (CLOCAL | CREAD);
 

@@ -83,6 +83,9 @@ aiko_source_t *aiko_create_source(aiko_source_type type, int fd);
 
 #ifdef ARDUINO
 #elif __ets__
+extern uint8_t aiko_system_ready_state;
+
+void aiko_system_ready(void);
 #else
 aiko_source_t *aiko_create_file_source(FILE *file);
 #endif

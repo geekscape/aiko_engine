@@ -7,6 +7,7 @@ OBJECTS += src/unix/network.o
 OBJECTS += src/unix/serial.o
 OBJECTS += src/unix/store.o
 OBJECTS += src/unix/timer.o
+OBJECTS += src/unix/wifi.o
 
 OBJECTS += src/common/lisp/expression.o
 OBJECTS += src/common/lisp/interface.o
@@ -35,6 +36,7 @@ $(OBJECTS):	\
 	include/aiko_network.h       \
 	include/aiko_serial.h        \
 	include/aiko_store.h         \
+	include/aiko_wifi.h          \
 	include/lisp.h               \
 	include/memory/list.h        \
 	include/memory/mmem.h        \

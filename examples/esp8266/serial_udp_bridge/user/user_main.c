@@ -12,10 +12,9 @@
  *
  * To Do
  * ~~~~~
- * - UDP implementation.
  * - Wi-Fi Soft-AP web-server for configuration ...
  *   - Wi-Fi Station SSID and password.
- *   - UDP port number.
+ *   - UDP port number, default 1025.
  *   - Serial baud rate, number of bits, number of stop bits, parity.
  *   - Serial receive sample rate, default: 20 milliseconds.
  *   - Serial buffer size, use malloc() / free().
@@ -25,14 +24,33 @@
 
 #include "user_interface.h"
 
-#include "user_config.h"
-
 #include "aiko_engine.h"
+#include "aiko_serial.h"
+
+#include "lisp.h"
+#include "lisp_extend.h"
+
+#define BAUD_RATE        38400
+#define UDP_SERVER_PORT   3000
+
+aiko_store_t aiko_server_store;
 
 /* ------------------------------------------------------------------------- */
 
 uint8_t ICACHE_FLASH_ATTR
 serial_handler(
+  uint8_t  *message,
+  uint16_t  length) {
+
+  int index;
+
+  for (index = 0;  index < length;  index ++) os_printf("%c", message[index]);
+
+  return(AIKO_HANDLED);
+}
+
+uint8_t ICACHE_FLASH_ATTR
+udp_handler(
   uint8_t  *message,
   uint16_t  length) {
 
@@ -49,14 +67,45 @@ void user_rf_pre_init(void) {
 }
 
 void ICACHE_FLASH_ATTR
-user_init(void) {
-  aiko_add_handler(
-    aiko_create_serial_source(NULL, 38400, 0x00), serial_handler
-  );
+initialize(
+  uint8_t debug_flag) {
 
-  os_delay_us(5000);
+  uart_init(BAUD_RATE, BAUD_RATE);
+  os_delay_us(5000);               // Allow time to settle before using UART :(
+
   os_printf("# ---------------\n");
   os_printf("# SDK version: %s\n", system_get_sdk_version());
   os_printf("# CPU clock:   %d\n", system_get_cpu_freq());
   os_printf("# Heap free:   %d\n", system_get_free_heap_size());
+
+  tExpression *lisp_environment = lisp_initialize(debug_flag);
+
+  memset(& aiko_server_store, 0x00, sizeof(aiko_server_store));
+  aiko_server_store.size = sizeof(aiko_server_store);
+
+  lisp_extend(lisp_environment, & aiko_server_store);
+
+  aiko_wifi_softap_configure();
+
+  system_init_done_cb(aiko_system_ready);
 }
+
+/* ------------------------------------------------------------------------- */
+
+void ICACHE_FLASH_ATTR
+user_init(void) {
+  ets_wdt_disable();                                   // TODO: Reinstate WDT ?
+
+  initialize(LISP_DEBUG);
+
+  aiko_add_handler(
+    aiko_create_serial_source(NULL, BAUD_NO_CHANGE, 0x00), serial_handler
+  );
+
+  aiko_add_handler(
+    aiko_create_socket_source(AIKO_SOURCE_SOCKET_UDP4, UDP_SERVER_PORT),
+    udp_handler
+  );
+}
+
+/* ------------------------------------------------------------------------- */

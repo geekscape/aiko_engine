@@ -75,7 +75,10 @@ aiko_serial_port_open(
 
   aiko_serial_record_delimiter = record_delimiter;
 
-  uart_init(baud_rate, baud_rate);
+  if (baud_rate != BAUD_NO_CHANGE) {
+    uart_init(baud_rate, baud_rate);
+    os_delay_us(5000);             // Allow time to settle before using UART :(
+  }
 
   aiko_time_t   period = { 0, 20000 };  // 20 milliseconds = 50 Hz
   aiko_timer_t *timer  = aiko_add_timer(& period, aiko_serial_timer_handler);

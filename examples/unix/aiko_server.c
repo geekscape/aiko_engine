@@ -15,7 +15,7 @@
  * ./aiko_server [ source_file ]
  *
  * nc -u localhost 4149
- * (3:car(1:a1:b))
+ * (3:car(1:a1:b))             // Lisp 1.5 with canonical S-expressions :)
  * (5:debug)                   // toggle lispDebug flag
  * (8:addTimer)                // add timer every 1 second  for a single count
  * (8:addTimer4:2000)          // add timer every 2 seconds for a single count
@@ -33,8 +33,8 @@
 #include <string.h>
 
 #include "aiko_engine.h"
-#include "lisp.h"
 
+#include "lisp.h"
 #include "../common/aiko_server/lisp_extend.h"
 
 aiko_store_t aiko_server_store;

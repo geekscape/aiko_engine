@@ -31,6 +31,7 @@
  * - primitiveLoad(): Store per application "size" and "magic" for checks
  * - primitiveLoad(): Check existing expected size  versus size  afterwards.
  * - primitiveLoad(): Check existing expected magic versus magic afterwards.
+ * - primitiveLoad(): Check expected version number.
  *
  * - (8:addTimer) first parameter should be the Lisp expression to invoke.
  *   - Default: (8:addTimer(12:timerHandler)4:10001:1)
@@ -40,8 +41,9 @@
 
 #include "aiko_engine.h"
 #include "aiko_store.h"
-#include "lisp.h"
+#include "aiko_wifi.h"
 
+#include "lisp.h"
 #include "lisp_extend.h"
 
 static aiko_store_t *aiko_store;
@@ -119,8 +121,9 @@ tExpression ATTRIBUTES
 
   if (result == nil) {
     memset(& aiko_store, 0x00, sizeof(aiko_store_t));     // TODO: correct size
-    aiko_store->size  = sizeof(aiko_store_t);
-    aiko_store->magic = AIKO_STORE_MAGIC;
+    aiko_store->size    = sizeof(aiko_store_t);
+    aiko_store->magic   = AIKO_STORE_MAGIC;
+    aiko_store->version = AIKO_STORE_VERSION;
   }
 
   return(result);
@@ -152,6 +155,8 @@ tExpression ATTRIBUTES
       tExpression *ssid       = credentials->list.car;  // ssid
       tExpression *parameter2 = credentials->list.cdr;  // (password)
 
+      memset(& aiko_store->wifi_ssid, 0x00, sizeof(aiko_store->wifi_ssid));
+
       lispToString(
         ssid, & aiko_store->wifi_ssid, sizeof(aiko_store->wifi_ssid)
       );
@@ -159,13 +164,21 @@ tExpression ATTRIBUTES
       if (parameter2 != NULL) {
         tExpression *password = parameter2->list.car;
 
+        memset(
+          & aiko_store->wifi_password, 0x00, sizeof(aiko_store->wifi_password)
+        );
+
         lispToString(
           password,
           & aiko_store->wifi_password,
           sizeof(aiko_store->wifi_password)
         );
 
-        result = truth;                        // TODO: Configure Wi-Fi Station
+        aiko_wifi_station_configure(
+          aiko_store->wifi_ssid, aiko_store->wifi_password
+        );
+
+        result = truth;
       }
     }
   }
@@ -180,8 +193,9 @@ lisp_extend(
   tExpression  *lisp_environment,
   aiko_store_t *store) {                   // store->size *must* be initialized
 
-  aiko_store        = store;
-  aiko_store->magic = AIKO_STORE_MAGIC;
+  aiko_store          = store;
+  aiko_store->magic   = AIKO_STORE_MAGIC;
+  aiko_store->version = AIKO_STORE_VERSION;
 
   lispAppend(
     lisp_environment, lispCreatePrimitive("addTimer", primitiveAddTimer)

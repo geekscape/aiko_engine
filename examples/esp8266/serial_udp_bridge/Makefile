@@ -33,10 +33,14 @@ TARGET		= app
 # which modules (subdirectories) of the project to include in compiling
 MODULES		=  driver user
 MODULES		+= ../../../src/common
+MODULES		+= ../../../src/common/lisp
+MODULES		+= ../../../src/common/memory
 MODULES		+= ../../../src/esp8266
+MODULES		+= ../../common/aiko_server
 
 EXTRA_INCDIR    =  include
 EXTRA_INCDIR    += ../../../include
+EXTRA_INCDIR    += ../../common/aiko_server
 
 # libraries used in this project, mainly provided by the SDK
 LIBS		= c gcc hal pp phy net80211 lwip wpa main
@@ -45,6 +49,8 @@ LIBS		= c gcc hal pp phy net80211 lwip wpa main
 CFLAGS		= -Os -g -O2 -Wpointer-arith -Wundef -Werror -Wl,-EL -fno-inline-functions -nostdlib -mlongcalls -mtext-section-literals  -D__ets__ -DICACHE_FLASH
 # Compile stdint.h cleanly ...
 CFLAGS		+= -DTENSILICA=0 -D__have_long64=0 -D__int_fast64_t_defined=1
+# Lisp engine heap memory allocation
+CFLAGS  += -DMMEM_CONF_SIZE=256
 
 # linker flags used to generate the main object file
 LDFLAGS		= -nostdlib -Wl,--no-check-sections -u call_user_start -Wl,-static

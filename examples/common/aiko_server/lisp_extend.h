@@ -15,11 +15,13 @@
 
 #include "lisp.h"
 
-#define AIKO_STORE_MAGIC  0x41494b4f
+#define AIKO_STORE_MAGIC    0x41494b4f
+#define AIKO_STORE_VERSION  0x0001
 
 typedef struct {
   uint16_t size;
   uint32_t magic;
+  uint16_t version;
   uint8_t  wifi_ssid[33];                                    // null-terminated
   uint8_t  wifi_password[65];                                // null-terminated
 

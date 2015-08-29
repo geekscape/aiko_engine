@@ -1,7 +1,7 @@
 /**
  * Please do not remove the following notices.
  *
- * \file       aiko_serial.h
+ * \file       aiko_wifi.h
  * \author     Andy Gelme <andyg@geekscape.org>
  * \copyright  (c) 2015 by Geekscape Pty. Ltd.
  * \license    AGPLv3 http://geekscape.org/static/aiko_license.html
@@ -15,9 +15,19 @@
 
 #include "aiko_compatibility.h"
 
-#define AIKO_SERIAL_BUFFER_SIZE 128
+#ifndef __ets__
+typedef enum {
+  OK = 0,
+  FAIL,
+  PENDING,
+  BUSY,
+  CANCEL,
+}
+  STATUS;
+#endif
 
-#define BAUD_NO_CHANGE  0
+void aiko_wifi_ap_scan_done(void *arg, STATUS status);
 
-int aiko_serial_port_open(
-  const char *serial_port_name, speed_t baud_rate, uint8_t record_delimiter);
+void aiko_wifi_softap_configure(void);
+
+void aiko_wifi_station_configure(char ssid[33], char password[65]);
