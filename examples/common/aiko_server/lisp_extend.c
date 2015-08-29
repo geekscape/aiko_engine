@@ -120,7 +120,7 @@ tExpression ATTRIBUTES
   }
 
   if (result == nil) {
-    memset(& aiko_store, 0x00, sizeof(aiko_store_t));     // TODO: correct size
+    memset(aiko_store, 0x00, sizeof(aiko_store_t));       // TODO: correct size
     aiko_store->size    = sizeof(aiko_store_t);
     aiko_store->magic   = AIKO_STORE_MAGIC;
     aiko_store->version = AIKO_STORE_VERSION;
@@ -175,7 +175,7 @@ tExpression ATTRIBUTES
         );
 
         aiko_wifi_station_configure(
-          aiko_store->wifi_ssid, aiko_store->wifi_password
+          (char *) aiko_store->wifi_ssid, (char *) aiko_store->wifi_password
         );
 
         result = truth;
