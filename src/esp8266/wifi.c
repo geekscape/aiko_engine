@@ -12,7 +12,8 @@
  *
  * To Do
  * ~~~~~
- * - None, yet.
+ * - If not connected to AP, then match known SSID and connect.
+ * - Kick off another system ready -> Wi-Fi station scan ?
  */
 
 #include "user_interface.h"

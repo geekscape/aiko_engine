@@ -92,6 +92,8 @@ aiko_udp_send_unicast(
     aiko_udp_conn->proto.udp->remote_ip, & address_ipv4, sizeof(address_ipv4)
   );
 
+  aiko_udp_conn->proto.udp->remote_port = port;
+
   espconn_sent(aiko_udp_conn, buffer, size);
 
   return(0);
