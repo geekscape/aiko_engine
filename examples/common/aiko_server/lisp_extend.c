@@ -59,7 +59,7 @@ timer_handler(
 
   printf("timer_handler(): %d\n", timer_counter ++);
 
-  if (timer_counter == timer_maximum) {
+  if (timer_counter >= timer_maximum) {
     aiko_delete_timer((aiko_timer_t *) timer_self);
   }
 
