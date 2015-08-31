@@ -39,6 +39,9 @@ typedef struct {
   aiko_source_type  type;
   aiko_handler_t   *handler;
   int               fd;
+  union {
+    uint16_t          port;
+  }                 id;
 }
   aiko_source_t;
 

@@ -84,7 +84,10 @@ aiko_source_t ATTRIBUTES
   aiko_source_t *aiko_source = NULL;
 
   int fd = aiko_udp_create_socket(1, port);
-  if (fd >= 0) aiko_source = aiko_create_source(type, fd);
+  if (fd >= 0) {
+    aiko_source          = aiko_create_source(type, fd);
+    aiko_source->id.port = port;
+  }
 
   return(aiko_source);
 }

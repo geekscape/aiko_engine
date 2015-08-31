@@ -41,11 +41,15 @@ aiko_udp_handler(
 
   if (buffer == NULL) return;
 
+  struct espconn *udp_conn = (struct espconn *) arg;
+
   int index;
   for (index = 0;  index < aiko_source_count;  index ++) {
     aiko_source_t *aiko_source = aiko_sources[index];
     if (aiko_source->type == AIKO_SOURCE_SOCKET_UDP4) {
-      uint8_t handled = aiko_source->handler(buffer, length);
+      if (aiko_source->id.port == udp_conn->proto.udp->local_port) {
+        uint8_t handled = aiko_source->handler(buffer, length);
+      }
     }
   }
 }
