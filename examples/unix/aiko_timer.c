@@ -38,6 +38,8 @@ int main(
   int   argc,
   char *argv[]) {
 
+  printf("[%s %s]\n", argv[0], AIKO_VERSION);
+
   aiko_time_t   period = { 1, 0 };  // 1 second
   aiko_timer_t *timer  = aiko_add_timer(& period, timer_handler);
 

@@ -31,8 +31,10 @@ int main(
   int   argc,
   char *argv[]) {
 
+  printf("[%s %s]\n", argv[0], AIKO_VERSION);
+
   if (argc != 3) {
-    fprintf(stderr, "\nUsage: %s WIFI_SSID WIFI_PASSWORD\n\n", argv[0]);
+    fprintf(stderr, "Usage: %s WIFI_SSID WIFI_PASSWORD\n\n", argv[0]);
     exit(-1);
   }
 

@@ -1,3 +1,6 @@
+# Miscellaneous
+include/version.h
+
 # Object files
 *.o
 *.ko

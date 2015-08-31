@@ -26,7 +26,12 @@ AIKO_TIMER_OBJECTS = examples/unix/aiko_timer.o
 
 AIKO_UDP_OBJECTS = examples/unix/aiko_udp.o
 
-all:	aiko_configure aiko_server aiko_timer aiko_udp
+all:	version aiko_configure aiko_server aiko_timer aiko_udp
+
+GIT_VERSION := $(shell git describe --abbrev=8 --dirty --always --tags)
+
+version:
+	@echo '#define AIKO_VERSION  "$(GIT_VERSION)"' >include/version.h
 
 aiko_configure:	$(AIKO_CONFIGURE_OBJECTS) $(OBJECTS)
 	gcc $^ -o $@
@@ -53,7 +58,7 @@ $(OBJECTS):	\
 	examples/common/aiko_server/lisp_extend.h
 
 clean:
-	-rm -f $(OBJECTS)
+	-rm -f $(OBJECTS) include/version.h
 	-rm -f $(AIKO_CONFIGURE_OBJECTS)
 	-rm -f $(AIKO_SERVER_OBJECTS)
 	-rm -f $(AIKO_TIMER_OBJECTS)

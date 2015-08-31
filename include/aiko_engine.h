@@ -14,6 +14,7 @@
 #pragma once
 
 #include "aiko_compatibility.h"
+#include "version.h"
 
 #define AIKO_PORT            4149
 #define AIKO_SOURCE_MAXIMUM     4

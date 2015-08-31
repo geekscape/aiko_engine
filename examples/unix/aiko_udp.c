@@ -46,6 +46,8 @@ int main(
   int   argc,
   char *argv[]) {
 
+  printf("[%s %s]\n", argv[0], AIKO_VERSION);
+
   aiko_add_handler(
     aiko_create_socket_source(AIKO_SOURCE_SOCKET_UDP4, UDP_PORT0),
     udp_message_handler0

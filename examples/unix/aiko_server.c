@@ -71,6 +71,8 @@ int main(
 
   FILE *input_file = initialize(argc, argv);
 
+  printf("[%s %s]\n", argv[0], AIKO_VERSION);
+
   aiko_add_handler(aiko_create_file_source(input_file), lisp_message_handler);
 
   aiko_add_handler(
