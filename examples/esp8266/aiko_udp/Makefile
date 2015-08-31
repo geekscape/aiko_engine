@@ -110,7 +110,10 @@ endef
 
 .PHONY: all checkdirs flash clean
 
-all: clean checkdirs $(TARGET_OUT) $(FW_FILE_1) $(FW_FILE_2)
+all: clean version checkdirs $(TARGET_OUT) $(FW_FILE_1) $(FW_FILE_2)
+
+version:
+	@(cd ../../..; $(MAKE) version)
 
 $(FW_BASE)/%.bin: $(TARGET_OUT) | $(FW_BASE)
 	$(vecho) "FW $(FW_BASE)/"
