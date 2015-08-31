@@ -29,7 +29,7 @@ uint8_t ICACHE_FLASH_ATTR
 timer_handler(
   void *timer_self) {
 
-  os_printf("timer_handler(): %d\n", timer_counter ++);
+  printf("timer_handler(): %d\n", timer_counter ++);
 
   if (timer_counter == 4) aiko_delete_timer((aiko_timer_t *) timer_self);
   return(AIKO_HANDLED);
@@ -44,10 +44,11 @@ void ICACHE_FLASH_ATTR
 user_init(void) {
   uart_init(BIT_RATE_38400, BIT_RATE_38400);
 
-  os_printf("# ---------------\n");
-  os_printf("# SDK version: %s\n", system_get_sdk_version());
-  os_printf("# CPU clock:   %d\n", system_get_cpu_freq());
-  os_printf("# Heap free:   %d\n", system_get_free_heap_size());
+  printf("# ---------------\n");
+  printf("[aiko_timer %s]\n", AIKO_VERSION);
+  printf("# SDK version: %s\n", system_get_sdk_version());
+  printf("# CPU clock:   %d\n", system_get_cpu_freq());
+  printf("# Heap free:   %d\n", system_get_free_heap_size());
 
   aiko_time_t   period = { 1, 0 };  // 1 second
   aiko_timer_t *timer  = aiko_add_timer(& period, timer_handler);

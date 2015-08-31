@@ -53,10 +53,11 @@ void ICACHE_FLASH_ATTR
 user_init(void) {
   uart_init(BIT_RATE_38400, BIT_RATE_38400);
 
-  os_printf("# ---------------\n");
-  os_printf("# SDK version: %s\n", system_get_sdk_version());
-  os_printf("# CPU clock:   %d\n", system_get_cpu_freq());
-  os_printf("# Heap free:   %d\n", system_get_free_heap_size());
+  printf("# ---------------\n");
+  printf("[aiko_udp %s]\n", AIKO_VERSION);
+  printf("# SDK version: %s\n", system_get_sdk_version());
+  printf("# CPU clock:   %d\n", system_get_cpu_freq());
+  printf("# Heap free:   %d\n", system_get_free_heap_size());
 
   aiko_add_handler(
     aiko_create_socket_source(AIKO_SOURCE_SOCKET_UDP4, UDP_PORT0),
