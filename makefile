@@ -17,14 +17,19 @@ OBJECTS += src/common/lisp/utility.o
 OBJECTS += src/common/memory/list.o
 OBJECTS += src/common/memory/mmem.o 
 
+AIKO_CONFIGURE_OBJECTS  = examples/unix/aiko_configure.o
+
 AIKO_SERVER_OBJECTS  = examples/unix/aiko_server.o
 AIKO_SERVER_OBJECTS += examples/common/aiko_server/lisp_extend.o
 
-AIKO_TIMER_OBJECTS   = examples/unix/aiko_timer.o
+AIKO_TIMER_OBJECTS = examples/unix/aiko_timer.o
 
-AIKO_UDP_OBJECTS     = examples/unix/aiko_udp.o
+AIKO_UDP_OBJECTS = examples/unix/aiko_udp.o
 
-all:	aiko_server aiko_timer aiko_udp
+all:	aiko_configure aiko_server aiko_timer aiko_udp
+
+aiko_configure:	$(AIKO_CONFIGURE_OBJECTS) $(OBJECTS)
+	gcc $^ -o $@
 
 aiko_server:	$(AIKO_SERVER_OBJECTS) $(OBJECTS)
 	gcc $^ -o $@
@@ -49,12 +54,13 @@ $(OBJECTS):	\
 
 clean:
 	-rm -f $(OBJECTS)
+	-rm -f $(AIKO_CONFIGURE_OBJECTS)
 	-rm -f $(AIKO_SERVER_OBJECTS)
 	-rm -f $(AIKO_TIMER_OBJECTS)
 	-rm -f $(AIKO_UDP_OBJECTS)
 
 clobber:	clean
-	-rm -f aiko_server aiko_timer aiko_udp
+	-rm -f aiko_configure aiko_server aiko_timer aiko_udp
 
 help :
 	@echo ""
