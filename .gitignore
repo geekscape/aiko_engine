@@ -1,5 +1,5 @@
 # Miscellaneous
-include/version.h
+include/aiko_version.h
 
 # Object files
 *.o
