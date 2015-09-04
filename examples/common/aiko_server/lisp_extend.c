@@ -47,6 +47,9 @@
 #include "lisp_extend.h"
 
 static aiko_store_t *aiko_store;
+static uint16_t      aiko_store_size;
+static uint32_t      aiko_store_magic;
+static uint16_t      aiko_store_version;
 
 /* ------------------------------------------------------------------------- */
 
@@ -111,7 +114,8 @@ tExpression ATTRIBUTES
   tExpression *result = nil;
 
   if (aiko_store_load(aiko_store, aiko_store->size)) {
-    if (aiko_store->magic != AIKO_STORE_MAGIC) {
+    if (aiko_store->magic   != aiko_store_magic  ||
+        aiko_store->version != aiko_store_version) {
       PRINTLN("Error: Storage corrupt");
     }
     else {
@@ -120,10 +124,10 @@ tExpression ATTRIBUTES
   }
 
   if (result == nil) {
-    memset(aiko_store, 0x00, sizeof(aiko_store_t));       // TODO: correct size
-    aiko_store->size    = sizeof(aiko_store_t);
-    aiko_store->magic   = AIKO_STORE_MAGIC;
-    aiko_store->version = AIKO_STORE_VERSION;
+    memset(aiko_store, 0x00, aiko_store_size);
+    aiko_store->size    = aiko_store_size;
+    aiko_store->magic   = aiko_store_magic;
+    aiko_store->version = aiko_store_version;
   }
 
   return(result);
@@ -191,11 +195,12 @@ tExpression ATTRIBUTES
 void ATTRIBUTES
 lisp_extend(
   tExpression  *lisp_environment,
-  aiko_store_t *store) {                   // store->size *must* be initialized
+  aiko_store_t *store) {
 
-  aiko_store          = store;
-  aiko_store->magic   = AIKO_STORE_MAGIC;
-  aiko_store->version = AIKO_STORE_VERSION;
+  aiko_store         = store;
+  aiko_store_size    = store->size;
+  aiko_store_magic   = store->magic;
+  aiko_store_version = store->version;
 
   lispAppend(
     lisp_environment, lispCreatePrimitive("addTimer", primitiveAddTimer)

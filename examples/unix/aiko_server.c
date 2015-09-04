@@ -53,7 +53,9 @@ FILE *initialize(
   }
 
   memset(& aiko_server_store, 0x00, sizeof(aiko_server_store));
-  aiko_server_store.size = sizeof(aiko_server_store);
+  aiko_server_store.size    = sizeof(aiko_server_store);
+  aiko_server_store.magic   = AIKO_STORE_MAGIC;
+  aiko_server_store.version = AIKO_STORE_VERSION;
 
   lisp_extend(lisp_environment, & aiko_server_store);
 
