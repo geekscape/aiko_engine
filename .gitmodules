@@ -1,0 +1,3 @@
+[submodule "vendor/esptool"]
+	path = vendor/esptool
+	url = https://github.com/themadinventor/esptool.git
