@@ -1,3 +1,5 @@
+SERIAL_PORT = /dev/ttyUSB0
+
 CFLAGS += -DMMEM_CONF_SIZE=256
 CFLAGS += -Iinclude
 
