@@ -28,24 +28,24 @@ AIKO_TIMER_OBJECTS = examples/unix/aiko_timer.o
 
 AIKO_UDP_OBJECTS = examples/unix/aiko_udp.o
 
-all:	version aiko_configure aiko_server aiko_timer aiko_udp
+all: aiko_configure aiko_server aiko_timer aiko_udp
 
 GIT_VERSION := $(shell git describe --abbrev=8 --dirty --always --tags)
 
 version:
 	@echo '#define AIKO_VERSION  "$(GIT_VERSION)"' >include/aiko_version.h
 
-aiko_configure:	$(AIKO_CONFIGURE_OBJECTS) $(OBJECTS)
-	gcc $^ -o $@
+aiko_configure:	version $(AIKO_CONFIGURE_OBJECTS) $(OBJECTS)
+	gcc $(filter %.o, $^) -o $@
 
-aiko_server:	$(AIKO_SERVER_OBJECTS) $(OBJECTS)
-	gcc $^ -o $@
+aiko_server:	version $(AIKO_SERVER_OBJECTS) $(OBJECTS)
+	gcc $(filter %.o, $^) -o $@
 
-aiko_timer:	$(AIKO_TIMER_OBJECTS) $(OBJECTS)
-	gcc $^ -o $@
+aiko_timer:	version $(AIKO_TIMER_OBJECTS) $(OBJECTS)
+	gcc $(filter %.o, $^) -o $@
 
-aiko_udp:	$(AIKO_UDP_OBJECTS) $(OBJECTS)
-	gcc $^ -o $@
+aiko_udp:	version $(AIKO_UDP_OBJECTS) $(OBJECTS)
+	gcc $(filter %.o, $^) -o $@
 
 $(OBJECTS):	\
 	include/aiko_engine.h        \
@@ -85,3 +85,5 @@ help :
 	@echo "make clobber - Remove all generated files"
 	@echo "make help    - Display usage"
 	@echo ""
+
+.PHONY: version

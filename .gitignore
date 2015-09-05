@@ -25,6 +25,10 @@ include/aiko_version.h
 
 # Executables
 aiko_engine
+aiko_configure
+aiko_server
+aiko_timer
+aiko_udp
 *.exe
 *.out
 *.app
