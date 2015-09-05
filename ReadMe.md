@@ -7,6 +7,7 @@ Contents
 - [ESP8266: Preparation](#preparation)
 - [ESP8266: Flashing pre-built firmware](#flash)
 - [ESP8266: Configuring Wi-Fi credentials](#configure)
+- [Interactive session (LISP REPL)](#repl)
 - [Software license](LICENSE)
 
 <a name="overview" />
@@ -74,3 +75,48 @@ ESP8266: Configuring Wi-Fi credentials
 
   - Where the parameters are for your Wi-Fi Access Point
   - __Caution: currently the Wi-Fi credentials are sent in plain-text (UNSECURE)__
+
+<a name="repl" />
+Interactive session (LISP REPL)
+-------------------------------
+Examples, particularly the
+[aiko\_server](https://github.com/geekscape/aiko_engine/blob/master/examples/unix/aiko_server.c),
+may include the
+[embedded LISP engine](https://github.com/geekscape/aiko_engine/tree/master/src/common/lisp).
+
+This provides an interactive Read-Eval-Print-Loop
+(aka [REPL](https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop))
+typically accessible via the serial console or a UDP socket.
+
+The core LISP engine implements a minimal set of primitives:
+car, cdr, cons, equal, atom, cond, lamdba, label, quote
+
+Additional primitives have been provided ...
+
+- (addTimer _PERIOD_ _COUNT_)
+- (debug)
+- (load)
+- (save)
+- (wifi (_SSID_ _PASSWORD_))
+
+Currently, the REPL output only appears on the serial console.
+Serial console input is not echoed (painful), so using UDP messages is
+recommended ...
+
+        nc -u ESP8266_IP_ADDRESS 4149
+        (13:hello world !)
+
+The REPL expects LISP input formatted as
+[Canonical S-expressions](https://en.wikipedia.org/wiki/Canonical_S-expressions)
+
+Examples ...
+
+        6:anAtom                    ;; LISP atom (or token)
+        (4:this2:is1:a4:list)       ;; Simple LISP list containing 4 tokens
+        (8:addTimer)                ;; Fire a single timer after 1 second
+        (8:addTimer4:2000)          ;; Fire a single timer after 2 seconds
+        (8:addtimer4:2000:1:4)      ;; Fire a timer every 2 seconds, 4 times
+        (5:debug)                   ;; Toggle debugging information
+        (4:load)                    ;; Store configuration parameters
+        (4:save)                    ;; Restore configuration parameters
+        (4:wifi(4:ssid8:password))  ;; Set Wi-Fi Access Point credentials
