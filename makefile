@@ -67,6 +67,15 @@ clean:
 clobber:	clean
 	-rm -f aiko_configure aiko_server aiko_timer aiko_udp
 
+firmware:
+	-@mkdir firmware
+	@(cd examples/esp8266/aiko_server; $(MAKE))
+	@(cp examples/esp8266/aiko_server/firmware/* firmware)
+
+flash:
+	@vendor/esptool/esptool.py -p $(SERIAL_PORT) write_flash \
+	  0x00000 firmware/0x00000.bin 0x40000 firmware/0x40000.bin
+
 help :
 	@echo ""
 	@echo "make         - Build Unix examples
