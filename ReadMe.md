@@ -19,7 +19,7 @@ Overview
 --------
 The Aiko Engine provides ...
 - Cross-platform framework and implementation for ESP8266 and Unix
-- Abstrations for event handling, networking, persistance, timers
+- Abstractions for event handling, networking, persistance, timers
 - Lisp scripting
 
 <a name="preparation" />
