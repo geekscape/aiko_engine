@@ -4,11 +4,12 @@ Aiko Engine
 Contents
 --------
 - [Overview](#overview)
-- [Unix: Build](#unix_build)
+- [Unix: Build examples](#unix_build)
 - [Interactive session (LISP REPL)](#lisp_repl)
 - [ESP8266: Preparation](#esp8266_preparation)
 - [ESP8266: Flashing pre-built firmware](#esp8266_flash)
 - [ESP8266: Configuring Wi-Fi credentials](#esp8266_configure)
+- [ESP8266: Build firmware on Linux](#esp8266_build)
 - [Resources](#resources)
 
 Pages
@@ -25,9 +26,9 @@ The Aiko Engine provides ...
 - Lisp scripting
 
 <a name="unix_build" />
-Build: Unix
------------
-To build the various [examples](examples/unix),
+Unix: Build examples
+--------------------
+To build the various [Unix examples](examples/unix),
 in the top-level directory on either Linux or Mac OS X, type ...
 
         make
@@ -133,6 +134,70 @@ ESP8266: Configuring Wi-Fi credentials
 
   - Where the parameters are for your Wi-Fi Access Point
   - __Caution: currently the Wi-Fi credentials are sent in plain-text (UNSECURE)__
+
+<a name="esp8266_build" />
+Build: ESP8266 firmware on Linux
+--------------------------------
+To build the various [ESP8266 examples](examples/esp8266),
+the ESP8266 cross-compiler development environment must installed.
+Presently, that is only supported on Linux.  If you use Mac OS X or
+Windows, then your best option is to install Ubuntu on a Virtual Machine.
+
+Note: Currently, the Aiko Engine works on ESP8266 SDK 1.2.0, but not 1.3.0.
+
+- Install Ubuntu VM
+- Install ansible on your local host
+  - brew install ansible ssh-copy-id
+  - ssh-copy-id USERNAME@HOSTNAME\_VM
+- git clone https://github.com/wolfeidau/ansible-esp8266-role
+- cd ansible-esp8266-role
+- vi inventory\_HOSTNAME\_VM
+
+        [HOSTNAME_VM]
+        HOSTNAME_VM.local ansible_ssh_user=USERNAME ask_pass=True
+
+- cp playbook.yml playbook\_HOSTNAME\_VM.yml
+- vi playbook\_HOSTNAME\_VM.yml
+
+        ---
+        - name: Test the ESP8266 role
+          hosts: all
+          sudo: yes
+          tasks:
+            - include: "tasks/main.yml" 
+              vars:
+                deploy_user: USERNAME 
+                esp_iot_sdk_archive_url: "http://bbs.espressif.com/download/file.php?id=564&sid=b012c7cc3f156b4a934c60f8275afc7a"
+                esp_iot_sdk: "esp_iot_sdk_v1.2.0_15_07_03.zip"
+                esp_iot_sdk_path: "esp_iot_sdk_v1.2.0"
+
+- ansible-playbook -i inventory\_HOSTNAME\_VM.yml playbook.HOSTNAME\_VM.yml --ask-sudo-pass --check
+
+If the _ansible-playbook_ dry-run works, then you can do it for real ...
+
+- ansible-playbook -i inventory\_HOSTNAME\_VM.yml playbook.HOSTNAME\_VM.yml --ask-sudo-pass
+
+Now that the ESP8266 cross-compiler development environment is installed,
+you can login to your Ubuntu VM and update your executable PATH ...
+
+- vi /etc/profile.d/esp8266.sh 
+
+        export PATH=/opt/Espressif/crosstool-NG/builds/xtensa-lx106-elf/bin:$PATH
+
+Building and flashing the ESP8266 firmware on your Ubuntu VM ...
+
+- git clone https://github.com/geekscape/aiko_engine.git
+- cd aiko_engine
+- git submodule update --init
+- cd examples/esp8266/aiko_server
+- make
+- make flash
+
+The final step assumes that you have your USB-serial adapter connected as
+_/dev/ttyUSB0_ and you've pressed the [Reset] and [Flash] buttons correctly.
+
+Further details on the [ESP8266 firmware flash procedure](#esp8266_flash)
+and [ESP8266 Wi-Fi configuration](esp8266_configure) are above.
 
 <a name="resources" />
 Resources
