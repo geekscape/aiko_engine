@@ -52,15 +52,15 @@ car, cdr, cons, equal, atom, cond, lamdba, label, quote
 
 Additional primitives have been provided ...
 
-- (addTimer _PERIOD_ _COUNT_)
-- (debug)
-- (load)
-- (save)
-- (wifi (_SSID_ _PASSWORD_))
+        (addTimer PERIOD COUNT)
+        (debug)
+        (load)
+        (save)
+        (wifi (SSID PASSWORD))
 
 Currently, the REPL output only appears on the serial console.
-Serial console input is not echoed (painful), so using UDP messages is
-recommended ...
+Serial console input is not echoed (awkward to use),
+so using UDP messages is recommended ...
 
         nc -u ESP8266_IP_ADDRESS 4149
         (13:hello world !)
@@ -85,9 +85,11 @@ ESP8266: Preparation
 --------------------
 - Acquire USB Serial adapter for flashing firmware / serial console
   - Note: Voltage needs to match that required for your ESP8266 hardware
-- git clone https://github.com/geekscape/aiko_engine.git
-- cd aiko_engine
-- git submodule update --init
+
+        git clone https://github.com/geekscape/aiko_engine.git
+        cd aiko_engine
+        git submodule update --init
+
 - __Mac OS X or Linux:__ sudo pip install pyserial
 - __Windows:__ Acquire
 [nodemcu-flasher](https://github.com/nodemcu/nodemcu-flasher)
@@ -187,12 +189,12 @@ you can login to your Ubuntu VM and update your executable PATH ...
 
 Building and flashing the ESP8266 firmware on your Ubuntu VM ...
 
-- git clone https://github.com/geekscape/aiko_engine.git
-- cd aiko_engine
-- git submodule update --init
-- cd examples/esp8266/aiko_server
-- make
-- make flash
+        git clone https://github.com/geekscape/aiko_engine.git
+        cd aiko_engine
+        git submodule update --init
+        cd examples/esp8266/aiko_server
+        make
+        make flash
 
 The final step assumes that you have your USB-serial adapter connected as
 _/dev/ttyUSB0_ and you've pressed the [Reset] and [Flash] buttons correctly.
