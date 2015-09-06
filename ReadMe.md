@@ -8,18 +8,19 @@ Contents
 - [ESP8266: Flashing pre-built firmware](#flash)
 - [ESP8266: Configuring Wi-Fi credentials](#configure)
 - [Interactive session (LISP REPL)](#repl)
-- [Software license](LICENSE)
+- [Resources](#resources)
+
+Pages
+-----
+- [Software license](License)
 
 <a name="overview" />
 Overview
 --------
-[ESP8266 Workshops](https://github.com/geekscape/nodemcu_esp8266)
-
-Recommended open-source ESP8266 hardware ...
-- [John Spencer's](https://twitter.com/mage0r)
-  [ESPkit-01 circuit board](https://github.com/mage0r/ESPkit-01)
-- [Mark Wolfe's](https://twitter.com/wolfeidau)
-  [Basic ESP board](https://github.com/wolfeidau/basic_esp_board)
+The Aiko Engine provides ...
+- Cross-platform framework and implementation for ESP8266 and Unix
+- Abstrations for event handling, networking, persistance, timers
+- Lisp scripting
 
 <a name="preparation" />
 ESP8266: Preparation
@@ -120,3 +121,16 @@ Examples ...
         (4:load)                    ;; Store configuration parameters
         (4:save)                    ;; Restore configuration parameters
         (4:wifi(4:ssid8:password))  ;; Set Wi-Fi Access Point credentials
+
+<a name="resources" />
+Resources
+---------
+Workshops ...
+- [ESP8266 Workshops](https://github.com/geekscape/nodemcu_esp8266)
+
+Associated open-source ESP8266 hardware ...
+- [MeshThing](http://www.m9design.co) by m9design
+- [John Spencer's](https://twitter.com/mage0r)
+  [ESPkit-01 circuit board](https://github.com/mage0r/ESPkit-01)
+- [Mark Wolfe's](https://twitter.com/wolfeidau)
+  [Basic ESP board](https://github.com/wolfeidau/basic_esp_board)
