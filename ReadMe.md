@@ -14,6 +14,7 @@ Contents
 
 Pages
 -----
+- [Contributors](Contributors.md)
 - [Software license](License)
 
 <a name="overview" />
