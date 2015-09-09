@@ -111,6 +111,8 @@ void aiko_destroy_source(
     aiko_destroy_socket(aiko_source->fd);
     aiko_source->fd = -1;
   }
+
+  free(aiko_source);
 }
 
 int aiko_source_send(

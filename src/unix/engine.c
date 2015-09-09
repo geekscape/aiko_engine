@@ -75,6 +75,8 @@ aiko_loop(
     struct timeval timeout = { 0, 50000 };  // 50 milliseconds
 
     if (select(fdLargest + 1, & readSet, NULL, NULL, & timeout) > 0) {
+      uint8_t aiko_source_destroyed = FALSE;
+
       for (index = 0; index < aiko_source_count; index ++) {
         fd = aiko_sources[index]->fd;
 
@@ -104,9 +106,24 @@ aiko_loop(
 
           if (length == 0) {
             aiko_destroy_source(aiko_sources[index]);
+            aiko_sources[index]   = NULL;
+            aiko_source_destroyed = TRUE;
           }
           else {
             uint8_t handled = aiko_sources[index]->handler(buffer, length);
+          }
+        }
+      }
+
+      if (aiko_source_destroyed) {                    // Compact aiko_sources[]
+        int index1, index2;
+        for (index1 = 0;  index1 < aiko_source_count; index1 ++) {
+          if (aiko_sources[index1] == NULL) {
+            for (index2 = index1;  index2 + 1 < aiko_source_count;  index2 ++) {
+              aiko_sources[index2] = aiko_sources[index2 + 1];
+            }
+
+            aiko_sources[-- aiko_source_count] = NULL;
           }
         }
       }
