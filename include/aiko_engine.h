@@ -32,16 +32,22 @@ typedef enum {
   AIKO_SOURCE_FILE,
   AIKO_SOURCE_SERIAL,
   AIKO_SOURCE_SOCKET_UDP4,
+  AIKO_SOURCE_SOCKET_TCP4,
   AIKO_SOURCE_USER_DEFINED = 64
 }
   aiko_source_type;
+
+struct aiko_socket {
+  uint32_t address_ipv4;
+  uint16_t port;
+};
 
 typedef struct {
   aiko_source_type  type;
   aiko_handler_t   *handler;
   int               fd;
   union {
-    uint16_t          port;
+    struct aiko_socket socket;
   }                 id;
 }
   aiko_source_t;
@@ -73,7 +79,8 @@ typedef struct {
 extern uint8_t aiko_timer_count;
 
 aiko_timer_t *aiko_add_timer(
-  aiko_time_t *period, aiko_timer_handler_t *handler);
+  aiko_time_t *period, aiko_timer_handler_t *handler
+);
 
 void aiko_delete_timer(aiko_timer_t *aiko_timer);
 
@@ -95,11 +102,19 @@ aiko_source_t *aiko_create_file_source(FILE *file);
 #endif
 
 aiko_source_t *aiko_create_serial_source(
-  const char *serial_port_name, speed_t baud_rate, uint8_t record_delimiter);
+  const char *serial_port_name, speed_t baud_rate, uint8_t record_delimiter
+);
 
 aiko_source_t *aiko_create_socket_source(
-  aiko_source_type type, uint16_t port);
+  aiko_source_type type, uint32_t address_ipv4, uint16_t port
+);
+
+void aiko_destroy_source(aiko_source_t *aiko_source);
 
 void aiko_loop(uint16_t loop_limit);
+
+int aiko_source_send(
+  aiko_source_t *aiko_source, uint8_t *message, uint16_t length
+);
 
 void aiko_buffer_dump(const char *label, uint8_t *buffer, uint16_t length);

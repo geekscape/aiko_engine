@@ -106,7 +106,7 @@ user_init(void) {
   );
 
   aiko_add_handler(
-    aiko_create_socket_source(AIKO_SOURCE_SOCKET_UDP4, UDP_SERVER_PORT),
+    aiko_create_socket_source(AIKO_SOURCE_SOCKET_UDP4, 0, UDP_SERVER_PORT),
     udp_handler
   );
 }

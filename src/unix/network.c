@@ -12,17 +12,39 @@
  *
  * To Do
  * ~~~~~
+ * - Implement TCP socket server.
+ * - Implement aiko_create_socket_tcp/udp() for IPv6.
  * - Better error handling (replace assert).
  */
 
-#include <arpa/inet.h>
 #include <assert.h>
 #include <ifaddrs.h>
+#include <netdb.h>
 #include <net/if.h>
 
 #include "aiko_network.h"
 
-int aiko_udp_create_socket(
+int aiko_create_socket_tcp(
+  uint8_t  bind_flag,
+  uint32_t address_ipv4,
+  uint16_t port) {
+
+  int fd = socket(PF_INET, SOCK_STREAM, 0);
+
+  if (fd >= 0) {
+    struct sockaddr_in sockaddr = {
+      .sin_family      = AF_INET,
+      .sin_port        = htons(port),
+      .sin_addr.s_addr = address_ipv4
+    };
+
+    assert(connect(fd, (struct sockaddr *) & sockaddr, sizeof(sockaddr)) == 0);
+  }
+
+  return(fd);
+}
+
+int aiko_create_socket_udp(
   uint8_t  bind_flag,
   uint16_t port) {
 
@@ -51,7 +73,46 @@ int aiko_udp_create_socket(
   return(fd);
 }
 
-int aiko_udp_read(
+void aiko_destroy_socket(
+  int fd) {
+
+  close(fd);
+}
+
+uint32_t aiko_get_ip_address(
+  char *hostname) {
+
+  struct in_addr in_addr_ipv4;
+  struct addrinfo hints, *result;
+
+  memset(& hints, 0, sizeof (hints));
+  hints.ai_family = PF_UNSPEC;
+
+  if (getaddrinfo (hostname, NULL, & hints, & result) != 0) {
+    fprintf(stderr, "Error: Could not resolve hostname: %s\n", hostname);
+    exit(-1);
+  }
+
+  while (result) {
+    switch (result->ai_family) {
+      case AF_INET:
+        in_addr_ipv4 = ((struct sockaddr_in *) result->ai_addr)->sin_addr;
+        break;
+//    case AF_INET6:
+//      ptr = & ((struct sockaddr_in6 *) result->ai_addr)->sin6_addr;
+//      break;
+    }
+
+//  result = result->ai_next;
+    break;
+  }
+
+  freeaddrinfo(result);
+
+  return(in_addr_ipv4.s_addr);
+}
+
+int aiko_socket_receive(
   int       fd,
   uint8_t  *buffer,
   uint16_t  buffer_size) {
@@ -68,7 +129,7 @@ int aiko_udp_read(
   return(length);
 }
 
-int aiko_udp_send_unicast(
+int aiko_socket_send(
   int       fd,
   uint32_t  address_ipv4,
   uint16_t  port,
@@ -78,7 +139,7 @@ int aiko_udp_send_unicast(
   struct sockaddr_in sockaddr = {
     .sin_family      = AF_INET,
     .sin_port        = htons(port),
-    .sin_addr.s_addr = htonl(address_ipv4),
+    .sin_addr.s_addr = address_ipv4
   };
 
   int length = sendto(
@@ -89,7 +150,7 @@ int aiko_udp_send_unicast(
   return(length);
 }
 
-void aiko_udp_send_broadcast(
+void aiko_socket_send_broadcast(
   int       fd,
   uint16_t  port,
   uint8_t  *buffer,
@@ -110,7 +171,7 @@ void aiko_udp_send_broadcast(
       ipl = ntohl(((struct sockaddr_in *) ifaddr->ifa_addr)->sin_addr.s_addr);
       ipb = (ipl & netmask) | ~ netmask;
 
-      aiko_udp_send_unicast(fd, ipb, port, buffer, size);
+      aiko_socket_send(fd, ipb, port, buffer, size);
     }
   }
 

@@ -12,7 +12,7 @@
  *
  * To Do
  * ~~~~~
- * - None, yet.
+ * - Ensure aiko_destroy_source() cleans up completely for all source types.
  */
 
 #ifndef __ets__
@@ -75,6 +75,7 @@ aiko_source_t ATTRIBUTES
 aiko_source_t ATTRIBUTES
 *aiko_create_socket_source(
   aiko_source_type type,
+  uint32_t         address_ipv4,
   uint16_t         port) {
 
 #ifndef __ets__
@@ -82,14 +83,54 @@ aiko_source_t ATTRIBUTES
 #endif
 
   aiko_source_t *aiko_source = NULL;
+  int fd = -1;
 
-  int fd = aiko_udp_create_socket(1, port);
+  if (type == AIKO_SOURCE_SOCKET_TCP4) {
+    fd = aiko_create_socket_tcp(TRUE, address_ipv4, port);
+  }
+
+  if (type == AIKO_SOURCE_SOCKET_UDP4) {
+    fd = aiko_create_socket_udp(TRUE, port);
+  }
+
   if (fd >= 0) {
-    aiko_source          = aiko_create_source(type, fd);
-    aiko_source->id.port = port;
+    aiko_source                         = aiko_create_source(type, fd);
+    aiko_source->id.socket.address_ipv4 = address_ipv4;
+    aiko_source->id.socket.port         = port;
   }
 
   return(aiko_source);
+}
+
+void aiko_destroy_source(
+  aiko_source_t *aiko_source) {
+
+  if (aiko_source->type == AIKO_SOURCE_SOCKET_TCP4  ||
+      aiko_source->type == AIKO_SOURCE_SOCKET_UDP4) {
+
+    aiko_destroy_socket(aiko_source->fd);
+    aiko_source->fd = -1;
+  }
+}
+
+int aiko_source_send(
+  aiko_source_t *aiko_source,
+  uint8_t       *message,
+  uint16_t       length) {
+
+  int result = -1;
+
+  if (aiko_source->type == AIKO_SOURCE_SOCKET_TCP4  ||
+      aiko_source->type == AIKO_SOURCE_SOCKET_UDP4) {
+
+    result = aiko_socket_send(
+      aiko_source->fd,
+      aiko_source->id.socket.address_ipv4, aiko_source->id.socket.port,
+      message, length
+    );
+  }
+
+  return(result);
 }
 
 #ifndef ARDUINO

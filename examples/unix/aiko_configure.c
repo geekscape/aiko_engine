@@ -68,9 +68,9 @@ int main(
         strlen(wifi_password), wifi_password
       );
 
-      int socket_fd = aiko_udp_create_socket(0, AIKO_PORT);
+      int socket_fd = aiko_create_socket_udp(0, AIKO_PORT);
 
-      aiko_udp_send_broadcast(                     // aiko_udp_send_unicast() ?
+      aiko_socket_send_broadcast(                       // aiko_socket_send() ?
         socket_fd, AIKO_PORT, (uint8_t *) message, strlen(message)
       );
     }

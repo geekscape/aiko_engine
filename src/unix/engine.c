@@ -65,8 +65,11 @@ aiko_loop(
 
     for (index = 0; index < aiko_source_count; index ++) {
       fd = aiko_sources[index]->fd;
-      if (fd > fdLargest) fdLargest = fd;
-      FD_SET(fd, & readSet);
+
+      if (fd >= 0) {
+        if (fd > fdLargest) fdLargest = fd;
+        FD_SET(fd, & readSet);
+      }
     }
 
     struct timeval timeout = { 0, 50000 };  // 50 milliseconds
@@ -89,8 +92,9 @@ aiko_loop(
               length = read(fd, buffer, sizeof(buffer));
               break;
 
+            case AIKO_SOURCE_SOCKET_TCP4:
             case AIKO_SOURCE_SOCKET_UDP4:
-              length = aiko_udp_read(fd, buffer, sizeof(buffer));
+              length = aiko_socket_receive(fd, buffer, sizeof(buffer));
               break;
 
             default:
@@ -98,7 +102,12 @@ aiko_loop(
               break;
           }
 
-          uint8_t handled = aiko_sources[index]->handler(buffer, length);
+          if (length == 0) {
+            aiko_destroy_source(aiko_sources[index]);
+          }
+          else {
+            uint8_t handled = aiko_sources[index]->handler(buffer, length);
+          }
         }
       }
     }

@@ -78,7 +78,7 @@ int main(
   aiko_add_handler(aiko_create_file_source(input_file), lisp_message_handler);
 
   aiko_add_handler(
-    aiko_create_socket_source(AIKO_SOURCE_SOCKET_UDP4, AIKO_PORT),
+    aiko_create_socket_source(AIKO_SOURCE_SOCKET_UDP4, 0, AIKO_PORT),
     lisp_message_handler
   );
 
