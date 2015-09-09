@@ -47,7 +47,7 @@ aiko_udp_handler(
   for (index = 0;  index < aiko_source_count;  index ++) {
     aiko_source_t *aiko_source = aiko_sources[index];
     if (aiko_source->type == AIKO_SOURCE_SOCKET_UDP4) {
-      if (aiko_source->id.port == udp_conn->proto.udp->local_port) {
+      if (aiko_source->id.socket.port == udp_conn->proto.udp->local_port) {
         uint8_t handled = aiko_source->handler(buffer, length);
       }
     }
@@ -55,7 +55,16 @@ aiko_udp_handler(
 }
 
 int ICACHE_FLASH_ATTR
-aiko_udp_create_socket(
+aiko_create_socket_tcp(
+  uint8_t  bind_flag,
+  uint32_t address_ipv4,
+  uint16_t port) {
+
+  return(-1);
+}
+
+int ICACHE_FLASH_ATTR
+aiko_create_socket_udp(
   uint8_t  bind_flag,
   uint16_t port) {
 
@@ -75,8 +84,17 @@ aiko_udp_create_socket(
   return(0);
 }
 
+
+void ICACHE_FLASH_ATTR
+aiko_destroy_socket(
+  int fd) {
+
+//espconn_delete(struct espconn *espconn);
+//espconn_disconnect(struct espconn *espconn);  // Don't invoke during callback
+}
+
 int ICACHE_FLASH_ATTR
-aiko_udp_read(
+aiko_socket_receive(
   int       fd,
   uint8_t  *buffer,
   uint16_t  buffer_size) {
@@ -85,7 +103,7 @@ aiko_udp_read(
 }
 
 int ICACHE_FLASH_ATTR
-aiko_udp_send_unicast(
+aiko_socket_send(
   int       fd,
   uint32_t  address_ipv4,
   uint16_t  port,
@@ -104,7 +122,7 @@ aiko_udp_send_unicast(
 }
 
 void ICACHE_FLASH_ATTR
-aiko_udp_send_broadcast(
+aiko_socket_send_broadcast(
   int       fd,
   uint16_t  port,
   uint8_t  *buffer,
@@ -116,5 +134,5 @@ aiko_udp_send_broadcast(
     aiko_broadcast_ipv4 = wifi_ip_info.ip.addr | (~ wifi_ip_info.netmask.addr);
   }
 
-  aiko_udp_send_unicast(fd, aiko_broadcast_ipv4, port, buffer, size);
+  aiko_socket_send(fd, aiko_broadcast_ipv4, port, buffer, size);
 }
