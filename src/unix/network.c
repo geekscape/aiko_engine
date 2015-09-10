@@ -35,7 +35,7 @@ int aiko_create_socket_tcp(
     struct sockaddr_in sockaddr = {
       .sin_family      = AF_INET,
       .sin_port        = htons(port),
-      .sin_addr.s_addr = address_ipv4
+      .sin_addr.s_addr = htonl(address_ipv4)
     };
 
     assert(connect(fd, (struct sockaddr *) & sockaddr, sizeof(sockaddr)) == 0);
@@ -109,7 +109,7 @@ uint32_t aiko_get_ip_address(
 
   freeaddrinfo(result);
 
-  return(in_addr_ipv4.s_addr);
+  return(ntohl(in_addr_ipv4.s_addr));
 }
 
 int aiko_socket_receive(
@@ -139,7 +139,7 @@ int aiko_socket_send(
   struct sockaddr_in sockaddr = {
     .sin_family      = AF_INET,
     .sin_port        = htons(port),
-    .sin_addr.s_addr = address_ipv4
+    .sin_addr.s_addr = htonl(address_ipv4)
   };
 
   int length = sendto(
