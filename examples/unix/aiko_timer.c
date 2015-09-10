@@ -12,7 +12,7 @@
  *
  * To Do
  * ~~~~~
- * - None, yet.
+ * - Command line arguments to change "period" and "maximum count".
  */
 
 #include <stdio.h>
