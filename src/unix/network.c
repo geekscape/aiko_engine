@@ -15,6 +15,7 @@
  * - Implement TCP socket server.
  * - Implement aiko_create_socket_tcp/udp() for IPv6.
  * - Better error handling (replace assert).
+ *   - aiko_get_ip_address(hostname) shouldn't have fprintf(stderr); exit(-1);
  */
 
 #include <assert.h>

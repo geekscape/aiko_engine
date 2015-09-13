@@ -57,8 +57,12 @@ aiko_serial_timer_handler(
       for (index = 0;  index < aiko_source_count;  index ++) {
         aiko_source_t *aiko_source = aiko_sources[index];
         if (aiko_source->type == AIKO_SOURCE_SERIAL) {
-          uint8_t handled =
-            aiko_source->handler(aiko_serial_buffer, aiko_serial_length);
+          aiko_handler_t *handler = aiko_sources[index]->handler;
+
+          if (handler != NULL) {
+            uint8_t handled =
+              aiko_source->handler(aiko_serial_buffer, aiko_serial_length);
+          }
         }
       }
 

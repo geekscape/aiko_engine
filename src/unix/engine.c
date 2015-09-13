@@ -110,7 +110,11 @@ aiko_loop(
             aiko_source_destroyed = TRUE;
           }
           else {
-            uint8_t handled = aiko_sources[index]->handler(buffer, length);
+            aiko_handler_t *handler = aiko_sources[index]->handler;
+
+            if (handler != NULL) {
+              uint8_t handled = aiko_sources[index]->handler(buffer, length);
+            }
           }
         }
       }
