@@ -74,7 +74,7 @@ Examples ...
         (4:this2:is1:a4:list)       ;; Simple LISP list containing 4 tokens
         (8:addTimer)                ;; Fire a single timer after 1 second
         (8:addTimer4:2000)          ;; Fire a single timer after 2 seconds
-        (8:addtimer4:2000:1:4)      ;; Fire a timer every 2 seconds, 4 times
+        (8:addTimer4:20001:4)       ;; Fire a timer every 2 seconds, 4 times
         (5:debug)                   ;; Toggle debugging information
         (4:load)                    ;; Store configuration parameters
         (4:save)                    ;; Restore configuration parameters

@@ -14,7 +14,7 @@
  * ~~~~~
  * (8:addTimer)                // add timer every 1 second  for a single count
  * (8:addTimer4:2000)          // add timer every 2 seconds for a single count
- * (8:addtimer4:2000:1:4)      // add timer every 2 seconds for 4 counts
+ * (8:addTimer4:20001:4)       // add timer every 2 seconds for 4 counts
  * (5:debug)                   // toggle lispDebug flag
  * (4:load)                    // load "aikoStore" from persistant storage
  * (4:save)                    // save "aikoStore" to persistent storage
