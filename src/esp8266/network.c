@@ -49,7 +49,7 @@ aiko_udp_handler(
     if (aiko_source->type == AIKO_SOURCE_SOCKET_UDP4) {
       if (aiko_source->id.socket.port == udp_conn->proto.udp->local_port) {
         if (aiko_source->handler != NULL) {
-          uint8_t handled = aiko_source->handler(buffer, length);
+          uint8_t handled = aiko_source->handler(aiko_source, buffer, length);
         }
       }
     }

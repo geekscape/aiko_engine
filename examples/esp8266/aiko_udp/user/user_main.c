@@ -28,6 +28,7 @@
 
 uint8_t ICACHE_FLASH_ATTR
 udp_message_handler0(
+  void     *aiko_source,
   uint8_t  *message,
   uint16_t  length) {
 
@@ -37,6 +38,7 @@ udp_message_handler0(
 
 uint8_t ICACHE_FLASH_ATTR
 udp_message_handler1(
+  void     *aiko_source,
   uint8_t  *message,
   uint16_t  length) {
 

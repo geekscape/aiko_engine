@@ -36,6 +36,7 @@
 /* ------------------------------------------------------------------------- */
 
 uint8_t udp_message_handler0(
+  void     *aiko_source,
   uint8_t  *message,
   uint16_t  length) {
 
@@ -44,6 +45,7 @@ uint8_t udp_message_handler0(
 }
 
 uint8_t udp_message_handler1(
+  void     *aiko_source,
   uint8_t  *message,
   uint16_t  length) {
 

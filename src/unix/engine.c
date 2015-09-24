@@ -113,7 +113,9 @@ aiko_loop(
             aiko_handler_t *handler = aiko_sources[index]->handler;
 
             if (handler != NULL) {
-              uint8_t handled = aiko_sources[index]->handler(buffer, length);
+              uint8_t handled = aiko_sources[index]->handler(
+                aiko_sources[index], buffer, length
+              );
             }
           }
         }

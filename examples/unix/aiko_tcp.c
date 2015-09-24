@@ -34,6 +34,7 @@ aiko_source_t *socket_source;
 /* ------------------------------------------------------------------------- */
 
 uint8_t console_message_handler(
+  void     *aiko_source,
   uint8_t  *message,
   uint16_t  length) {
 
@@ -42,6 +43,7 @@ uint8_t console_message_handler(
 }
 
 uint8_t tcp_message_handler(
+  void     *aiko_source,
   uint8_t  *message,
   uint16_t  length) {
 

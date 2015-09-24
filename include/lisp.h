@@ -140,7 +140,9 @@ extern tExpression *truth;                                      // expression.c
 /* ------------------------------------------------------------------------- */
 
 tExpression *lisp_initialize(uint8_t debugFlag);
-uint8_t      lisp_message_handler(uint8_t *message, uint16_t length);
+uint8_t      lisp_message_handler(
+               void *aiko_source, uint8_t *message, uint16_t length
+             );
 
 void         lispAppend(tExpression *expression, tExpression *appendee);
 tExpression *lispCreateAtom(const char* name, uint8_t size);

@@ -25,7 +25,10 @@
 #define AIKO_HANDLED           1
 #define AIKO_NOT_HANDLED       0
 
-typedef uint8_t (aiko_handler_t)(uint8_t *message, uint16_t length);
+typedef uint8_t (aiko_handler_t)(
+  void *aiko_source, uint8_t *message, uint16_t length
+);
+
 typedef uint8_t (aiko_timer_handler_t)(void *aiko_timer);
 
 typedef enum {

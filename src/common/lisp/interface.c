@@ -91,6 +91,7 @@ tExpression ATTRIBUTES
 
 uint8_t ATTRIBUTES
 lisp_message_handler(
+  void     *aiko_source,
   uint8_t  *message,
   uint16_t  length) {
 
