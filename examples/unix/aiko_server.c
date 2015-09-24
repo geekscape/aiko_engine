@@ -75,10 +75,10 @@ int main(
 
   printf("[%s %s]\n", argv[0], AIKO_VERSION);
 
-  aiko_add_handler(aiko_create_file_source(input_file), lisp_message_handler);
+  aiko_add_handler(aiko_create_file_stream(input_file), lisp_message_handler);
 
   aiko_add_handler(
-    aiko_create_socket_source(AIKO_SOURCE_SOCKET_UDP4, 0, AIKO_PORT),
+    aiko_create_socket_stream(AIKO_STREAM_SOCKET_UDP4, 0, AIKO_PORT),
     lisp_message_handler
   );
 

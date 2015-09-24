@@ -24,12 +24,12 @@
 
 #include "driver/uart.h"
 
-#include "aiko_engine.h"  // define aiko_source_t
+#include "aiko_engine.h"  // define aiko_stream_t
 #include "aiko_compatibility.h"
 #include "aiko_serial.h"
 
-extern aiko_source_t *aiko_sources[];
-extern uint8_t        aiko_source_count;
+extern aiko_stream_t *aiko_streams[];
+extern uint8_t        aiko_stream_count;
 
 static uint8_t  aiko_serial_buffer[AIKO_SERIAL_BUFFER_SIZE];
 static uint16_t aiko_serial_length = 0;
@@ -54,14 +54,14 @@ aiko_serial_timer_handler(
         aiko_serial_buffer[aiko_serial_length - 1] ==
           aiko_serial_record_delimiter) {
 
-      for (index = 0;  index < aiko_source_count;  index ++) {
-        aiko_source_t *aiko_source = aiko_sources[index];
-        if (aiko_source->type == AIKO_SOURCE_SERIAL) {
-          aiko_handler_t *handler = aiko_sources[index]->handler;
+      for (index = 0;  index < aiko_stream_count;  index ++) {
+        aiko_stream_t *aiko_stream = aiko_streams[index];
+        if (aiko_stream->type == AIKO_STREAM_SERIAL) {
+          aiko_handler_t *handler = aiko_streams[index]->handler;
 
           if (handler != NULL) {
-            uint8_t handled = aiko_source->handler(
-              aiko_source, aiko_serial_buffer, aiko_serial_length
+            uint8_t handled = aiko_stream->handler(
+              aiko_stream, aiko_serial_buffer, aiko_serial_length
             );
           }
         }

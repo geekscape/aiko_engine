@@ -28,7 +28,7 @@
 
 uint8_t ICACHE_FLASH_ATTR
 udp_message_handler0(
-  void     *aiko_source,
+  void     *aiko_stream,
   uint8_t  *message,
   uint16_t  length) {
 
@@ -38,7 +38,7 @@ udp_message_handler0(
 
 uint8_t ICACHE_FLASH_ATTR
 udp_message_handler1(
-  void     *aiko_source,
+  void     *aiko_stream,
   uint8_t  *message,
   uint16_t  length) {
 
@@ -62,13 +62,13 @@ user_init(void) {
   printf("# Heap free:   %d\n", system_get_free_heap_size());
 
   aiko_add_handler(
-    aiko_create_socket_source(AIKO_SOURCE_SOCKET_UDP4, 0, UDP_PORT0),
+    aiko_create_socket_stream(AIKO_STREAM_SOCKET_UDP4, 0, UDP_PORT0),
     udp_message_handler0
   );
   printf("Listening on port %d\n", UDP_PORT0);
 
   aiko_add_handler(
-    aiko_create_socket_source(AIKO_SOURCE_SOCKET_UDP4, 0, UDP_PORT1),
+    aiko_create_socket_stream(AIKO_STREAM_SOCKET_UDP4, 0, UDP_PORT1),
     udp_message_handler1
   );
   printf("Listening on port %d\n", UDP_PORT1);

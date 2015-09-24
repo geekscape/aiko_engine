@@ -22,13 +22,13 @@
 #include "aiko_network.h"
 #include "aiko_serial.h"
 
-aiko_source_t ATTRIBUTES
-*aiko_create_file_source(
+aiko_stream_t ATTRIBUTES
+*aiko_create_file_stream(
   FILE *file) {
 
-  assert(aiko_source_count < AIKO_SOURCE_MAXIMUM);
+  assert(aiko_stream_count < AIKO_STREAM_MAXIMUM);
 
-  return(aiko_create_source(AIKO_SOURCE_FILE, fileno(file)));
+  return(aiko_create_stream(AIKO_STREAM_FILE, fileno(file)));
 }
 
 void ATTRIBUTES
@@ -43,7 +43,7 @@ aiko_loop(
   uint8_t no_loop_limit = (loop_limit == AIKO_LOOP_FOREVER);
 
   while ((no_loop_limit  ||  loop_limit > 0)  &&
-         (aiko_source_count > 0  ||  aiko_timer_count > 0)) {
+         (aiko_stream_count > 0  ||  aiko_timer_count > 0)) {
 
     if (loop_limit > 0) loop_limit --;
 
@@ -63,8 +63,8 @@ aiko_loop(
     fdLargest = 0;
     FD_ZERO(& readSet);
 
-    for (index = 0; index < aiko_source_count; index ++) {
-      fd = aiko_sources[index]->fd;
+    for (index = 0; index < aiko_stream_count; index ++) {
+      fd = aiko_streams[index]->fd;
 
       if (fd >= 0) {
         if (fd > fdLargest) fdLargest = fd;
@@ -75,14 +75,14 @@ aiko_loop(
     struct timeval timeout = { 0, 50000 };  // 50 milliseconds
 
     if (select(fdLargest + 1, & readSet, NULL, NULL, & timeout) > 0) {
-      uint8_t aiko_source_destroyed = FALSE;
+      uint8_t aiko_stream_destroyed = FALSE;
 
-      for (index = 0; index < aiko_source_count; index ++) {
-        fd = aiko_sources[index]->fd;
+      for (index = 0; index < aiko_stream_count; index ++) {
+        fd = aiko_streams[index]->fd;
 
         if (FD_ISSET(fd, & readSet)) {
-          switch (aiko_sources[index]->type) {
-            case AIKO_SOURCE_FILE:
+          switch (aiko_streams[index]->type) {
+            case AIKO_STREAM_FILE:
                 if (fgets((char *) buffer, sizeof(buffer), stdin) == NULL) {
                   return;                                     // TODO: Clean-up
                 }
@@ -90,46 +90,46 @@ aiko_loop(
                 length = strlen((const char *) buffer);
               break;
 
-            case AIKO_SOURCE_SERIAL:
+            case AIKO_STREAM_SERIAL:
               length = read(fd, buffer, sizeof(buffer));
               break;
 
-            case AIKO_SOURCE_SOCKET_TCP4:
-            case AIKO_SOURCE_SOCKET_UDP4:
+            case AIKO_STREAM_SOCKET_TCP4:
+            case AIKO_STREAM_SOCKET_UDP4:
               length = aiko_socket_receive(fd, buffer, sizeof(buffer));
               break;
 
             default:
-              printf("aiko_engine(): Error: Unknown aiko_source type\n");
+              printf("aiko_engine(): Error: Unknown aiko_stream type\n");
               break;
           }
 
           if (length == 0) {
-            aiko_destroy_source(aiko_sources[index]);
-            aiko_sources[index]   = NULL;
-            aiko_source_destroyed = TRUE;
+            aiko_destroy_stream(aiko_streams[index]);
+            aiko_streams[index]   = NULL;
+            aiko_stream_destroyed = TRUE;
           }
           else {
-            aiko_handler_t *handler = aiko_sources[index]->handler;
+            aiko_handler_t *handler = aiko_streams[index]->handler;
 
             if (handler != NULL) {
-              uint8_t handled = aiko_sources[index]->handler(
-                aiko_sources[index], buffer, length
+              uint8_t handled = aiko_streams[index]->handler(
+                aiko_streams[index], buffer, length
               );
             }
           }
         }
       }
 
-      if (aiko_source_destroyed) {                    // Compact aiko_sources[]
+      if (aiko_stream_destroyed) {                    // Compact aiko_streams[]
         int index1, index2;
-        for (index1 = 0;  index1 < aiko_source_count; index1 ++) {
-          if (aiko_sources[index1] == NULL) {
-            for (index2 = index1;  index2 + 1 < aiko_source_count;  index2 ++) {
-              aiko_sources[index2] = aiko_sources[index2 + 1];
+        for (index1 = 0;  index1 < aiko_stream_count; index1 ++) {
+          if (aiko_streams[index1] == NULL) {
+            for (index2 = index1;  index2 + 1 < aiko_stream_count;  index2 ++) {
+              aiko_streams[index2] = aiko_streams[index2 + 1];
             }
 
-            aiko_sources[-- aiko_source_count] = NULL;
+            aiko_streams[-- aiko_stream_count] = NULL;
           }
         }
       }

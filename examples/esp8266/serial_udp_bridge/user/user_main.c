@@ -39,7 +39,7 @@ aiko_store_t aiko_server_store;
 
 uint8_t ICACHE_FLASH_ATTR
 serial_handler(
-  void     *aiko_source,
+  void     *aiko_stream,
   uint8_t  *message,
   uint16_t  length) {
 
@@ -52,7 +52,7 @@ serial_handler(
 
 uint8_t ICACHE_FLASH_ATTR
 udp_handler(
-  void     *aiko_source,
+  void     *aiko_stream,
   uint8_t  *message,
   uint16_t  length) {
 
@@ -104,11 +104,11 @@ user_init(void) {
   initialize(LISP_DEBUG);
 
   aiko_add_handler(
-    aiko_create_serial_source(NULL, BAUD_NO_CHANGE, 0x00), serial_handler
+    aiko_create_serial_stream(NULL, BAUD_NO_CHANGE, 0x00), serial_handler
   );
 
   aiko_add_handler(
-    aiko_create_socket_source(AIKO_SOURCE_SOCKET_UDP4, 0, UDP_SERVER_PORT),
+    aiko_create_socket_stream(AIKO_STREAM_SOCKET_UDP4, 0, UDP_SERVER_PORT),
     udp_handler
   );
 }

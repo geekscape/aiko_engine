@@ -23,11 +23,11 @@
 #include "ets_sys.h"
 #include "user_interface.h"
 
-#include "aiko_engine.h"  // define aiko_source_t
+#include "aiko_engine.h"  // define aiko_stream_t
 #include "aiko_compatibility.h"
 
-extern aiko_source_t *aiko_sources[];
-extern uint8_t        aiko_source_count;
+extern aiko_stream_t *aiko_streams[];
+extern uint8_t        aiko_stream_count;
 
 static uint32_t aiko_broadcast_ipv4 = 0;
 
@@ -44,12 +44,12 @@ aiko_udp_handler(
   struct espconn *udp_conn = (struct espconn *) arg;
 
   int index;
-  for (index = 0;  index < aiko_source_count;  index ++) {
-    aiko_source_t *aiko_source = aiko_sources[index];
-    if (aiko_source->type == AIKO_SOURCE_SOCKET_UDP4) {
-      if (aiko_source->id.socket.port == udp_conn->proto.udp->local_port) {
-        if (aiko_source->handler != NULL) {
-          uint8_t handled = aiko_source->handler(aiko_source, buffer, length);
+  for (index = 0;  index < aiko_stream_count;  index ++) {
+    aiko_stream_t *aiko_stream = aiko_streams[index];
+    if (aiko_stream->type == AIKO_STREAM_SOCKET_UDP4) {
+      if (aiko_stream->id.socket.port == udp_conn->proto.udp->local_port) {
+        if (aiko_stream->handler != NULL) {
+          uint8_t handled = aiko_stream->handler(aiko_stream, buffer, length);
         }
       }
     }

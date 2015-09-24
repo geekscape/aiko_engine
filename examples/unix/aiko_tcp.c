@@ -29,21 +29,21 @@
 #include "aiko_engine.h"
 #include "aiko_network.h"
 
-aiko_source_t *socket_source;
+aiko_stream_t *socket_stream;
 
 /* ------------------------------------------------------------------------- */
 
 uint8_t console_message_handler(
-  void     *aiko_source,
+  void     *aiko_stream,
   uint8_t  *message,
   uint16_t  length) {
 
-  int result = aiko_source_send(socket_source, message, length);
+  int result = aiko_stream_send(socket_stream, message, length);
   return(AIKO_HANDLED);
 }
 
 uint8_t tcp_message_handler(
-  void     *aiko_source,
+  void     *aiko_stream,
   uint8_t  *message,
   uint16_t  length) {
 
@@ -64,13 +64,13 @@ int main(
 
   uint32_t address_ipv4 = aiko_get_ip_address(hostname);
 
-  socket_source = aiko_create_socket_source(
-    AIKO_SOURCE_SOCKET_TCP4, address_ipv4, AIKO_PORT
+  socket_stream = aiko_create_socket_stream(
+    AIKO_STREAM_SOCKET_TCP4, address_ipv4, AIKO_PORT
   );
   printf("Connected to port %d\n", AIKO_PORT);
 
-  aiko_add_handler(aiko_create_file_source(stdin), console_message_handler);
-  aiko_add_handler(socket_source, tcp_message_handler);
+  aiko_add_handler(aiko_create_file_stream(stdin), console_message_handler);
+  aiko_add_handler(socket_stream, tcp_message_handler);
 
   aiko_loop(AIKO_LOOP_FOREVER);
 
