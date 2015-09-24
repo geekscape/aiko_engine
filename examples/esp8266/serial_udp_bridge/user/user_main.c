@@ -39,6 +39,7 @@ aiko_store_t aiko_server_store;
 
 uint8_t ICACHE_FLASH_ATTR
 serial_handler(
+  void     *aiko_source,
   uint8_t  *message,
   uint16_t  length) {
 
@@ -51,6 +52,7 @@ serial_handler(
 
 uint8_t ICACHE_FLASH_ATTR
 udp_handler(
+  void     *aiko_source,
   uint8_t  *message,
   uint16_t  length) {
 
