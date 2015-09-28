@@ -39,8 +39,7 @@ tExpression ATTRIBUTES
 
   if (lispExpressionCurrent + extra >= LISP_EXPRESSION_LIMIT) {
     lispError = LISP_ERROR_LIMIT_EXPRESSIONS;
-    lispErrorMessage =
-      "lispAllocateExpression(): Error: No more expressions available";
+    lispErrorMessage = "(5:error16:expression limit)";
   }
   else {
     expression = & lispExpressions[lispExpressionCurrent ++];
@@ -65,7 +64,7 @@ tExpression ATTRIBUTES
       lispExpressionCurrent --;
       expression = NULL;
       lispError = LISP_ERROR_LIMIT_MEMORY;
-      lispErrorMessage = "lispCreateAtom(): Error: No more memory available";
+      lispErrorMessage = "(5:error12:memory limit)";
     }
   }
 
@@ -300,7 +299,7 @@ lispEmit(
 
   if (used == 0) {
     lispError = LISP_ERROR_LIMIT_EMIT;
-    lispErrorMessage = "lispEmit(): Error: Output size exceeded";
+    lispErrorMessage = "(5:error17:emit output limit)";
   }
 
   return(used);

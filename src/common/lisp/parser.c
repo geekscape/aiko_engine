@@ -33,8 +33,8 @@ tExpression ATTRIBUTES
   if (ch == '\n') ch = reader->getCh();
 
   if (reader->isFileEOF()) {
-    lispError = LISP_ERROR_END_OF_FILE;
-    lispErrorMessage = "lispParseToken(): End of file";
+    lispError = LISP_ERROR_END_OF_INPUT;
+    lispErrorMessage = "(5:error12:end of input)";
     return(NULL);
   }
 
@@ -46,7 +46,7 @@ tExpression ATTRIBUTES
 
     if (reader->isFileEOF()) {
       lispError = LISP_ERROR_PARSE_TOKEN;
-      lispErrorMessage = "lispParseToken(): Error: Truncated token size";
+      lispErrorMessage = "(5:error15:token truncated)";
       return(NULL);
     }
 
@@ -55,7 +55,7 @@ tExpression ATTRIBUTES
 
   if (ch != ':') {
     lispError = LISP_ERROR_PARSE_TOKEN;
-    lispErrorMessage = "lispParseToken(): Error: Should be 'n:token'";
+    lispErrorMessage = "(5:error17:must be 'n:token')";
     return(NULL);
   }
 
@@ -64,14 +64,14 @@ tExpression ATTRIBUTES
   if (size > LISP_ATOM_SIZE_LIMIT) {
     lispError = LISP_ERROR_LIMIT_TOKEN;
     lispErrorMessage =
-      "lispParseToken(): Error: Token length >"STRINGIFY(LISP_ATOM_SIZE_LIMIT);
+      "(5:error13:atom size >"STRINGIFY(LISP_ATOM_SIZE_LIMIT)")";
   }
 
   uint8_t count;
   for (count = 0;  count < size;  count ++) {
     if (reader->isFileEOF()) {
       lispError = LISP_ERROR_PARSE_TOKEN;
-      lispErrorMessage = "lispParseToken(): Error: Truncated token";
+      lispErrorMessage = "(5:error15:token truncated)";
       return(NULL);
     }
 

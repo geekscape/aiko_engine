@@ -21,7 +21,8 @@
 
 uint8_t     lispDebug = 0;
 tLispError  lispError = LISP_ERROR_NONE;
-char       *lispErrorMessage = "";
+char        lispErrorNone[] = "(5:error4:none)";
+char       *lispErrorMessage = lispErrorNone;
 
 static uint8_t  *lispReaderBuffer;
 static uint16_t  lispReaderBufferLength;
@@ -87,7 +88,7 @@ tExpression ATTRIBUTES
   }
 
   lispError = LISP_ERROR_NONE;
-  lispErrorMessage = "";
+  lispErrorMessage = lispErrorNone;
   lispEnvironment  = lispExpressionInitialize();
   return(lispEnvironment);
 }
@@ -105,7 +106,7 @@ lisp_message_handler(
   uint16_t  output_length = 0;
 
   lispError = LISP_ERROR_NONE;
-  lispErrorMessage = "";
+  lispErrorMessage = lispErrorNone;
 
   lispReaderBuffer       = message;
   lispReaderBufferLength = length;
