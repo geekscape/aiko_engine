@@ -78,7 +78,7 @@ tExpression ATTRIBUTES
     token[count] = reader->getCh();
   }
 
-  if (lispError != 0) return(NULL);
+  if (lispError) return(NULL);
 
   return(lispCreateAtom(token, size));
 }

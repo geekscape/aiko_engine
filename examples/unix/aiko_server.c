@@ -48,7 +48,7 @@ FILE *initialize(
   tExpression *lisp_environment = lisp_initialize(LISP_DEBUG);
 
   if (lispError) {
-    printf("Initialization error: %d\n", lispError);    // TODO: Better message
+    printf("lisp_initialize(): %s\n", lispErrorMessage);
     exit(-1);
   }
 
@@ -58,6 +58,11 @@ FILE *initialize(
   aiko_server_store.version = AIKO_STORE_VERSION;
 
   lisp_extend(lisp_environment, & aiko_server_store);
+
+  if (lispError) {
+    printf("lisp_extend(): %s\n", lispErrorMessage);
+    exit(-1);
+  }
 
   FILE *inputFile = stdin;
   if (argc > 1) inputFile = fopen(argv[1], "r");

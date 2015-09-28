@@ -83,12 +83,18 @@ initialize(
 
   tExpression *lisp_environment = lisp_initialize(debug_flag);
 
-  memset(& aiko_server_store, 0x00, sizeof(aiko_server_store));
-  aiko_server_store.size    = sizeof(aiko_server_store);
-  aiko_server_store.magic   = AIKO_STORE_MAGIC;
-  aiko_server_store.version = AIKO_STORE_VERSION;
+  if (lispError) {
+    printf("lisp_initialize(): %s\n", lispErrorMessage);
+  }
+  else {
+    memset(& aiko_server_store, 0x00, sizeof(aiko_server_store));
+    aiko_server_store.size    = sizeof(aiko_server_store);
+    aiko_server_store.magic   = AIKO_STORE_MAGIC;
+    aiko_server_store.version = AIKO_STORE_VERSION;
 
-  lisp_extend(lisp_environment, & aiko_server_store);
+    lisp_extend(lisp_environment, & aiko_server_store);
+    if (lispError) printf("lisp_extend(): %s\n", lispErrorMessage);
+  }
 
   aiko_wifi_softap_configure();
 

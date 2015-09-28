@@ -8,7 +8,7 @@
  *
  * To Do
  * ~~~~~
- * - None, yet.
+ * - All primitives should check for valid arguments, e.g (3:car) fails.
  */
 
 #ifdef ARDUINO
@@ -99,26 +99,37 @@ tExpression ATTRIBUTES
 }
 
 tExpression ATTRIBUTES
-*lispInterleave(                   // TODO: Refactor duplicate code
+*lispInterleave(                               // TODO: Refactor duplicate code
   tExpression *list1,
   tExpression *list2) {
 
-  tExpression *result = lispCreateList(
-    lispCreateList(list1->list.car, lispCreateList(list2->list.car, NULL)),
-    NULL
-  );
+  tExpression *result  = NULL;
+  tExpression *newList = lispCreateList(list2->list.car, NULL);
 
-  list1 = list1->list.cdr;
-  list2 = list2->list.cdr;
+  if (newList != NULL) {
+    newList = lispCreateList(list1->list.car, newList);
 
-  while (lispIsList(list1)) {
-    lispAppend(
-      result,
-      lispCreateList(list1->list.car, lispCreateList(list2->list.car, NULL))
-    );
+    if (newList != NULL) {
+      result = lispCreateList(newList, NULL);
 
-    list1 = list1->list.cdr;
-    list2 = list2->list.cdr;
+      if (result != NULL) {
+        list1 = list1->list.cdr;
+        list2 = list2->list.cdr;
+
+        while (lispIsList(list1)) {
+          newList = lispCreateList(list2->list.car, NULL);
+          if (newList == NULL) break;
+
+          newList = lispCreateList(list1->list.car, newList);
+          if (newList == NULL) break;
+
+          lispAppend(result, newList);
+
+          list1 = list1->list.cdr;
+          list2 = list2->list.cdr;
+        }
+      }
+    }
   }
 
   return(result);
@@ -167,11 +178,19 @@ tExpression ATTRIBUTES
 
   tExpression *lambda = expression->list.car;
   tExpression *values = expression->list.cdr;
+  tExpression *result = NULL;
 
   tExpression *arguments = lispInterleave(lambda->lambda.arguments, values);
-  tExpression *result    = lispReplace(lambda->lambda.expression, arguments);
 
-  return(lispEvaluate(result, environment));
+  if (lispError == LISP_ERROR_NONE) {
+    tExpression *input = lispReplace(lambda->lambda.expression, arguments);
+
+    if (lispError == LISP_ERROR_NONE) {
+      result = lispEvaluate(input, environment);
+    }
+  }
+
+  return(result);
 }
 
 tExpression ATTRIBUTES

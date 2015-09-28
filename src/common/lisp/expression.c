@@ -222,6 +222,7 @@ tExpression ATTRIBUTES
         while(lispIsList(expression)) {
           if (expression->list.car != NULL) {
             lispAppend(result, lispEvaluate(expression->list.car, environment));
+            if (lispError) return(NULL);
           }
 
           expression = expression->list.cdr;
@@ -282,7 +283,7 @@ lispEmit(
         while (lispIsList(expr)) {
           if (expr->list.car != NULL) {
             used += lispEmit(expr->list.car, & output[used], remain - used);
-            if (lispError != LISP_ERROR_NONE) break;
+            if (lispError) break;
           }
           expr = expr->list.cdr;
         }

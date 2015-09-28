@@ -116,14 +116,15 @@ lisp_message_handler(
   if (lispError == LISP_ERROR_NONE) {
     expression = lispEvaluate(expression, lispEnvironment);
 
-    if (expression != NULL) {
+    if (lispError == LISP_ERROR_NONE  &&  expression != NULL) {
       output = (uint8_t *) lispWriterBuffer;
       output_length = lispEmit(expression, output, LISP_WRITER_BUFFER_SIZE);
+
       if (lispError == LISP_ERROR_NONE) handled = AIKO_HANDLED;
     }
   }
 
-  if (lispError != LISP_ERROR_NONE) {
+  if (lispError) {
     output_length = strlen(lispErrorMessage);
     output = (uint8_t *) lispErrorMessage;
   }

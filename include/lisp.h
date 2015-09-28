@@ -91,9 +91,9 @@ static const uint8_t LISP_ATOM_SIZE_LIMIT = 64;       // Wi-Fi password maximum
 #ifdef ARDUINO
 #define LISP_EXPRESSION_LIMIT   80                               // Minimum: 72
 #elif __ets__
-#define LISP_EXPRESSION_LIMIT  128
+#define LISP_EXPRESSION_LIMIT  160
 #else
-#define LISP_EXPRESSION_LIMIT  128
+#define LISP_EXPRESSION_LIMIT  160
 #endif
 
 typedef enum {
