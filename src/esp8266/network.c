@@ -23,8 +23,7 @@
 #include "ets_sys.h"
 #include "user_interface.h"
 
-#include "aiko_engine.h"  // define aiko_stream_t
-#include "aiko_compatibility.h"
+#include "aiko_networkh"
 
 extern aiko_stream_t *aiko_streams[];
 extern uint8_t        aiko_stream_count;
@@ -47,7 +46,15 @@ aiko_udp_handler(
   for (index = 0;  index < aiko_stream_count;  index ++) {
     aiko_stream_t *aiko_stream = aiko_streams[index];
     if (aiko_stream->type == AIKO_STREAM_SOCKET_UDP4) {
-      if (aiko_stream->id.socket.port == udp_conn->proto.udp->local_port) {
+      if (aiko_stream->id.socket.local_port==udp_conn->proto.udp->local_port) {
+        os_memcpy(
+          & aiko_stream->id.socket.remote_address_ipv4,
+          aiko_udp_conn->proto.udp->remote_ip,
+          sizeof(aiko_stream->id.socket.remote_address_ipv4)
+        );
+
+        aiko_stream->id.socket.remote_port = udp_conn->proto.udp->remote_port;
+
         if (aiko_stream->handler != NULL) {
           uint8_t handled = aiko_stream->handler(aiko_stream, buffer, length);
         }
@@ -97,26 +104,26 @@ aiko_destroy_socket(
 
 int ICACHE_FLASH_ATTR
 aiko_socket_receive(
-  int       fd,
-  uint8_t  *buffer,
-  uint16_t  buffer_size) {
+  aiko_stream_t *aiko_stream,
+  uint8_t       *buffer,
+  uint16_t       buffer_size) {
 
   return(-1);
 }
 
 int ICACHE_FLASH_ATTR
 aiko_socket_send(
-  int       fd,
-  uint32_t  address_ipv4,
-  uint16_t  port,
-  uint8_t  *buffer,
-  uint16_t  size) {
+  aiko_stream_t *aiko_stream,
+  uint8_t       *buffer,
+  uint16_t       size) {
 
   os_memcpy(
-    aiko_udp_conn->proto.udp->remote_ip, & address_ipv4, sizeof(address_ipv4)
+    aiko_udp_conn->proto.udp->remote_ip,
+    & aiko_stream->id.socket.remote_address_ipv4,
+    sizeof(aiko_udp_conn->proto.udp->remote_ip)
   );
 
-  aiko_udp_conn->proto.udp->remote_port = port;
+  aiko_udp_conn->proto.udp->remote_port = aiko_stream->id.socket.remote_port;
 
   espconn_sent(aiko_udp_conn, buffer, size);
 
@@ -125,16 +132,21 @@ aiko_socket_send(
 
 void ICACHE_FLASH_ATTR
 aiko_socket_send_broadcast(
-  int       fd,
-  uint16_t  port,
-  uint8_t  *buffer,
-  uint16_t  size) {
+  aiko_stream_t *aiko_stream,
+  uint8_t       *buffer,
+  uint16_t       size) {
 
   if (aiko_broadcast_ipv4 == 0) {
     struct ip_info wifi_ip_info;
     wifi_get_ip_info(STATION_IF, & wifi_ip_info);
     aiko_broadcast_ipv4 = wifi_ip_info.ip.addr | (~ wifi_ip_info.netmask.addr);
+
+    os_memcpy(
+      & aiko_stream->id.socket.remote_address_ipv4,
+      aiko_broadcast_ipv4,
+      sizeof(aiko_stream->id.socket.remote_address_ipv4)
+    );
   }
 
-  aiko_socket_send(fd, aiko_broadcast_ipv4, port, buffer, size);
+  aiko_socket_send(aiko_stream, buffer, size);
 }

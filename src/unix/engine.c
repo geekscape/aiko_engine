@@ -22,8 +22,7 @@
 #include "aiko_network.h"
 #include "aiko_serial.h"
 
-aiko_stream_t ATTRIBUTES
-*aiko_create_file_stream(
+aiko_stream_t *aiko_create_file_stream(
   FILE *file) {
 
   assert(aiko_stream_count < AIKO_STREAM_MAXIMUM);
@@ -31,8 +30,21 @@ aiko_stream_t ATTRIBUTES
   return(aiko_create_stream(AIKO_STREAM_FILE, fileno(file)));
 }
 
-void ATTRIBUTES
-aiko_loop(
+uint8_t aiko_file_write( 
+  aiko_stream_t *aiko_stream,
+  uint8_t       *message,
+  uint16_t       length) {
+
+  int fd = aiko_stream->fd;
+  if (fd == 0) fd = 1;
+
+  write(fd, message, length);
+  if (fd == 1) write(fd, "\n", 1);
+
+  return(0);
+}
+
+void aiko_loop(
   uint16_t loop_limit) {
 
   uint8_t  buffer[MESSAGE_BUFFER_SIZE];
@@ -96,7 +108,9 @@ aiko_loop(
 
             case AIKO_STREAM_SOCKET_TCP4:
             case AIKO_STREAM_SOCKET_UDP4:
-              length = aiko_socket_receive(fd, buffer, sizeof(buffer));
+              length = aiko_socket_receive(
+                aiko_streams[index], buffer, sizeof(buffer)
+              );
               break;
 
             default:

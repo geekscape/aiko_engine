@@ -13,6 +13,8 @@
 
 #pragma once
 
+#define STRINGIFY(string) #string
+
 #ifdef __ets__
 #define ATTRIBUTES  ICACHE_FLASH_ATTR
 #else

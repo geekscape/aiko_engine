@@ -114,37 +114,38 @@ uint32_t aiko_get_ip_address(
 }
 
 int aiko_socket_receive(
-  int       fd,
-  uint8_t  *buffer,
-  uint16_t  buffer_size) {
+  aiko_stream_t *aiko_stream,
+  uint8_t       *buffer,
+  uint16_t       buffer_size) {
 
   int       flags = 0;
-  int       length;
-  struct    sockaddr clientAddr;
-  socklen_t clientAddrLen;
+  struct    sockaddr_in sockaddr;
+  socklen_t sockaddr_len = sizeof(sockaddr);
 
-  length = recvfrom(
-    fd, buffer, buffer_size, flags, & clientAddr, & clientAddrLen
+  int length = recvfrom(
+    aiko_stream->fd, buffer, buffer_size, flags,
+    (struct sockaddr *) & sockaddr, & sockaddr_len
   );
+
+  aiko_stream->id.socket.remote_port         = ntohs(sockaddr.sin_port);
+  aiko_stream->id.socket.remote_address_ipv4 = ntohl(sockaddr.sin_addr.s_addr);
 
   return(length);
 }
 
 int aiko_socket_send(
-  int       fd,
-  uint32_t  address_ipv4,
-  uint16_t  port,
-  uint8_t  *buffer,
-  uint16_t  size) {
+  aiko_stream_t *aiko_stream,
+  uint8_t       *buffer,
+  uint16_t       size) {
 
   struct sockaddr_in sockaddr = {
     .sin_family      = AF_INET,
-    .sin_port        = htons(port),
-    .sin_addr.s_addr = htonl(address_ipv4)
+    .sin_port        = htons(aiko_stream->id.socket.remote_port),
+    .sin_addr.s_addr = htonl(aiko_stream->id.socket.remote_address_ipv4)
   };
 
   int length = sendto(
-    fd, buffer, size, MSG_DONTWAIT,
+    aiko_stream->fd, buffer, size, MSG_DONTWAIT,
     (struct sockaddr *) & sockaddr, sizeof(sockaddr)
   );
 
@@ -152,10 +153,9 @@ int aiko_socket_send(
 }
 
 void aiko_socket_send_broadcast(
-  int       fd,
-  uint16_t  port,
-  uint8_t  *buffer,
-  uint16_t  size) {
+  aiko_stream_t *aiko_stream,
+  uint8_t       *buffer,
+  uint16_t       size) {
 
   struct ifaddrs *ifaddr, *ifaddrs_list;
   uint32_t netmask, ipb, ipl;
@@ -172,7 +172,8 @@ void aiko_socket_send_broadcast(
       ipl = ntohl(((struct sockaddr_in *) ifaddr->ifa_addr)->sin_addr.s_addr);
       ipb = (ipl & netmask) | ~ netmask;
 
-      aiko_socket_send(fd, ipb, port, buffer, size);
+      aiko_stream->id.socket.remote_address_ipv4 = ipb;
+      aiko_socket_send(aiko_stream, buffer, size);
     }
   }
 

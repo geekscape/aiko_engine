@@ -84,7 +84,7 @@ user_init(void) {
   );
 
   aiko_add_handler(
-    aiko_create_socket_stream(AIKO_STREAM_SOCKET_UDP4, 0, AIKO_PORT),
+    aiko_create_socket_stream(AIKO_STREAM_SOCKET_UDP4, TRUE, 0, AIKO_PORT),
     lisp_message_handler
   );
 }

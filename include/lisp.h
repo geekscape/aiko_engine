@@ -51,16 +51,23 @@ extern unsigned int avail_memory;
 #define LISP_DEBUG  0
 #endif
 
+#define LISP_WRITER_BUFFER_SIZE  256                             // interface.c
+
 /* ------------------------------------------------------------------------- */
 
-#define LISP_ERROR_NONE               0
-#define LISP_ERROR_END_OF_FILE        1
-#define LISP_ERROR_LIMIT_EXPRESSIONS  2
-#define LISP_ERROR_LIMIT_MEMORY       3
-#define LISP_ERROR_LIMIT_TOKEN        4
-#define LISP_ERROR_PARSE_TOKEN        5
+typedef enum {
+  LISP_ERROR_NONE,
+  LISP_ERROR_END_OF_FILE,
+  LISP_ERROR_LIMIT_EXPRESSIONS,
+  LISP_ERROR_LIMIT_MEMORY,
+  LISP_ERROR_LIMIT_TOKEN,
+  LISP_ERROR_PARSE_TOKEN,
+  LISP_ERROR_LIMIT_EMIT
+}
+  tLispError;
 
-extern uint8_t lispError;                                       // expression.c
+extern tLispError  lispError;                                    // interface.c
+extern char       *lispErrorMessage;                             // ditto
 
 /* ------------------------------------------------------------------------- */
 
@@ -153,7 +160,7 @@ tExpression *lispCreatePrimitive(
                tExpression *(*handler)(tExpression *, tExpression *)
              );
 
-void         lispEmit(tExpression *expression);
+uint16_t     lispEmit(tExpression *expression, uint8_t *output, uint16_t size);
 tExpression *lispEvaluate(tExpression *expression, tExpression *environment);
 tExpression *lispExpressionInitialize(void);
 uint8_t      lispIsAtom(
@@ -192,7 +199,10 @@ tExpression *lispPrimitiveQuote(
 
 void         lispReset(uint16_t expressionIndex);
 
-int32_t      lispToInteger(tExpression *expression);
-uint8_t      lispToString(tExpression *expression, void *output, uint8_t size);
+int32_t      lispExpressionToInteger(tExpression *expression);
+uint8_t      lispExpressionToString(
+               tExpression *expression, void *output, uint8_t size
+             );
+uint8_t      lispIntegerToString(uint8_t value, uint8_t *output, uint8_t size);
 
 /* ------------------------------------------------------------------------- */

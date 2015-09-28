@@ -62,13 +62,13 @@ user_init(void) {
   printf("# Heap free:   %d\n", system_get_free_heap_size());
 
   aiko_add_handler(
-    aiko_create_socket_stream(AIKO_STREAM_SOCKET_UDP4, 0, UDP_PORT0),
+    aiko_create_socket_stream(AIKO_STREAM_SOCKET_UDP4, TRUE, 0, UDP_PORT0),
     udp_message_handler0
   );
   printf("Listening on port %d\n", UDP_PORT0);
 
   aiko_add_handler(
-    aiko_create_socket_stream(AIKO_STREAM_SOCKET_UDP4, 0, UDP_PORT1),
+    aiko_create_socket_stream(AIKO_STREAM_SOCKET_UDP4, TRUE, 0, UDP_PORT1),
     udp_message_handler1
   );
   printf("Listening on port %d\n", UDP_PORT1);

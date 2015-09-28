@@ -19,11 +19,15 @@
 #include "lisp.h"
 #endif
 
-uint8_t lispDebug = 0;
+uint8_t     lispDebug = 0;
+tLispError  lispError = LISP_ERROR_NONE;
+char       *lispErrorMessage = "";
 
-static uint8_t     *lispReaderBuffer;
-static uint16_t     lispReaderBufferLength;
-static uint16_t     lispReaderBufferIndex;
+static uint8_t  *lispReaderBuffer;
+static uint16_t  lispReaderBufferLength;
+static uint16_t  lispReaderBufferIndex;
+
+static uint8_t  *lispWriterBuffer[LISP_WRITER_BUFFER_SIZE];
 
 static tExpression *lispEnvironment = NULL;
 
@@ -82,8 +86,9 @@ tExpression ATTRIBUTES
 #endif
   }
 
-  lispError       = LISP_ERROR_NONE;
-  lispEnvironment = lispExpressionInitialize();
+  lispError = LISP_ERROR_NONE;
+  lispErrorMessage = "";
+  lispEnvironment  = lispExpressionInitialize();
   return(lispEnvironment);
 }
 
@@ -95,39 +100,35 @@ lisp_message_handler(
   uint8_t  *message,
   uint16_t  length) {
 
-  uint8_t handled = AIKO_NOT_HANDLED;
+  uint8_t   handled = AIKO_NOT_HANDLED;
+  uint8_t  *output = NULL;
+  uint16_t  output_length = 0;
 
   lispError = LISP_ERROR_NONE;
+  lispErrorMessage = "";
 
-  lispReaderBuffer        = message;
-  lispReaderBufferLength  = length;
-  lispReaderBufferIndex   = 0;
+  lispReaderBuffer       = message;
+  lispReaderBufferLength = length;
+  lispReaderBufferIndex  = 0;
 
   tExpression *expression = lispParse(& lispBufferReader);
 
-  if (lispError != LISP_ERROR_NONE) {
-#ifdef ARDUINO
-//  Serial.print("Parse error: ");  Serial.println(lispError);
-#else
-//  printf("Parse error: %d\n", lispError);
-#endif
-  }
-  else {
+  if (lispError == LISP_ERROR_NONE) {
     expression = lispEvaluate(expression, lispEnvironment);
 
-    if (expression == NULL) {
-#ifdef ARDUINO
-//    Serial.print("Evaluate error: ");  Serial.println(lispError);
-#else
-//    printf("Evaluate error: %d\n", lispError);
-#endif
-    }
-    else {
-      handled = AIKO_HANDLED;
-      lispEmit(expression);
-      PRINT("\n");
+    if (expression != NULL) {
+      output = (uint8_t *) lispWriterBuffer;
+      output_length = lispEmit(expression, output, LISP_WRITER_BUFFER_SIZE);
+      if (lispError == LISP_ERROR_NONE) handled = AIKO_HANDLED;
     }
   }
+
+  if (lispError != LISP_ERROR_NONE) {
+    output_length = strlen(lispErrorMessage);
+    output = (uint8_t *) lispErrorMessage;
+  }
+
+  aiko_stream_send(aiko_stream, output, output_length);
 
   lispReset(lispExpressionBookmark);         // TODO: Breaks "primitiveLabel()"
 
@@ -145,7 +146,6 @@ lisp_message_handler(
 #endif
   }
 
-//return(lispError);
   return(handled);
 }
 

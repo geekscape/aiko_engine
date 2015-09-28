@@ -25,7 +25,6 @@
 #include "driver/uart.h"
 
 #include "aiko_engine.h"  // define aiko_stream_t
-#include "aiko_compatibility.h"
 #include "aiko_serial.h"
 
 extern aiko_stream_t *aiko_streams[];
@@ -87,6 +86,17 @@ aiko_serial_port_open(
 
   aiko_time_t   period = { 0, 20000 };  // 20 milliseconds = 50 Hz
   aiko_timer_t *timer  = aiko_add_timer(& period, aiko_serial_timer_handler);
+
+  return(0);
+}
+
+int ICACHE_FLASH_ATTR
+aiko_serial_send(
+  aiko_stream_t *aiko_stream,
+  uint8_t       *buffer,
+  uint16_t       size) {
+
+  printf("%.*s", buffer, size);
 
   return(0);
 }

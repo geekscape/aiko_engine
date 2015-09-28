@@ -20,6 +20,7 @@
 #include <string.h>
 #include <termios.h>
 
+#include "aiko_engine.h"
 #include "aiko_serial.h"
 
 static uint8_t        aiko_termios_saved = FALSE;
@@ -73,4 +74,14 @@ int aiko_serial_port_open(
   }
 
   return(fd);
+}
+
+int aiko_serial_send(
+  aiko_stream_t *aiko_stream,
+  uint8_t       *message,
+  uint16_t       length) {
+
+  int result = write(aiko_stream->fd, message, length);
+
+  return(result);
 }

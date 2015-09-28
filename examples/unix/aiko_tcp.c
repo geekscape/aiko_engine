@@ -65,7 +65,7 @@ int main(
   uint32_t address_ipv4 = aiko_get_ip_address(hostname);
 
   socket_stream = aiko_create_socket_stream(
-    AIKO_STREAM_SOCKET_TCP4, address_ipv4, AIKO_PORT
+    AIKO_STREAM_SOCKET_TCP4, FALSE, address_ipv4, AIKO_PORT
   );
   printf("Connected to port %d\n", AIKO_PORT);
 

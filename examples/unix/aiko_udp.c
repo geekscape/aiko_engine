@@ -62,13 +62,13 @@ int main(
   printf("[%s %s]\n", argv[0], AIKO_VERSION);
 
   aiko_add_handler(
-    aiko_create_socket_stream(AIKO_STREAM_SOCKET_UDP4, 0, UDP_PORT0),
+    aiko_create_socket_stream(AIKO_STREAM_SOCKET_UDP4, TRUE, 0, UDP_PORT0),
     udp_message_handler0
   );
   printf("Listening on port %d\n", UDP_PORT0);
 
   aiko_add_handler(
-    aiko_create_socket_stream(AIKO_STREAM_SOCKET_UDP4, 0, UDP_PORT1),
+    aiko_create_socket_stream(AIKO_STREAM_SOCKET_UDP4, TRUE, 0, UDP_PORT1),
     udp_message_handler1
   );
   printf("Listening on port %d\n", UDP_PORT1);

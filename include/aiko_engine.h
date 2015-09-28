@@ -41,8 +41,10 @@ typedef enum {
   aiko_stream_type;
 
 struct aiko_socket {
-  uint32_t address_ipv4;
-  uint16_t port;
+  uint32_t local_address_ipv4;
+  uint16_t local_port;
+  uint32_t remote_address_ipv4;     // valid for most recent;y received message
+  uint16_t remote_port;             // ditto
 };
 
 typedef struct {
@@ -102,6 +104,10 @@ extern uint8_t aiko_system_ready_state;
 void aiko_system_ready(void);
 #else
 aiko_stream_t *aiko_create_file_stream(FILE *file);
+
+uint8_t aiko_file_write(
+  aiko_stream_t *aiko_stream, uint8_t *message, uint16_t length
+);
 #endif
 
 aiko_stream_t *aiko_create_serial_stream(
@@ -109,7 +115,10 @@ aiko_stream_t *aiko_create_serial_stream(
 );
 
 aiko_stream_t *aiko_create_socket_stream(
-  aiko_stream_type type, uint32_t address_ipv4, uint16_t port
+  aiko_stream_type type,
+  uint8_t          bind_flag,
+  uint32_t         address_ipv4,
+  uint16_t         port
 );
 
 void aiko_destroy_stream(aiko_stream_t *aiko_stream);

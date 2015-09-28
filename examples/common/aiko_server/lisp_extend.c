@@ -83,10 +83,10 @@ tExpression ATTRIBUTES
     tExpression *parameter1 = expression->list.car;   // milliseconds
     tExpression *parameter2 = expression->list.cdr;   // (timer_maximum)
 
-    microseconds = lispToInteger(parameter1) * 1000;
+    microseconds = lispExpressionToInteger(parameter1) * 1000;
 
     if (parameter2 != NULL) {
-      timer_maximum = lispToInteger(parameter2->list.car);
+      timer_maximum = lispExpressionToInteger(parameter2->list.car);
     }
   }
 
@@ -161,7 +161,7 @@ tExpression ATTRIBUTES
 
       memset(& aiko_store->wifi_ssid, 0x00, sizeof(aiko_store->wifi_ssid));
 
-      lispToString(
+      lispExpressionToString(
         ssid, & aiko_store->wifi_ssid, sizeof(aiko_store->wifi_ssid)
       );
 
@@ -172,7 +172,7 @@ tExpression ATTRIBUTES
           & aiko_store->wifi_password, 0x00, sizeof(aiko_store->wifi_password)
         );
 
-        lispToString(
+        lispExpressionToString(
           password,
           & aiko_store->wifi_password,
           sizeof(aiko_store->wifi_password)

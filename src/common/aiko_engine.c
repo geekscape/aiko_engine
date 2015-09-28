@@ -75,6 +75,7 @@ aiko_stream_t ATTRIBUTES
 aiko_stream_t ATTRIBUTES
 *aiko_create_socket_stream(
   aiko_stream_type type,
+  uint8_t          bind_flag,
   uint32_t         address_ipv4,
   uint16_t         port) {
 
@@ -86,17 +87,19 @@ aiko_stream_t ATTRIBUTES
   int fd = -1;
 
   if (type == AIKO_STREAM_SOCKET_TCP4) {
-    fd = aiko_create_socket_tcp(TRUE, address_ipv4, port);
+    fd = aiko_create_socket_tcp(bind_flag, address_ipv4, port);
   }
 
   if (type == AIKO_STREAM_SOCKET_UDP4) {
-    fd = aiko_create_socket_udp(TRUE, port);
+    fd = aiko_create_socket_udp(bind_flag, port);
   }
 
   if (fd >= 0) {
-    aiko_stream                         = aiko_create_stream(type, fd);
-    aiko_stream->id.socket.address_ipv4 = address_ipv4;
-    aiko_stream->id.socket.port         = port;
+    aiko_stream                                = aiko_create_stream(type, fd);
+    aiko_stream->id.socket.local_address_ipv4  = address_ipv4;
+    aiko_stream->id.socket.local_port          = port;
+    aiko_stream->id.socket.remote_address_ipv4 = 0;
+    aiko_stream->id.socket.remote_port         = 0;
   }
 
   return(aiko_stream);
@@ -122,14 +125,26 @@ int aiko_stream_send(
 
   int result = -1;
 
-  if (aiko_stream->type == AIKO_STREAM_SOCKET_TCP4  ||
-      aiko_stream->type == AIKO_STREAM_SOCKET_UDP4) {
+  switch(aiko_stream->type) {             // TODO: Array of function pointers !
+    case AIKO_STREAM_FILE:
+#ifdef ARDUINO
+#elif __ets__
+#else
+      result = aiko_file_write(aiko_stream, message, length);
+#endif
+      break;
 
-    result = aiko_socket_send(
-      aiko_stream->fd,
-      aiko_stream->id.socket.address_ipv4, aiko_stream->id.socket.port,
-      message, length
-    );
+    case AIKO_STREAM_SERIAL:
+      result = aiko_serial_send(aiko_stream, message, length);
+      break;
+
+    case AIKO_STREAM_SOCKET_TCP4:
+    case AIKO_STREAM_SOCKET_UDP4:
+      result = aiko_socket_send(aiko_stream, message, length);
+      break;
+
+    default:
+      break;
   }
 
   return(result);

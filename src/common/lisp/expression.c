@@ -12,14 +12,12 @@
  */
 
 #ifdef ARDUINO
-#include "vendor/aiko_engine/include/aiko_compatibility.h"
+#include "vendor/aiko_engine/include/aiko_engine.h"
 #include "vendor/aiko_engine/include/lisp.h"
 #else
-#include "aiko_compatibility.h"
+#include "aiko_engine.h"
 #include "lisp.h"
 #endif
-
-uint8_t lispError = LISP_ERROR_NONE;
 
 uint16_t lispExpressionCurrent  = 0;
 uint16_t lispExpressionBookmark = 0;
@@ -40,8 +38,9 @@ tExpression ATTRIBUTES
   tExpression *expression = NULL;
 
   if (lispExpressionCurrent + extra >= LISP_EXPRESSION_LIMIT) {
-    PRINTLN("lispAllocateExpression(): Error: No more expressions available");
     lispError = LISP_ERROR_LIMIT_EXPRESSIONS;
+    lispErrorMessage =
+      "lispAllocateExpression(): Error: No more expressions available";
   }
   else {
     expression = & lispExpressions[lispExpressionCurrent ++];
@@ -63,10 +62,10 @@ tExpression ATTRIBUTES
       memcpy(expression->atom.name.ptr, name, size);
     }
     else {
-      PRINTLN("lispCreateAtom(): Error: No more memory available");
       lispExpressionCurrent --;
       expression = NULL;
       lispError = LISP_ERROR_LIMIT_MEMORY;
+      lispErrorMessage = "lispCreateAtom(): Error: No more memory available";
     }
   }
 
@@ -241,52 +240,69 @@ tExpression ATTRIBUTES
 }
 
 /* ------------------------------------------------------------------------- */
-void ATTRIBUTES
+uint16_t ATTRIBUTES
 lispEmit(
-  tExpression *expression) {
+  tExpression *expr,
+  uint8_t     *output,
+  uint16_t     remain) {
 
-  if (expression == NULL) {
-//  PRINT("NULL");
-  }
-  else if (expression->type == ATOM) {
-    uint8_t name[LISP_ATOM_SIZE_LIMIT + 1];
-    uint8_t size = expression->atom.name.size;
-    memcpy(name, expression->atom.name.ptr, size);
-    name[size] = 0x00;
-#ifdef ARDUINO
-    Serial.print(size);
-    Serial.print(":");
-    Serial.print((char *) name);
-#else
-    printf("%d:%s", size, name);
-#endif
-  }
-  else if (expression->type == LAMBDA) {
-    PRINT("LAMBDA ");
-    lispEmit(expression->lambda.arguments);
-    PRINT(" ");
-    lispEmit(expression->lambda.expression);
-  }
-  else if (expression->type == LIST) {
-    PRINT("(");
-    lispEmit(expression->list.car);
-    expression = expression->list.cdr;
+  const uint8_t lisp_atom_size_width = 2;
+  uint16_t used = 0;
 
-    while (lispIsList(expression)) {
-      if (expression->list.car != NULL) {
-//      PRINT(" ");
-        lispEmit(expression->list.car);
-      }
-      expression = expression->list.cdr;
+  if (expr == NULL) {
+//  if ((used = remain >= 5 ? 5 : 0)) memcpy(output, "3:nil", used);
+    return(used);
+  }
+  else if (expr->type == ATOM) {
+    uint8_t size = expr->atom.name.size;
+    if (remain >= (lisp_atom_size_width + size + 1)) {
+      used = lispIntegerToString(size, output, lisp_atom_size_width);
+      output[used ++] = ':';
+      memcpy(& output[used], expr->atom.name.ptr, size);
+      used += size;
     }
-    PRINT(")");
   }
-  else if (expression->type == PRIMITIVE) {
-    PRINT("PRIMITIVE");
+  else if (expr->type == LAMBDA) {
+    if ((used = remain >= 10 ? 9 : 0)) {
+      memcpy(output, "(6:lambda", used);
+      used += lispEmit(expr->lambda.arguments, & output[used], remain - used);
+      if (lispError == LISP_ERROR_NONE) {
+        used += lispEmit(expr->lambda.expression, & output[used], remain-used);
+        if (lispError == LISP_ERROR_NONE) output[used ++] = ')';
+      }
+    }
+  }
+  else if (expr->type == LIST) {
+    if (remain >= 2) {
+      output[used ++] = '(';
+      used += lispEmit(expr->list.car, & output[used], remain - used);
+      if (lispError == LISP_ERROR_NONE) {
+        expr = expr->list.cdr;
+
+        while (lispIsList(expr)) {
+          if (expr->list.car != NULL) {
+            used += lispEmit(expr->list.car, & output[used], remain - used);
+            if (lispError != LISP_ERROR_NONE) break;
+          }
+          expr = expr->list.cdr;
+        }
+        if (lispError == LISP_ERROR_NONE) output[used ++] = ')';
+      }
+    }
+  }
+  else if (expr->type == PRIMITIVE) {
+    if ((used = remain >= 13 ? 13 : 0)) memcpy(output, "(9:primitive)", used);
   }
   else {
-    PRINT("UNKNOWN");
+    if ((used = remain >= 11 ? 11 : 0)) memcpy(output, "(7:unknown)", used);
   }
+
+  if (used == 0) {
+    lispError = LISP_ERROR_LIMIT_EMIT;
+    lispErrorMessage = "lispEmit(): Error: Output size exceeded";
+  }
+
+  return(used);
 }
 
 /* ------------------------------------------------------------------------- */

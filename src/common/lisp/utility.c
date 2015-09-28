@@ -11,24 +11,26 @@
  * - None, yet.
  */
 
+#include <string.h>
+
 #ifdef ARDUINO
-#include "vendor/aiko_engine/include/aiko_compatibility.h"
+#include "vendor/aiko_engine/include/aiko_engine.h"
 #include "vendor/aiko_engine/include/lisp.h"
 #else
-#include "aiko_compatibility.h"
+#include "aiko_engine.h"
 #include "lisp.h"
 #endif
 
 /* ------------------------------------------------------------------------- */
 
 int32_t ATTRIBUTES
-lispToInteger(
+lispExpressionToInteger(
   tExpression *expression) {
 
   uint8_t buffer[LISP_ATOM_SIZE_LIMIT + 1];
   int32_t result = 0;
 
-  if (lispToString(expression, & buffer, LISP_ATOM_SIZE_LIMIT + 1)) {
+  if (lispExpressionToString(expression, & buffer, LISP_ATOM_SIZE_LIMIT + 1)) {
     result = atoi((const char *) buffer);
   }
 
@@ -36,7 +38,7 @@ lispToInteger(
 }
 
 uint8_t ATTRIBUTES
-lispToString(
+lispExpressionToString(
   tExpression *expression,
   void        *output,
   uint8_t      size) {
@@ -57,6 +59,37 @@ lispToString(
   }
 
   return(size);
+}
+
+uint8_t ATTRIBUTES
+lispIntegerToString(
+  uint8_t  value,
+  uint8_t *output,
+  uint8_t  output_size) {
+
+  uint8_t const digit[] = "0123456789";
+  uint8_t result_size = 0;
+  uint8_t value_shift = value;
+  int8_t  index;
+
+  do {
+    result_size ++;
+    value_shift = value_shift / 10;
+  }
+    while (value_shift > 0);
+
+  if (result_size <= output_size) {
+    for (index = result_size - 1;  index >= 0;  index --) {
+      output[index] = digit[value % 10];
+      value = value / 10;
+    }
+  }
+  else {
+    memset(output, '*', output_size);
+    result_size = output_size;
+  }
+
+  return(result_size);
 }
 
 /* ------------------------------------------------------------------------- */

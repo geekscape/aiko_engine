@@ -33,8 +33,8 @@ tExpression ATTRIBUTES
   if (ch == '\n') ch = reader->getCh();
 
   if (reader->isFileEOF()) {
-    PRINTLN("lispParseToken(): End of file");
     lispError = LISP_ERROR_END_OF_FILE;
+    lispErrorMessage = "lispParseToken(): End of file";
     return(NULL);
   }
 
@@ -45,8 +45,8 @@ tExpression ATTRIBUTES
     size = size * 10 + (ch - '0');    // TODO: What if size too large for "int"
 
     if (reader->isFileEOF()) {
-      PRINTLN("lispParseToken(): Error: Truncated token size");
       lispError = LISP_ERROR_PARSE_TOKEN;
+      lispErrorMessage = "lispParseToken(): Error: Truncated token size";
       return(NULL);
     }
 
@@ -54,28 +54,24 @@ tExpression ATTRIBUTES
   }
 
   if (ch != ':') {
-    PRINTLN("lispParseToken(): Error: Should be 'n:token'");
     lispError = LISP_ERROR_PARSE_TOKEN;
+    lispErrorMessage = "lispParseToken(): Error: Should be 'n:token'";
     return(NULL);
   }
 
 // If LISP_ATOM_SIZE_LIMIT exceeded, still attempt to read token, throw it away
 
   if (size > LISP_ATOM_SIZE_LIMIT) {
-#ifdef ARDUINO
-    Serial.print("lispParseToken(): Error: Token length >");
-    Serial.println(LISP_ATOM_SIZE_LIMIT);
-#else
-    printf("lispParseToken(): Error: Token length >%d\n", LISP_ATOM_SIZE_LIMIT);
-#endif
     lispError = LISP_ERROR_LIMIT_TOKEN;
+    lispErrorMessage =
+      "lispParseToken(): Error: Token length >"STRINGIFY(LISP_ATOM_SIZE_LIMIT);
   }
 
   uint8_t count;
   for (count = 0;  count < size;  count ++) {
     if (reader->isFileEOF()) {
-      PRINTLN("lispParseToken(): Error: Truncated token");
       lispError = LISP_ERROR_PARSE_TOKEN;
+      lispErrorMessage = "lispParseToken(): Error: Truncated token";
       return(NULL);
     }
 
