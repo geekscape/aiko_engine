@@ -98,8 +98,8 @@ aiko_stream_t ATTRIBUTES
     aiko_stream                                = aiko_create_stream(type, fd);
     aiko_stream->id.socket.local_address_ipv4  = address_ipv4;
     aiko_stream->id.socket.local_port          = port;
-    aiko_stream->id.socket.remote_address_ipv4 = 0;
-    aiko_stream->id.socket.remote_port         = 0;
+    aiko_stream->id.socket.remote_address_ipv4 = address_ipv4;
+    aiko_stream->id.socket.remote_port         = port;
   }
 
   return(aiko_stream);
