@@ -116,7 +116,9 @@ tExpression ATTRIBUTES
   if (aiko_store_load(aiko_store, aiko_store->size)) {
     if (aiko_store->magic   != aiko_store_magic  ||
         aiko_store->version != aiko_store_version) {
-      PRINTLN("Error: Storage corrupt");
+
+      lispError = LISP_ERROR_EXTEND;
+      lispErrorMessage = "(5:error15:storage corrupt)\r\n";
     }
     else {
       result = truth;

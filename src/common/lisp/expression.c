@@ -39,7 +39,7 @@ tExpression ATTRIBUTES
 
   if (lispExpressionCurrent + extra >= LISP_EXPRESSION_LIMIT) {
     lispError = LISP_ERROR_LIMIT_EXPRESSIONS;
-    lispErrorMessage = "(5:error16:expression limit)";
+    lispErrorMessage = "(5:error16:expression limit)\r\n";
   }
   else {
     expression = & lispExpressions[lispExpressionCurrent ++];
@@ -64,7 +64,7 @@ tExpression ATTRIBUTES
       lispExpressionCurrent --;
       expression = NULL;
       lispError = LISP_ERROR_LIMIT_MEMORY;
-      lispErrorMessage = "(5:error12:memory limit)";
+      lispErrorMessage = "(5:error12:memory limit)\r\n";
     }
   }
 
@@ -299,7 +299,7 @@ lispEmit(
 
   if (used == 0) {
     lispError = LISP_ERROR_LIMIT_EMIT;
-    lispErrorMessage = "(5:error17:emit output limit)";
+    lispErrorMessage = "(5:error17:emit output limit)\r\n";
   }
 
   return(used);

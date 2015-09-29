@@ -21,7 +21,7 @@
 
 uint8_t     lispDebug = 0;
 tLispError  lispError = LISP_ERROR_NONE;
-char        lispErrorNone[] = "(5:error4:none)";
+char        lispErrorNone[] = "(5:error4:none)\r\n";
 char       *lispErrorMessage = lispErrorNone;
 
 static uint8_t  *lispReaderBuffer;
@@ -129,8 +129,7 @@ lisp_message_handler(
     output_length = strlen(lispErrorMessage);
     output = (uint8_t *) lispErrorMessage;
   }
-
-  if (output_length < (LISP_WRITER_BUFFER_SIZE - 1)) {
+  else if (output_length < (LISP_WRITER_BUFFER_SIZE - 1)) {
     output[output_length ++] = '\r';
     output[output_length ++] = '\n';
   }

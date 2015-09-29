@@ -62,7 +62,8 @@ typedef enum {
   LISP_ERROR_LIMIT_EXPRESSIONS,
   LISP_ERROR_LIMIT_MEMORY,
   LISP_ERROR_LIMIT_TOKEN,
-  LISP_ERROR_PARSE_TOKEN
+  LISP_ERROR_PARSE_TOKEN,
+  LISP_ERROR_EXTEND                              // generic lisp_extend.c error
 }
   tLispError;
 
