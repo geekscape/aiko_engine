@@ -17,6 +17,9 @@
  *
  * To Do
  * ~~~~~
+ * - Make REPL nicer ...
+ *   - Provide "per-character echo" option.
+ *   - Provide "backspace" option.
  * - Refactor aiko_engine.c into common, Unix and ESP8266.
  *   - Don't directly reference static variables in common/aiko_engine.c
  * - Improve efficiency of serial_handler().
@@ -96,7 +99,6 @@ aiko_serial_send(
   uint8_t       *buffer,
   uint16_t       size) {
 
-  printf("%.*s", buffer, size);
-
+  uart0_tx_buffer(buffer, size);
   return(0);
 }

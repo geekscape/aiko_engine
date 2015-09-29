@@ -39,8 +39,6 @@ uint8_t aiko_file_write(
   if (fd == 0) fd = 1;
 
   write(fd, message, length);
-  if (fd == 1) write(fd, "\n", 1);
-
   return(0);
 }
 

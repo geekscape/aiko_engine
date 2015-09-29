@@ -130,6 +130,11 @@ lisp_message_handler(
     output = (uint8_t *) lispErrorMessage;
   }
 
+  if (output_length < (LISP_WRITER_BUFFER_SIZE - 1)) {
+    output[output_length ++] = '\r';
+    output[output_length ++] = '\n';
+  }
+
   aiko_stream_send(aiko_stream, output, output_length);
 
   lispReset(lispExpressionBookmark);         // TODO: Breaks "primitiveLabel()"
