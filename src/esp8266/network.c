@@ -23,7 +23,7 @@
 #include "ets_sys.h"
 #include "user_interface.h"
 
-#include "aiko_networkh"
+#include "aiko_network.h"
 
 extern aiko_stream_t *aiko_streams[];
 extern uint8_t        aiko_stream_count;
