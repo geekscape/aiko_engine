@@ -28,7 +28,10 @@ aiko_timer_t *aiko_add_timer(
   aiko_time_t          *period,
   aiko_timer_handler_t *handler) {
 
-//assert(aiko_timer_count < AIKO_TIMER_MAXIMUM);
+  if (aiko_timer_count >= AIKO_TIMER_MAXIMUM) {
+    printf("Error: Aiko timer limit\n");
+    return(NULL);
+  }
 
   uint32_t milliseconds = period->seconds * 1000 + period->microseconds / 1000;
 

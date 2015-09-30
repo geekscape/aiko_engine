@@ -45,6 +45,15 @@ aiko_stream_t ATTRIBUTES
   aiko_stream_type type,
   int              fd) {
 
+#ifdef __ets__
+  if (aiko_stream_count >= AIKO_STREAM_MAXIMUM) {
+    printf("Error: Aiko stream limit\n");
+    return(NULL);
+  }
+#else
+  assert(aiko_stream_count < AIKO_STREAM_MAXIMUM);
+#endif
+
   aiko_stream_t *aiko_stream = (aiko_stream_t *) malloc(sizeof(aiko_stream_t));
   aiko_stream->type    = type;
   aiko_stream->handler = NULL;
@@ -59,10 +68,6 @@ aiko_stream_t ATTRIBUTES
   const char *serial_port_name,
   speed_t     baud_rate,
   uint8_t     record_delimiter) {
-
-#ifndef __ets__
-  assert(aiko_stream_count < AIKO_STREAM_MAXIMUM);
-#endif
 
   aiko_stream_t *aiko_stream = NULL;
 
