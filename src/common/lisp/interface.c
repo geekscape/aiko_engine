@@ -134,7 +134,9 @@ lisp_message_handler(
     output[output_length ++] = '\n';
   }
 
-  aiko_stream_send(aiko_stream, output, output_length);
+  if (aiko_stream == NULL) {
+    aiko_stream_send(aiko_stream, output, output_length);
+  }
 
   lispReset(lispExpressionBookmark);         // TODO: Breaks "primitiveLabel()"
 
