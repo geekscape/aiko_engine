@@ -16,6 +16,8 @@
  *   - Don't directly reference static variables in common/aiko_engine.c
  * - Handle multiple UDP socket connections.
  * - Improve efficiency of aiko_udp_handler().
+ * - If Wi-Fi connection lost, then clear "aiko_broadcast_ipv4", so that it is
+ *     recalculated when Wi-Fi reestablished.
  */
 
 #include "ip_addr.h"
@@ -49,7 +51,7 @@ aiko_udp_handler(
       if (aiko_stream->id.socket.local_port==udp_conn->proto.udp->local_port) {
         os_memcpy(
           & aiko_stream->id.socket.remote_address_ipv4,
-          aiko_udp_conn->proto.udp->remote_ip,
+            udp_conn->proto.udp->remote_ip,
           sizeof(aiko_stream->id.socket.remote_address_ipv4)
         );
 
@@ -118,7 +120,7 @@ aiko_socket_send(
   uint16_t       size) {
 
   os_memcpy(
-    aiko_udp_conn->proto.udp->remote_ip,
+      aiko_udp_conn->proto.udp->remote_ip,
     & aiko_stream->id.socket.remote_address_ipv4,
     sizeof(aiko_udp_conn->proto.udp->remote_ip)
   );
@@ -140,13 +142,9 @@ aiko_socket_send_broadcast(
     struct ip_info wifi_ip_info;
     wifi_get_ip_info(STATION_IF, & wifi_ip_info);
     aiko_broadcast_ipv4 = wifi_ip_info.ip.addr | (~ wifi_ip_info.netmask.addr);
-
-    os_memcpy(
-      & aiko_stream->id.socket.remote_address_ipv4,
-      aiko_broadcast_ipv4,
-      sizeof(aiko_stream->id.socket.remote_address_ipv4)
-    );
   }
+
+  aiko_stream->id.socket.remote_address_ipv4 = aiko_broadcast_ipv4;
 
   aiko_socket_send(aiko_stream, buffer, size);
 }
