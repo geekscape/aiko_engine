@@ -41,10 +41,13 @@ typedef enum {
   aiko_stream_type;
 
 struct aiko_socket {
-  uint32_t local_address_ipv4;
+  uint8_t  bind_flag;
   uint16_t local_port;
-  uint32_t remote_address_ipv4;     // valid for most recent;y received message
+  uint32_t remote_address_ipv4;     // valid for most recently received message
   uint16_t remote_port;             // ditto
+#ifdef __ets__
+  struct espconn *esp_conn;
+#endif
 };
 
 typedef struct {

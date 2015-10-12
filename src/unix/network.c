@@ -127,8 +127,11 @@ int aiko_socket_receive(
     (struct sockaddr *) & sockaddr, & sockaddr_len
   );
 
-  aiko_stream->id.socket.remote_port         = ntohs(sockaddr.sin_port);
   aiko_stream->id.socket.remote_address_ipv4 = ntohl(sockaddr.sin_addr.s_addr);
+
+  if (aiko_stream->id.socket.bind_flag) {
+    aiko_stream->id.socket.remote_port = ntohs(sockaddr.sin_port);
+  }
 
   return(length);
 }

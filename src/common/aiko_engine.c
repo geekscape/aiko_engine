@@ -100,11 +100,13 @@ aiko_stream_t ATTRIBUTES
   }
 
   if (fd >= 0) {
-    aiko_stream                                = aiko_create_stream(type, fd);
-    aiko_stream->id.socket.local_address_ipv4  = address_ipv4;
-    aiko_stream->id.socket.local_port          = port;
+    aiko_stream = aiko_create_stream(type, fd);
+
+    aiko_stream->id.socket.bind_flag = bind_flag;
     aiko_stream->id.socket.remote_address_ipv4 = address_ipv4;
-    aiko_stream->id.socket.remote_port         = port;
+
+    aiko_stream->id.socket.local_port  = bind_flag ? port :    0;
+    aiko_stream->id.socket.remote_port = bind_flag ?    0 : port;
   }
 
   return(aiko_stream);

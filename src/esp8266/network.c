@@ -27,12 +27,7 @@
 
 #include "aiko_network.h"
 
-extern aiko_stream_t *aiko_streams[];
-extern uint8_t        aiko_stream_count;
-
 static uint32_t aiko_broadcast_ipv4 = 0;
-
-static struct espconn *aiko_udp_conn;
 
 void ICACHE_FLASH_ATTR
 aiko_udp_handler(
@@ -47,6 +42,7 @@ aiko_udp_handler(
   int index;
   for (index = 0;  index < aiko_stream_count;  index ++) {
     aiko_stream_t *aiko_stream = aiko_streams[index];
+
     if (aiko_stream->type == AIKO_STREAM_SOCKET_UDP4) {
       if (aiko_stream->id.socket.local_port==udp_conn->proto.udp->local_port) {
         os_memcpy(
@@ -55,7 +51,9 @@ aiko_udp_handler(
           sizeof(aiko_stream->id.socket.remote_address_ipv4)
         );
 
-        aiko_stream->id.socket.remote_port = udp_conn->proto.udp->remote_port;
+        if (aiko_stream->id.socket.bind_flag) {
+          aiko_stream->id.socket.remote_port = udp_conn->proto.udp->remote_port;
+        }
 
         if (aiko_stream->handler != NULL) {
           uint8_t handled = aiko_stream->handler(aiko_stream, buffer, length);
@@ -79,7 +77,9 @@ aiko_create_socket_udp(
   uint8_t  bind_flag,
   uint16_t port) {
 
-  aiko_udp_conn = (struct espconn *) os_zalloc(sizeof(struct espconn));
+  struct espconn *aiko_udp_conn =
+    (struct espconn *) os_zalloc(sizeof(struct espconn));
+
   aiko_udp_conn->type  = ESPCONN_UDP;
   aiko_udp_conn->state = ESPCONN_NONE;
   aiko_udp_conn->proto.udp = (esp_udp *) os_zalloc(sizeof(esp_udp));
