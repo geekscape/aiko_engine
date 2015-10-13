@@ -126,14 +126,14 @@ ESP8266: Configuring Wi-Fi credentials
 --------------------------------------
 - In the top-level directory ...
 
-        make aiko_configure
+        make wifi_configure
 
 - Connect desktop computer to ESP8266 SoC Wi-Fi Soft Access Point
   - ESP8266 SoC Wi-Fi SSID will look like _ESP\_xxxxxx_
 
 - Then type ...
 
-        ./aiko_configure WIFI_SSID WIFI_PASSWORD
+        ./wifi_configure WIFI_SSID WIFI_PASSWORD
 
   - Where the parameters are for your Wi-Fi Access Point
   - __Caution: currently the Wi-Fi credentials are sent in plain-text (UNSECURE)__

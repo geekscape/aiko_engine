@@ -21,8 +21,6 @@ OBJECTS += src/common/memory/mmem.o
 
 AIKO_CLIENT_OBJECTS  = examples/unix/aiko_client.o
 
-AIKO_CONFIGURE_OBJECTS  = examples/unix/aiko_configure.o
-
 AIKO_SERVER_OBJECTS  = examples/unix/aiko_server.o
 AIKO_SERVER_OBJECTS += examples/common/aiko_server/lisp_extend.o
 
@@ -32,7 +30,9 @@ AIKO_TIMER_OBJECTS = examples/unix/aiko_timer.o
 
 AIKO_UDP_OBJECTS = examples/unix/aiko_udp.o
 
-all: aiko_client aiko_configure aiko_server aiko_tcp aiko_timer aiko_udp
+WIFI_CONFIGURE_OBJECTS  = examples/unix/wifi_configure.o
+
+all: aiko_client aiko_server aiko_tcp aiko_timer aiko_udp wifi_configure
 
 GIT_VERSION := $(shell git describe --abbrev=8 --dirty --always --tags)
 
@@ -40,9 +40,6 @@ version:
 	@echo '#define AIKO_VERSION  "$(GIT_VERSION)"' >include/aiko_version.h
 
 aiko_client:	version $(AIKO_CLIENT_OBJECTS) $(OBJECTS)
-	gcc $(filter %.o, $^) -o $@
-
-aiko_configure:	version $(AIKO_CONFIGURE_OBJECTS) $(OBJECTS)
 	gcc $(filter %.o, $^) -o $@
 
 aiko_server:	version $(AIKO_SERVER_OBJECTS) $(OBJECTS)
@@ -55,6 +52,9 @@ aiko_timer:	version $(AIKO_TIMER_OBJECTS) $(OBJECTS)
 	gcc $(filter %.o, $^) -o $@
 
 aiko_udp:	version $(AIKO_UDP_OBJECTS) $(OBJECTS)
+	gcc $(filter %.o, $^) -o $@
+
+wifi_configure:	version $(WIFI_CONFIGURE_OBJECTS) $(OBJECTS)
 	gcc $(filter %.o, $^) -o $@
 
 $(OBJECTS):	\
@@ -72,15 +72,15 @@ $(OBJECTS):	\
 clean:
 	-rm -f $(OBJECTS) include/aiko_version.h
 	-rm -f $(AIKO_CLIENT_OBJECTS)
-	-rm -f $(AIKO_CONFIGURE_OBJECTS)
 	-rm -f $(AIKO_SERVER_OBJECTS)
 	-rm -f $(AIKO_TCP_OBJECTS)
 	-rm -f $(AIKO_TIMER_OBJECTS)
 	-rm -f $(AIKO_UDP_OBJECTS)
+	-rm -f $(WIFI_CONFIGURE_OBJECTS)
 	-rm -f vendor/contiki-mqtt/mqtt-msg.o
 
 clobber:	clean
-	-rm -f aiko_client aiko_configure aiko_server aiko_tcp aiko_timer aiko_udp
+	-rm -f aiko_client aiko_server aiko_tcp aiko_timer aiko_udp wifi_configure
 
 firmware:
 	-@mkdir firmware
