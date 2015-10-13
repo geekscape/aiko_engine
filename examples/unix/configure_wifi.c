@@ -1,7 +1,7 @@
 /**
  * Please do not remove the following notices.
  *
- * \file       wifi_configure.c
+ * \file       configure_wifi.c
  * \author     Andy Gelme <andyg@geekscape.org>
  * \copyright  (c) 2015 by Geekscape Pty. Ltd.
  * \license    AGPLv3 http://geekscape.org/static/aiko_license.html
@@ -12,7 +12,7 @@
  *
  * Usage
  * ~~~~~
- * ./wifi_configuration WIFI_SSID WIFI_PASSWORD
+ * ./configuration_wifi WIFI_SSID WIFI_PASSWORD
  *
  * To Do
  * ~~~~~

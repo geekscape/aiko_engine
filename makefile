@@ -30,9 +30,9 @@ AIKO_TIMER_OBJECTS = examples/unix/aiko_timer.o
 
 AIKO_UDP_OBJECTS = examples/unix/aiko_udp.o
 
-WIFI_CONFIGURE_OBJECTS  = examples/unix/wifi_configure.o
+CONFIGURE_WIFI_OBJECTS  = examples/unix/configure_wifi.o
 
-all: aiko_client aiko_server aiko_tcp aiko_timer aiko_udp wifi_configure
+all: aiko_client aiko_server aiko_tcp aiko_timer aiko_udp configure_wifi
 
 GIT_VERSION := $(shell git describe --abbrev=8 --dirty --always --tags)
 
@@ -54,7 +54,7 @@ aiko_timer:	version $(AIKO_TIMER_OBJECTS) $(OBJECTS)
 aiko_udp:	version $(AIKO_UDP_OBJECTS) $(OBJECTS)
 	gcc $(filter %.o, $^) -o $@
 
-wifi_configure:	version $(WIFI_CONFIGURE_OBJECTS) $(OBJECTS)
+configure_wifi:	version $(CONFIGURE_WIFI_OBJECTS) $(OBJECTS)
 	gcc $(filter %.o, $^) -o $@
 
 $(OBJECTS):	\
@@ -76,11 +76,11 @@ clean:
 	-rm -f $(AIKO_TCP_OBJECTS)
 	-rm -f $(AIKO_TIMER_OBJECTS)
 	-rm -f $(AIKO_UDP_OBJECTS)
-	-rm -f $(WIFI_CONFIGURE_OBJECTS)
+	-rm -f $(CONFIGURE_WIFI_OBJECTS)
 	-rm -f vendor/contiki-mqtt/mqtt-msg.o
 
 clobber:	clean
-	-rm -f aiko_client aiko_server aiko_tcp aiko_timer aiko_udp wifi_configure
+	-rm -f aiko_client aiko_server aiko_tcp aiko_timer aiko_udp configure_wifi
 
 firmware:
 	-@mkdir firmware

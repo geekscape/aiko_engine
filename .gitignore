@@ -28,7 +28,7 @@ aiko_engine
 aiko_server
 aiko_timer
 aiko_udp
-wifi_configure
+configure_wifi
 *.exe
 *.out
 *.app
