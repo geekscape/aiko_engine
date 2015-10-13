@@ -54,7 +54,7 @@ aiko_udp_handler(
           if (stream->id.socket.bind_flag) {
             stream->id.socket.remote_port = udp_conn->proto.udp->remote_port;
           }
-printf("rx ip: %08x %d %d\n", stream->id.socket.remote_address_ipv4, stream->id.socket.remote_port, stream->id.socket.bind_flag);
+
           uint8_t handled = stream->handler(stream, buffer, length);
         }
       }
@@ -141,7 +141,7 @@ aiko_socket_send(
   );
 
   udp_conn->proto.udp->remote_port = aiko_stream->id.socket.remote_port;
-printf("tx ip: %08x %d %d\n", aiko_stream->id.socket.remote_address_ipv4, aiko_stream->id.socket.remote_port, aiko_stream->id.socket.bind_flag);
+
   espconn_sent(udp_conn, buffer, size);
 
   return(0);
