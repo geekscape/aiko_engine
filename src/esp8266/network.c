@@ -161,5 +161,7 @@ aiko_socket_send_broadcast(
 
   aiko_stream->id.socket.remote_address_ipv4 = aiko_broadcast_ipv4;
 
+  aiko_stream->id.socket.remote_port = aiko_stream->id.socket.local_port;
+
   aiko_socket_send(aiko_stream, buffer, size);
 }

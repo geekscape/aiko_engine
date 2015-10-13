@@ -165,6 +165,8 @@ void aiko_socket_send_broadcast(
   struct ifaddrs *ifaddr, *ifaddrs_list;
   uint32_t netmask, ipb, ipl;
 
+  aiko_stream->id.socket.remote_port = aiko_stream->id.socket.local_port;
+
   getifaddrs(& ifaddrs_list);
 
   for (ifaddr = ifaddrs_list; ifaddr; ifaddr = ifaddr->ifa_next) {
