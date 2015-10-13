@@ -26,9 +26,10 @@
 #include "aiko_network.h"
 
 int aiko_create_socket_tcp(
-  uint8_t  bind_flag,
-  uint32_t address_ipv4,
-  uint16_t port) {
+  aiko_stream_t *aiko_stream,
+  uint8_t        bind_flag,
+  uint32_t       address_ipv4,
+  uint16_t       port) {
 
   int fd = socket(PF_INET, SOCK_STREAM, 0);
 
@@ -46,8 +47,9 @@ int aiko_create_socket_tcp(
 }
 
 int aiko_create_socket_udp(
-  uint8_t  bind_flag,
-  uint16_t port) {
+  aiko_stream_t *aiko_stream,
+  uint8_t        bind_flag,
+  uint16_t       port) {
 
   int fd = socket(PF_INET, SOCK_DGRAM, 0);
 
@@ -75,9 +77,9 @@ int aiko_create_socket_udp(
 }
 
 void aiko_destroy_socket(
-  int fd) {
+  aiko_stream_t *aiko_stream) {
 
-  close(fd);
+  close(aiko_stream->fd);
 }
 
 uint32_t aiko_get_ip_address(

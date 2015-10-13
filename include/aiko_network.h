@@ -16,12 +16,17 @@
 #include "aiko_engine.h"
 
 int aiko_create_socket_tcp(
-  uint8_t bind_flag, uint32_t address_ipv4, uint16_t port
+  aiko_stream_t *aiko_stream,
+  uint8_t        bind_flag,
+  uint32_t       address_ipv4,
+  uint16_t       port
 );
 
-int aiko_create_socket_udp(uint8_t bind_flag, uint16_t port);
+int aiko_create_socket_udp(
+  aiko_stream_t *aiko_stream, uint8_t bind_flag, uint16_t port
+);
 
-void aiko_destroy_socket(int fd);
+void aiko_destroy_socket(aiko_stream_t *aiko_stream);
 
 uint32_t aiko_get_ip_address(char *hostname);
 

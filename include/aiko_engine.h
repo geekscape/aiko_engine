@@ -98,7 +98,7 @@ void aiko_timer_update(aiko_timer_t *aiko_timer);
 
 void aiko_add_handler(aiko_stream_t *aiko_stream, aiko_handler_t *handler);
 
-aiko_stream_t *aiko_create_stream(aiko_stream_type type, int fd);
+aiko_stream_t *aiko_create_stream(aiko_stream_type type);
 
 #ifdef ARDUINO
 #elif __ets__

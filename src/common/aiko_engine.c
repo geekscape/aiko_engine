@@ -42,8 +42,7 @@ aiko_add_handler(
 
 aiko_stream_t ATTRIBUTES
 *aiko_create_stream(
-  aiko_stream_type type,
-  int              fd) {
+  aiko_stream_type type) {
 
 #ifdef __ets__
   if (aiko_stream_count >= AIKO_STREAM_MAXIMUM) {
@@ -56,11 +55,24 @@ aiko_stream_t ATTRIBUTES
 
   aiko_stream_t *aiko_stream = (aiko_stream_t *) malloc(sizeof(aiko_stream_t));
   aiko_stream->type    = type;
+  aiko_stream->fd      = -1;
   aiko_stream->handler = NULL;
-  aiko_stream->fd      = fd;
 
   aiko_streams[aiko_stream_count ++] = aiko_stream;
   return(aiko_stream);
+}
+
+void aiko_destroy_stream(
+  aiko_stream_t *aiko_stream) {
+
+  if (aiko_stream->type == AIKO_STREAM_SOCKET_TCP4  ||
+      aiko_stream->type == AIKO_STREAM_SOCKET_UDP4) {
+
+    aiko_destroy_socket(aiko_stream);
+    aiko_stream->fd = -1;
+  }
+
+  free(aiko_stream);
 }
 
 aiko_stream_t ATTRIBUTES
@@ -72,7 +84,11 @@ aiko_stream_t ATTRIBUTES
   aiko_stream_t *aiko_stream = NULL;
 
   int fd = aiko_serial_port_open(serial_port_name, baud_rate, record_delimiter);
-  if (fd >= 0) aiko_stream = aiko_create_stream(AIKO_STREAM_SERIAL, fd);
+
+  if (fd >= 0) {
+    aiko_stream     = aiko_create_stream(AIKO_STREAM_SERIAL);
+    aiko_stream->fd = fd;
+  }
 
   return(aiko_stream);
 }
@@ -88,19 +104,23 @@ aiko_stream_t ATTRIBUTES
   assert(aiko_stream_count < AIKO_STREAM_MAXIMUM);
 #endif
 
-  aiko_stream_t *aiko_stream = NULL;
+  aiko_stream_t *aiko_stream = aiko_create_stream(type);
   int fd = -1;
 
   if (type == AIKO_STREAM_SOCKET_TCP4) {
-    fd = aiko_create_socket_tcp(bind_flag, address_ipv4, port);
+    fd = aiko_create_socket_tcp(aiko_stream, bind_flag, address_ipv4, port);
   }
 
   if (type == AIKO_STREAM_SOCKET_UDP4) {
-    fd = aiko_create_socket_udp(bind_flag, port);
+    fd = aiko_create_socket_udp(aiko_stream, bind_flag, port);
   }
 
-  if (fd >= 0) {
-    aiko_stream = aiko_create_stream(type, fd);
+  if (fd < 0) {
+    aiko_destroy_stream(aiko_stream);
+    aiko_stream_count --;
+  }
+  else {
+    aiko_stream->fd = fd;
 
     aiko_stream->id.socket.bind_flag = bind_flag;
     aiko_stream->id.socket.remote_address_ipv4 = address_ipv4;
@@ -110,19 +130,6 @@ aiko_stream_t ATTRIBUTES
   }
 
   return(aiko_stream);
-}
-
-void aiko_destroy_stream(
-  aiko_stream_t *aiko_stream) {
-
-  if (aiko_stream->type == AIKO_STREAM_SOCKET_TCP4  ||
-      aiko_stream->type == AIKO_STREAM_SOCKET_UDP4) {
-
-    aiko_destroy_socket(aiko_stream->fd);
-    aiko_stream->fd = -1;
-  }
-
-  free(aiko_stream);
 }
 
 int aiko_stream_send(

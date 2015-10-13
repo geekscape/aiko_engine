@@ -14,10 +14,9 @@
  * ~~~~~
  * - Refactor aiko_engine.c into common, Unix and ESP8266.
  *   - Don't directly reference static variables in common/aiko_engine.c
- * - Handle multiple UDP socket connections.
- * - Improve efficiency of aiko_udp_handler().
  * - If Wi-Fi connection lost, then clear "aiko_broadcast_ipv4", so that it is
  *     recalculated when Wi-Fi reestablished.
+ * - Improve efficiency of aiko_udp_handler().
  */
 
 #include "ip_addr.h"
@@ -41,22 +40,22 @@ aiko_udp_handler(
 
   int index;
   for (index = 0;  index < aiko_stream_count;  index ++) {
-    aiko_stream_t *aiko_stream = aiko_streams[index];
+    aiko_stream_t *stream = aiko_streams[index];
 
-    if (aiko_stream->type == AIKO_STREAM_SOCKET_UDP4) {
-      if (aiko_stream->id.socket.local_port==udp_conn->proto.udp->local_port) {
-        os_memcpy(
-          & aiko_stream->id.socket.remote_address_ipv4,
-            udp_conn->proto.udp->remote_ip,
-          sizeof(aiko_stream->id.socket.remote_address_ipv4)
-        );
+    if (stream->handler != NULL) {
+      if (stream->type == AIKO_STREAM_SOCKET_UDP4) {
+        if (stream->id.socket.local_port == udp_conn->proto.udp->local_port) {
+          os_memcpy(
+            & stream->id.socket.remote_address_ipv4,
+              udp_conn->proto.udp->remote_ip,
+            sizeof(stream->id.socket.remote_address_ipv4)
+          );
 
-        if (aiko_stream->id.socket.bind_flag) {
-          aiko_stream->id.socket.remote_port = udp_conn->proto.udp->remote_port;
-        }
-
-        if (aiko_stream->handler != NULL) {
-          uint8_t handled = aiko_stream->handler(aiko_stream, buffer, length);
+          if (stream->id.socket.bind_flag) {
+            stream->id.socket.remote_port = udp_conn->proto.udp->remote_port;
+          }
+printf("rx ip: %08x %d %d\n", stream->id.socket.remote_address_ipv4, stream->id.socket.remote_port, stream->id.socket.bind_flag);
+          uint8_t handled = stream->handler(stream, buffer, length);
         }
       }
     }
@@ -65,32 +64,40 @@ aiko_udp_handler(
 
 int ICACHE_FLASH_ATTR
 aiko_create_socket_tcp(
-  uint8_t  bind_flag,
-  uint32_t address_ipv4,
-  uint16_t port) {
+  aiko_stream_t *aiko_stream,
+  uint8_t        bind_flag,
+  uint32_t       address_ipv4,
+  uint16_t       port) {
 
   return(-1);
 }
 
 int ICACHE_FLASH_ATTR
 aiko_create_socket_udp(
-  uint8_t  bind_flag,
-  uint16_t port) {
+  aiko_stream_t *aiko_stream,
+  uint8_t        bind_flag,
+  uint16_t       port) {
 
-  struct espconn *aiko_udp_conn =
+  struct espconn *udp_conn =
     (struct espconn *) os_zalloc(sizeof(struct espconn));
 
-  aiko_udp_conn->type  = ESPCONN_UDP;
-  aiko_udp_conn->state = ESPCONN_NONE;
-  aiko_udp_conn->proto.udp = (esp_udp *) os_zalloc(sizeof(esp_udp));
+  udp_conn->type      = ESPCONN_UDP;
+  udp_conn->state     = ESPCONN_NONE;
+  udp_conn->proto.udp = (esp_udp *) os_zalloc(sizeof(esp_udp));
 
   if (bind_flag) {
-    aiko_udp_conn->proto.udp->local_port  = port;  // espconn_port();
-    aiko_udp_conn->proto.udp->remote_port = port;
-    espconn_regist_recvcb(aiko_udp_conn, aiko_udp_handler);
+    udp_conn->proto.udp->local_port  = port;
+    udp_conn->proto.udp->remote_port = 0;
+    espconn_regist_recvcb(udp_conn, aiko_udp_handler);
+  }
+  else {
+    udp_conn->proto.udp->local_port  = 0;
+    udp_conn->proto.udp->remote_port = port;
   }
 
-  int8_t result = espconn_create(aiko_udp_conn);
+  int8_t result = espconn_create(udp_conn);
+
+  aiko_stream->id.socket.esp_conn = udp_conn;
 
   return(0);
 }
@@ -98,10 +105,16 @@ aiko_create_socket_udp(
 
 void ICACHE_FLASH_ATTR
 aiko_destroy_socket(
-  int fd) {
+  aiko_stream_t *aiko_stream) {
 
-//espconn_delete(struct espconn *espconn);
-//espconn_disconnect(struct espconn *espconn);  // Don't invoke during callback
+// For TCP connection ...
+// Don't invoke during callback, e.g use system_os_post() or system_os_task()
+//espconn_disconnect(aiko_stream->id.socket.esp_conn);
+
+  espconn_delete(aiko_stream->id.socket.esp_conn);
+
+  os_free(aiko_stream->id.socket.esp_conn->proto.udp);
+  os_free(aiko_stream->id.socket.esp_conn);
 }
 
 int ICACHE_FLASH_ATTR
@@ -119,15 +132,17 @@ aiko_socket_send(
   uint8_t       *buffer,
   uint16_t       size) {
 
+  struct espconn *udp_conn = aiko_stream->id.socket.esp_conn;
+
   os_memcpy(
-      aiko_udp_conn->proto.udp->remote_ip,
+      udp_conn->proto.udp->remote_ip,
     & aiko_stream->id.socket.remote_address_ipv4,
-    sizeof(aiko_udp_conn->proto.udp->remote_ip)
+    sizeof(udp_conn->proto.udp->remote_ip)
   );
 
-  aiko_udp_conn->proto.udp->remote_port = aiko_stream->id.socket.remote_port;
-
-  espconn_sent(aiko_udp_conn, buffer, size);
+  udp_conn->proto.udp->remote_port = aiko_stream->id.socket.remote_port;
+printf("tx ip: %08x %d %d\n", aiko_stream->id.socket.remote_address_ipv4, aiko_stream->id.socket.remote_port, aiko_stream->id.socket.bind_flag);
+  espconn_sent(udp_conn, buffer, size);
 
   return(0);
 }

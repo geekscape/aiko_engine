@@ -27,7 +27,11 @@ aiko_stream_t *aiko_create_file_stream(
 
   assert(aiko_stream_count < AIKO_STREAM_MAXIMUM);
 
-  return(aiko_create_stream(AIKO_STREAM_FILE, fileno(file)));
+  aiko_stream_t *aiko_stream = aiko_create_stream(AIKO_STREAM_FILE);
+
+  aiko_stream->fd = fileno(file);
+
+  return(aiko_stream);
 }
 
 uint8_t aiko_file_write( 
