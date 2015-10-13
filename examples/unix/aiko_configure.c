@@ -69,7 +69,7 @@ int main(
       );
 
       aiko_stream_t *aiko_stream = aiko_create_socket_stream(
-        AIKO_STREAM_SOCKET_UDP4, FALSE, 0, AIKO_PORT
+        AIKO_STREAM_SOCKET_UDP4, TRUE, 0, AIKO_PORT
       );
 
       aiko_socket_send_broadcast(                       // aiko_socket_send() ?
