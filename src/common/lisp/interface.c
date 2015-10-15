@@ -95,17 +95,12 @@ tExpression ATTRIBUTES
 
 /* ------------------------------------------------------------------------- */
 
-uint8_t ATTRIBUTES
-lisp_message_handler(
-  void     *aiko_stream,
+tExpression ATTRIBUTES
+*lisp_message_parser(
   uint8_t  *message,
   uint16_t  length) {
 
-  uint8_t   handled = AIKO_NOT_HANDLED;
-  uint8_t  *output = NULL;
-  uint16_t  output_length = 0;
-
-  lispError = LISP_ERROR_NONE;
+  lispError        = LISP_ERROR_NONE;
   lispErrorMessage = lispErrorNone;
 
   lispReaderBuffer       = message;
@@ -113,6 +108,23 @@ lisp_message_handler(
   lispReaderBufferIndex  = 0;
 
   tExpression *expression = lispParse(& lispBufferReader);
+
+  return(expression);
+}
+
+/* ------------------------------------------------------------------------- */
+
+uint8_t ATTRIBUTES
+lisp_message_handler(
+  void     *aiko_stream,
+  uint8_t  *message,
+  uint16_t  length) {
+
+  uint8_t   handled       = AIKO_NOT_HANDLED;
+  uint8_t  *output        = NULL;
+  uint16_t  output_length = 0;
+
+  tExpression *expression = lisp_message_parser(message, length);
 
   if (lispError == LISP_ERROR_NONE) {
     expression = lispEvaluate(expression, lispEnvironment);
