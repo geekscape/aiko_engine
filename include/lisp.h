@@ -201,6 +201,7 @@ tExpression *lispPrimitiveQuote(
 
 void         lispReset(uint16_t expressionIndex);
 
+uint8_t      lispExpressionIsNumber(tExpression *expression, uint8_t radix);
 int32_t      lispExpressionToInteger(tExpression *expression);
 uint8_t      lispExpressionToString(
                tExpression *expression, void *output, uint8_t size

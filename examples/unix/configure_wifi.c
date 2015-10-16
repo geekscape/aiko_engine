@@ -24,6 +24,52 @@
 
 #include "aiko_engine.h"
 #include "aiko_network.h"
+#include "aiko_state.h"
+
+typedef enum {
+  STATE_WIFI_RECEIVE_RESPONSE = AIKO_STATE_USER_DEFINED
+}
+  state_type;
+
+char message[256];
+
+/* ------------------------------------------------------------------------- */
+
+aiko_state_type action_error(
+  aiko_stream_t *aiko_stream,
+  tExpression   *expression) {
+
+  printf("Error: Retry message maximum limit\n");
+  exit(0);
+}
+
+aiko_state_type action_configure_wifi(
+  aiko_stream_t *aiko_stream,
+  tExpression   *expression) {
+
+  aiko_socket_send_broadcast(aiko_stream, message, strlen(message));
+
+  return(STATE_WIFI_RECEIVE_RESPONSE);
+}
+
+aiko_state_type action_receive(
+  aiko_stream_t *aiko_stream,
+  tExpression   *expression) {
+
+  printf("Success\n");
+  exit(0);
+
+  return(AIKO_STATE_IDLE);
+}
+
+/* ------------------------------------------------------------------------- */
+
+aiko_state_t states[] = {
+  { AIKO_STATE_ERROR,            AIKO_MATCH_ANY,  NULL, action_error   },
+  { STATE_WIFI_RECEIVE_RESPONSE, AIKO_MATCH_TRUE, NULL, action_receive }
+};
+
+uint8_t states_count = sizeof(states) / sizeof(aiko_state_t);
 
 /* ------------------------------------------------------------------------- */
 
@@ -51,8 +97,6 @@ int main(
     exit(-1);
   }
 
-  char message[256];
-
   printf("Warning: Transmit Wi-Fi password in PLAIN-TEXT over LAN (N/y) ? ");
 
   if (fgets(message, sizeof(message), stdin)) {
@@ -61,6 +105,13 @@ int main(
     }
     else {
       printf("Sending Wi-Fi configuration\n");
+
+      tExpression *lisp_environment = lisp_initialize(LISP_DEBUG);
+
+      if (lispError) {
+        printf("lisp_initialize(): %s\n", lispErrorMessage);
+        exit(-1);
+      }
 
       sprintf(
         message, "(4:wifi(%ld:%s%ld:%s))\n",
@@ -72,9 +123,11 @@ int main(
         AIKO_STREAM_SOCKET_UDP4, TRUE, 0, AIKO_PORT
       );
 
-      aiko_socket_send_broadcast(                       // aiko_socket_send() ?
-        aiko_stream, (uint8_t *) message, strlen(message)
+      aiko_state_machine(
+        states, states_count, aiko_stream, action_configure_wifi
       );
+
+      aiko_loop(AIKO_LOOP_FOREVER);
     }
   }
 

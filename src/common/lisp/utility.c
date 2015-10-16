@@ -8,7 +8,7 @@
  *
  * To Do
  * ~~~~~
- * - None, yet.
+ * - lispExpressionIsNumber() ony handles positive integers and base-16.
  */
 
 #include <string.h>
@@ -22,6 +22,30 @@
 #endif
 
 /* ------------------------------------------------------------------------- */
+
+uint8_t ATTRIBUTES
+lispExpressionIsNumber(
+  tExpression *expression,
+  uint8_t      radix) {
+
+  if (expression != NULL  &&  expression->type == ATOM) {
+    uint8_t  index;
+    char    *name = (char *) expression->atom.name.ptr;
+
+    for (index = 0;  index < expression->atom.name.size;  index ++) {
+      char ch = name[index];
+
+      if (radix == 16) {
+        if (ch >= 'A'  &&  ch <= 'F') continue;
+        if (ch >= 'a'  &&  ch <= 'f') continue;
+      }
+
+      if (ch < '0'  ||  ch > '9') return(FALSE);
+    }
+  }
+
+  return(TRUE);
+}
 
 int32_t ATTRIBUTES
 lispExpressionToInteger(

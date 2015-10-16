@@ -17,12 +17,15 @@ OBJECTS += src/common/lisp/parser.o
 OBJECTS += src/common/lisp/primitives.o
 OBJECTS += src/common/lisp/utility.o
 OBJECTS += src/common/memory/list.o
-OBJECTS += src/common/memory/mmem.o 
+OBJECTS += src/common/memory/mmem.o
+OBJECTS += src/common/state/machine.o
 
 AIKO_CLIENT_OBJECTS  = examples/unix/aiko_client.o
 
 AIKO_SERVER_OBJECTS  = examples/unix/aiko_server.o
 AIKO_SERVER_OBJECTS += examples/common/aiko_server/lisp_extend.o
+
+AIKO_STATE_MACHINE_OBJECTS = examples/unix/aiko_state_machine.o
 
 AIKO_TCP_OBJECTS = examples/unix/aiko_tcp.o
 
@@ -32,7 +35,7 @@ AIKO_UDP_OBJECTS = examples/unix/aiko_udp.o
 
 CONFIGURE_WIFI_OBJECTS  = examples/unix/configure_wifi.o
 
-all: aiko_client aiko_server aiko_tcp aiko_timer aiko_udp configure_wifi
+all: aiko_client aiko_server aiko_state_machine aiko_tcp aiko_timer aiko_udp configure_wifi
 
 GIT_VERSION := $(shell git describe --abbrev=8 --dirty --always --tags)
 
@@ -43,6 +46,9 @@ aiko_client:	version $(AIKO_CLIENT_OBJECTS) $(OBJECTS)
 	gcc $(filter %.o, $^) -o $@
 
 aiko_server:	version $(AIKO_SERVER_OBJECTS) $(OBJECTS)
+	gcc $(filter %.o, $^) -o $@
+
+aiko_state_machine:	version $(AIKO_STATE_MACHINE_OBJECTS) $(OBJECTS)
 	gcc $(filter %.o, $^) -o $@
 
 aiko_tcp:	version $(AIKO_TCP_OBJECTS) $(OBJECTS)
@@ -62,6 +68,7 @@ $(OBJECTS):	\
 	include/aiko_compatibility.h \
 	include/aiko_network.h       \
 	include/aiko_serial.h        \
+	include/aiko_state.h         \
 	include/aiko_store.h         \
 	include/aiko_wifi.h          \
 	include/lisp.h               \
@@ -73,6 +80,7 @@ clean:
 	-rm -f $(OBJECTS) include/aiko_version.h
 	-rm -f $(AIKO_CLIENT_OBJECTS)
 	-rm -f $(AIKO_SERVER_OBJECTS)
+	-rm -f $(AIKO_STATE_MACHINE_OBJECTS)
 	-rm -f $(AIKO_TCP_OBJECTS)
 	-rm -f $(AIKO_TIMER_OBJECTS)
 	-rm -f $(AIKO_UDP_OBJECTS)
@@ -80,7 +88,7 @@ clean:
 	-rm -f vendor/contiki-mqtt/mqtt-msg.o
 
 clobber:	clean
-	-rm -f aiko_client aiko_server aiko_tcp aiko_timer aiko_udp configure_wifi
+	-rm -f aiko_client aiko_server aiko_state_machine aiko_tcp aiko_timer aiko_udp configure_wifi
 
 firmware:
 	-@mkdir firmware
