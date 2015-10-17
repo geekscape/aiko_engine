@@ -27,7 +27,7 @@ typedef enum {
 
 /* ------------------------------------------------------------------------- */
 
-aiko_state_type action_error(
+uint8_t action_error(
   aiko_stream_t *aiko_stream,
   tExpression   *expression) {
 
@@ -35,7 +35,7 @@ aiko_state_type action_error(
   exit(0);
 }
 
-aiko_state_type action_state_1(
+uint8_t action_state_1(
   aiko_stream_t *aiko_stream,
   tExpression   *expression) {
 
@@ -43,12 +43,12 @@ aiko_state_type action_state_1(
 
   char *message = "(5:quote7:state_1)\n";
 
-  aiko_socket_send_broadcast(aiko_stream, message, strlen(message));
+  aiko_socket_send_broadcast(aiko_stream, (uint8_t *) message, strlen(message));
 
   return(STATE_WAIT_FOR_1);
 }
 
-aiko_state_type action_state_2(
+uint8_t action_state_2(
   aiko_stream_t *aiko_stream,
   tExpression   *expression) {
 
@@ -56,12 +56,12 @@ aiko_state_type action_state_2(
 
   char *message = "(5:quote7:state_2)\n";
 
-  aiko_socket_send_broadcast(aiko_stream, message, strlen(message));
+  aiko_socket_send_broadcast(aiko_stream, (uint8_t *) message, strlen(message));
 
   return(STATE_WAIT_FOR_2);
 }
 
-aiko_state_type action_state_3(
+uint8_t action_state_3(
   aiko_stream_t *aiko_stream,
   tExpression   *expression) {
 
@@ -95,7 +95,7 @@ int main(
   }
 
   aiko_stream_t *aiko_stream = aiko_create_socket_stream(
-    AIKO_STREAM_SOCKET_UDP4, TRUE, 0, AIKO_PORT
+    AIKO_STREAM_SOCKET_UDP4, FALSE, 0, AIKO_PORT
   );
 
   aiko_state_machine(states, states_count, aiko_stream, action_state_1);

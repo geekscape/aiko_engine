@@ -35,7 +35,7 @@ char message[256];
 
 /* ------------------------------------------------------------------------- */
 
-aiko_state_type action_error(
+uint8_t action_error(
   aiko_stream_t *aiko_stream,
   tExpression   *expression) {
 
@@ -43,23 +43,21 @@ aiko_state_type action_error(
   exit(0);
 }
 
-aiko_state_type action_configure_wifi(
+uint8_t action_configure_wifi(
   aiko_stream_t *aiko_stream,
   tExpression   *expression) {
 
-  aiko_socket_send_broadcast(aiko_stream, message, strlen(message));
+  aiko_socket_send_broadcast(aiko_stream, (uint8_t *) message, strlen(message));
 
   return(STATE_WIFI_RECEIVE_RESPONSE);
 }
 
-aiko_state_type action_receive(
+uint8_t action_receive(
   aiko_stream_t *aiko_stream,
   tExpression   *expression) {
 
   printf("Success\n");
   exit(0);
-
-  return(AIKO_STATE_IDLE);
 }
 
 /* ------------------------------------------------------------------------- */
@@ -120,7 +118,7 @@ int main(
       );
 
       aiko_stream_t *aiko_stream = aiko_create_socket_stream(
-        AIKO_STREAM_SOCKET_UDP4, TRUE, 0, AIKO_PORT
+        AIKO_STREAM_SOCKET_UDP4, FALSE, 0, AIKO_PORT
       );
 
       aiko_state_machine(
