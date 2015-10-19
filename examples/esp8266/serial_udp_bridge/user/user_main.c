@@ -30,10 +30,12 @@
 #include "lisp.h"
 #include "lisp_extend.h"
 
-#define BAUD_RATE        38400
-#define UDP_SERVER_PORT   3000
+#define BAUD_RATE        115200
+#define UDP_SERVER_PORT    1025
 
 aiko_store_t aiko_server_store;
+
+aiko_stream_t *udp_stream = NULL;
 
 /* ------------------------------------------------------------------------- */
 
@@ -43,9 +45,7 @@ serial_handler(
   uint8_t  *message,
   uint16_t  length) {
 
-  int index;
-
-  for (index = 0;  index < length;  index ++) os_printf("%c", message[index]);
+  if (udp_stream != NULL) aiko_stream_send(udp_stream, message, length);
 
   return(AIKO_HANDLED);
 }
@@ -56,9 +56,7 @@ udp_handler(
   uint8_t  *message,
   uint16_t  length) {
 
-  int index;
-
-  for (index = 0;  index < length;  index ++) os_printf("%c", message[index]);
+  uart0_tx_buffer(message, length);
 
   return(AIKO_HANDLED);
 }
@@ -113,12 +111,11 @@ user_init(void) {
     aiko_create_serial_stream(NULL, BAUD_NO_CHANGE, 0x00), serial_handler
   );
 
-  aiko_add_handler(
-    aiko_create_socket_stream(
-      AIKO_STREAM_SOCKET_UDP4, TRUE, 0, UDP_SERVER_PORT
-    ),
-    udp_handler
-  );
+  udp_stream = aiko_create_socket_stream(
+    AIKO_STREAM_SOCKET_UDP4, TRUE, 0, UDP_SERVER_PORT
+  ),
+
+  aiko_add_handler(udp_stream, udp_handler);
 }
 
 /* ------------------------------------------------------------------------- */
