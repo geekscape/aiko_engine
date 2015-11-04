@@ -84,3 +84,9 @@ typedef unsigned long speed_t;
 #else
 #include <termios.h>
 #endif
+
+#ifndef B38400
+#define B38400    38400
+#define B57600    57600
+#define B115200  115200
+#endif

@@ -25,41 +25,9 @@
 #include "user_interface.h"
 
 #include "aiko_engine.h"
-#include "aiko_serial.h"
-
 #include "lisp.h"
-#include "lisp_extend.h"
 
-#define BAUD_RATE        115200
-#define UDP_SERVER_PORT    1025
-
-aiko_store_t aiko_server_store;
-
-aiko_stream_t *udp_stream = NULL;
-
-/* ------------------------------------------------------------------------- */
-
-uint8_t ICACHE_FLASH_ATTR
-serial_handler(
-  void     *aiko_stream,
-  uint8_t  *message,
-  uint16_t  length) {
-
-  if (udp_stream != NULL) aiko_stream_send(udp_stream, message, length);
-
-  return(AIKO_HANDLED);
-}
-
-uint8_t ICACHE_FLASH_ATTR
-udp_handler(
-  void     *aiko_stream,
-  uint8_t  *message,
-  uint16_t  length) {
-
-  uart0_tx_buffer(message, length);
-
-  return(AIKO_HANDLED);
-}
+#include "serial_udp.h"
 
 /* ------------------------------------------------------------------------- */
 
@@ -68,7 +36,8 @@ void user_rf_pre_init(void) {
 
 void ICACHE_FLASH_ATTR
 initialize(
-  uint8_t debug_flag) {
+  uint16_t udp_port,
+  uint8_t  debug_flag) {
 
   uart_init(BAUD_RATE, BAUD_RATE);
   os_delay_us(5000);               // Allow time to settle before using UART :(
@@ -79,20 +48,9 @@ initialize(
   printf("# CPU clock:   %d\n", system_get_cpu_freq());
   printf("# Heap free:   %d\n", system_get_free_heap_size());
 
-  tExpression *lisp_environment = lisp_initialize(debug_flag);
-
-  if (lispError) {
-    printf("lisp_initialize(): %s\n", lispErrorMessage);
-  }
-  else {
-    memset(& aiko_server_store, 0x00, sizeof(aiko_server_store));
-    aiko_server_store.size    = sizeof(aiko_server_store);
-    aiko_server_store.magic   = AIKO_STORE_MAGIC;
-    aiko_server_store.version = AIKO_STORE_VERSION;
-
-    lisp_extend(lisp_environment, & aiko_server_store);
-    if (lispError) printf("lisp_extend(): %s\n", lispErrorMessage);
-  }
+  tExpression *lisp_environment = serial_udp_initialize(
+    NULL, udp_port, debug_flag
+  );
 
   aiko_wifi_softap_configure();
 
@@ -105,17 +63,7 @@ void ICACHE_FLASH_ATTR
 user_init(void) {
   ets_wdt_disable();                                   // TODO: Reinstate WDT ?
 
-  initialize(LISP_DEBUG);
-
-  aiko_add_handler(
-    aiko_create_serial_stream(NULL, BAUD_NO_CHANGE, 0x00), serial_handler
-  );
-
-  udp_stream = aiko_create_socket_stream(
-    AIKO_STREAM_SOCKET_UDP4, TRUE, 0, UDP_SERVER_PORT
-  ),
-
-  aiko_add_handler(udp_stream, udp_handler);
+  initialize(UDP_SERVER_PORT, LISP_DEBUG);
 }
 
 /* ------------------------------------------------------------------------- */
