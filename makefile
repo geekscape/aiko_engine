@@ -35,11 +35,15 @@ AIKO_UDP_OBJECTS = examples/unix/aiko_udp.o
 
 CONFIGURE_WIFI_OBJECTS  = examples/unix/configure_wifi.o
 
+SERIAL_SERIAL_BRIDGE_OBJECTS  = examples/unix/serial_serial_bridge.o
+SERIAL_SERIAL_BRIDGE_OBJECTS += examples/common/serial_serial/serial_serial.o
+SERIAL_SERIAL_BRIDGE_OBJECTS += examples/common/aiko_server/lisp_extend.o
+
 SERIAL_UDP_BRIDGE_OBJECTS  = examples/unix/serial_udp_bridge.o
 SERIAL_UDP_BRIDGE_OBJECTS += examples/common/serial_udp/serial_udp.o
 SERIAL_UDP_BRIDGE_OBJECTS += examples/common/aiko_server/lisp_extend.o
 
-all: aiko_client aiko_server aiko_state_machine aiko_tcp aiko_timer aiko_udp configure_wifi serial_udp_bridge
+all: aiko_client aiko_server aiko_state_machine aiko_tcp aiko_timer aiko_udp configure_wifi serial_serial_bridge serial_udp_bridge
 
 GIT_VERSION := $(shell git describe --abbrev=8 --dirty --always --tags)
 
@@ -67,6 +71,9 @@ aiko_udp:	version $(AIKO_UDP_OBJECTS) $(OBJECTS)
 configure_wifi:	version $(CONFIGURE_WIFI_OBJECTS) $(OBJECTS)
 	gcc $(filter %.o, $^) -o $@
 
+serial_serial_bridge:	version $(SERIAL_SERIAL_BRIDGE_OBJECTS) $(OBJECTS)
+	gcc $(filter %.o, $^) -o $@
+
 serial_udp_bridge:	version $(SERIAL_UDP_BRIDGE_OBJECTS) $(OBJECTS)
 	gcc $(filter %.o, $^) -o $@
 
@@ -81,7 +88,8 @@ $(OBJECTS):	\
 	include/lisp.h               \
 	include/memory/list.h        \
 	include/memory/mmem.h        \
-	examples/common/aiko_server/lisp_extend.h \
+	examples/common/aiko_server/lisp_extend.h     \
+	examples/common/serial_serial/serial_serial.h \
 	examples/common/serial_udp/serial_udp.h
 
 clean:
@@ -93,11 +101,12 @@ clean:
 	-rm -f $(AIKO_TIMER_OBJECTS)
 	-rm -f $(AIKO_UDP_OBJECTS)
 	-rm -f $(CONFIGURE_WIFI_OBJECTS)
+	-rm -f $(SERIAL_SERIAL_BRIDGE_OBJECTS)
 	-rm -f $(SERIAL_UDP_BRIDGE_OBJECTS)
 	-rm -f vendor/contiki-mqtt/mqtt-msg.o
 
 clobber:	clean
-	-rm -f aiko_client aiko_server aiko_state_machine aiko_tcp aiko_timer aiko_udp configure_wifi serial_udp_bridge
+	-rm -f aiko_client aiko_server aiko_state_machine aiko_tcp aiko_timer aiko_udp configure_wifi serial_serial_bridge serial_udp_bridge
 
 firmware:
 	-@mkdir firmware

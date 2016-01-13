@@ -41,13 +41,13 @@ initialize(
 
   uart_init(BAUD_RATE, BAUD_RATE);
   os_delay_us(5000);               // Allow time to settle before using UART :(
-
+#if 0
   printf("# ---------------\n");
   printf("[serial_udp_bridge %s]\n", AIKO_VERSION);
   printf("# SDK version: %s\n", system_get_sdk_version());
   printf("# CPU clock:   %d\n", system_get_cpu_freq());
   printf("# Heap free:   %d\n", system_get_free_heap_size());
-
+#endif
   tExpression *lisp_environment = serial_udp_initialize(
     NULL, udp_port, debug_flag
   );
