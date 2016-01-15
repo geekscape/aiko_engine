@@ -21,14 +21,14 @@
 #define AIKO_STATE_RETRY_MAXIMUM   5
 #define AIKO_STATE_TIMEOUT_COUNT  20  // 2 seconds (0.1 second ticks)
 
-static aiko_action_t   *aiko_state_last_action;
-static aiko_stream_t   *aiko_state_last_stream;
-static aiko_state_type  aiko_state_now;
-static uint8_t          aiko_state_retry_count;
-static uint8_t          aiko_state_timeout;
+/* static */ aiko_action_t   *aiko_state_last_action;
+/* static */ aiko_stream_t   *aiko_state_last_stream;
+/* static */ aiko_state_type  aiko_state_now;
+/* static */ uint8_t          aiko_state_retry_count;
+/* static */ uint8_t          aiko_state_timeout;
 
-static aiko_state_t    *aiko_states       = NULL;
-static uint8_t          aiko_states_count = 0;
+/* static */ aiko_state_t    *aiko_states       = NULL;
+/* static */ uint8_t          aiko_states_count = 0;
 
 /* ------------------------------------------------------------------------- */
 
