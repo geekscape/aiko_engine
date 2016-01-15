@@ -37,7 +37,8 @@ typedef enum {
   AIKO_MATCH_ATOM_SYMBOL,
   AIKO_MATCH_LIST,
   AIKO_MATCH_LIST_NUMBER,
-  AIKO_MATCH_LIST_SYMBOL
+  AIKO_MATCH_LIST_SYMBOL,
+  AIKO_MATCH_USER_DEFINED = 64
 }
   aiko_match_type;
 
@@ -57,10 +58,10 @@ typedef uint8_t (aiko_action_t)(     // returns aiko_state_type or user-defined
 );
 
 typedef struct {
-  uint8_t          state;                    // aiko_state_type or user-defined
-  aiko_match_type  match_type;
-  char            *match_data;
-  aiko_action_t   *action;
+  uint8_t        state;                      // aiko_state_type or user-defined
+  uint8_t        match_type;                 // aiko_match_type or user-defined
+  char          *match_data;
+  aiko_action_t *action;
 }
   aiko_state_t;
 
