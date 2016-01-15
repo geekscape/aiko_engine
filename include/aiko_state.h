@@ -41,8 +41,14 @@ typedef enum {
 }
   aiko_match_type;
 
+typedef union {
+  uint8_t     *string;
+  tExpression *expression;
+}
+  aiko_state_data_t;
+
 typedef uint8_t (aiko_action_t)(     // returns aiko_state_type or user-defined
-  aiko_stream_t *aiko_stream, tExpression *expression
+  aiko_stream_t *aiko_stream, aiko_state_data_t *aiko_state_data
 );
 
 typedef struct {

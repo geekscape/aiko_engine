@@ -28,16 +28,16 @@ typedef enum {
 /* ------------------------------------------------------------------------- */
 
 uint8_t action_error(
-  aiko_stream_t *aiko_stream,
-  tExpression   *expression) {
+  aiko_stream_t     *aiko_stream,
+  aiko_state_data_t *aiko_state_data) {
 
   printf("Error: Retry message maximum limit\n");
   exit(0);
 }
 
 uint8_t action_state_1(
-  aiko_stream_t *aiko_stream,
-  tExpression   *expression) {
+  aiko_stream_t     *aiko_stream,
+  aiko_state_data_t *aiko_state_data) {
 
   printf("action_state_1(): Send 'state_1' and wait for response\n");
 
@@ -49,8 +49,8 @@ uint8_t action_state_1(
 }
 
 uint8_t action_state_2(
-  aiko_stream_t *aiko_stream,
-  tExpression   *expression) {
+  aiko_stream_t     *aiko_stream,
+  aiko_state_data_t *aiko_state_data) {
 
   printf("action_state_2(): Send 'state_2' and wait for response\n");
 
@@ -62,8 +62,8 @@ uint8_t action_state_2(
 }
 
 uint8_t action_state_3(
-  aiko_stream_t *aiko_stream,
-  tExpression   *expression) {
+  aiko_stream_t     *aiko_stream,
+  aiko_state_data_t *aiko_state_data) {
 
   printf("action_state_3(): Success\n");
   exit(0);

@@ -112,7 +112,9 @@ uint8_t aiko_state_lisp_message_handler(
         aiko_state_retry_count = 0;
         aiko_state_timeout     = AIKO_STATE_TIMEOUT_COUNT;
 
-        aiko_state_now = aiko_state->action(aiko_stream, expression);
+        aiko_state_data_t aiko_state_data;
+        aiko_state_data.expression = expression;
+        aiko_state_now = aiko_state->action(aiko_stream, & aiko_state_data);
 
         handled = AIKO_HANDLED;
         break;

@@ -36,16 +36,16 @@ char message[256];
 /* ------------------------------------------------------------------------- */
 
 uint8_t action_error(
-  aiko_stream_t *aiko_stream,
-  tExpression   *expression) {
+  aiko_stream_t     *aiko_stream,
+  aiko_state_data_t *aiko_state_data) {
 
   printf("Error: Retry message maximum limit\n");
   exit(0);
 }
 
 uint8_t action_configure_wifi(
-  aiko_stream_t *aiko_stream,
-  tExpression   *expression) {
+  aiko_stream_t     *aiko_stream,
+  aiko_state_data_t *aiko_state_data) {
 
   aiko_socket_send_broadcast(aiko_stream, (uint8_t *) message, strlen(message));
 
@@ -53,8 +53,8 @@ uint8_t action_configure_wifi(
 }
 
 uint8_t action_receive(
-  aiko_stream_t *aiko_stream,
-  tExpression   *expression) {
+  aiko_stream_t     *aiko_stream,
+  aiko_state_data_t *aiko_state_data) {
 
   printf("Success\n");
   exit(0);
