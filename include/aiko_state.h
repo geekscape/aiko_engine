@@ -42,8 +42,13 @@ typedef enum {
   aiko_match_type;
 
 typedef union {
-  uint8_t     *string;
   tExpression *expression;
+
+  struct {
+    uint8_t  *message;
+    uint16_t *length;
+  }
+    string;
 }
   aiko_state_data_t;
 
