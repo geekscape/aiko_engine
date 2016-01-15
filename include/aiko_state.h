@@ -46,7 +46,7 @@ typedef union {
 
   struct {
     uint8_t  *message;
-    uint16_t *length;
+    uint16_t  length;
   }
     string;
 }
