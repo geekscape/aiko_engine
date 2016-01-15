@@ -120,6 +120,8 @@ uint8_t aiko_state_lisp_message_handler(
     }
   }
 
+  lispReset(lispExpressionBookmark);         // TODO: Breaks "primitiveLabel()"
+
   return(handled);
 }
 
