@@ -98,7 +98,10 @@ int main(
     AIKO_STREAM_SOCKET_UDP4, FALSE, 0, AIKO_PORT
   );
 
-  aiko_state_machine(states, states_count, aiko_stream, action_state_1);
+  aiko_state_machine(
+    aiko_state_lisp_message_handler,
+    states, states_count, aiko_stream, action_state_1
+  );
 
   aiko_loop(AIKO_LOOP_FOREVER);
 

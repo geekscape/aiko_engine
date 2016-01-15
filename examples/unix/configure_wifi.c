@@ -122,6 +122,7 @@ int main(
       );
 
       aiko_state_machine(
+        aiko_state_lisp_message_handler,
         states, states_count, aiko_stream, action_configure_wifi
       );
 

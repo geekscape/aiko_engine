@@ -32,7 +32,7 @@ static uint8_t          aiko_states_count = 0;
 
 /* ------------------------------------------------------------------------- */
 
-uint8_t aiko_state_message_handler(
+uint8_t aiko_state_lisp_message_handler(
   void     *void_aiko_stream,
   uint8_t  *message,
   uint16_t  length) {
@@ -153,10 +153,11 @@ uint8_t aiko_state_timer_handler(
 /* ------------------------------------------------------------------------- */
 
 void aiko_state_machine(
-  aiko_state_t  *states,
-  uint8_t        states_count,
-  aiko_stream_t *aiko_stream,
-  aiko_action_t *aiko_action) {
+  aiko_handler_t *message_handler,
+  aiko_state_t   *states,
+  uint8_t         states_count,
+  aiko_stream_t  *aiko_stream,
+  aiko_action_t  *aiko_action) {
 
   aiko_states       = states;
   aiko_states_count = states_count;
@@ -166,7 +167,7 @@ void aiko_state_machine(
   aiko_timer_t *timer  = aiko_add_timer(& period, aiko_state_timer_handler);
 
   aiko_state_now = AIKO_STATE_IDLE;
-  aiko_add_handler(aiko_stream, aiko_state_message_handler);
+  aiko_add_handler(aiko_stream, message_handler);
 
   aiko_state_last_action = aiko_action;
   aiko_state_last_stream = aiko_stream;

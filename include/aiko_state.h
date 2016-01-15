@@ -55,9 +55,16 @@ typedef struct {
 
 /* ------------------------------------------------------------------------- */
 
+uint8_t aiko_state_lisp_message_handler(
+  void     *void_aiko_stream,
+  uint8_t  *message,
+  uint16_t  length
+);
+
 void aiko_state_machine(
-  aiko_state_t  *states,
-  uint8_t        states_count,
-  aiko_stream_t *aiko_stream,
-  aiko_action_t *aiko_action
+  aiko_handler_t *message_handler,
+  aiko_state_t   *states,
+  uint8_t         states_count,
+  aiko_stream_t  *aiko_stream,
+  aiko_action_t  *aiko_action
 );
