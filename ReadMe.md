@@ -18,6 +18,7 @@ Pages
 - [Software license](License)
 
 <a name="overview" />
+
 Overview
 --------
 The Aiko Engine provides ...
@@ -27,6 +28,7 @@ The Aiko Engine provides ...
 - Lisp scripting
 
 <a name="unix_build" />
+
 Unix: Build examples
 --------------------
 To build the various [Unix examples](examples/unix),
@@ -35,6 +37,7 @@ in the top-level directory on either Linux or Mac OS X, type ...
         make
 
 <a name="lisp_repl" />
+
 Interactive session (LISP REPL)
 -------------------------------
 Examples, particularly the
@@ -81,6 +84,7 @@ Examples ...
         (4:wifi(4:ssid8:password))  ;; Set Wi-Fi Access Point credentials
 
 <a name="esp8266_preparation" />
+
 ESP8266: Preparation
 --------------------
 - Acquire USB Serial adapter for flashing firmware / serial console
@@ -95,6 +99,7 @@ ESP8266: Preparation
 [nodemcu-flasher](https://github.com/nodemcu/nodemcu-flasher)
 
 <a name="esp8266_flash" />
+
 ESP8266: Flashing pre-built firmware
 ------------------------------------
 Milestone releases will be pre-built and placed in the _firmware/_ directory.
@@ -122,6 +127,7 @@ used to flash the firmware binaries to the ESP8266 SoC.
         Leaving...
 
 <a name="esp8266_configure" />
+
 ESP8266: Configuring Wi-Fi credentials
 --------------------------------------
 - In the top-level directory ...
@@ -139,6 +145,7 @@ ESP8266: Configuring Wi-Fi credentials
   - __Caution: currently the Wi-Fi credentials are sent in plain-text (UNSECURE)__
 
 <a name="esp8266_build" />
+
 Build: ESP8266 firmware on Linux
 --------------------------------
 To build the various [ESP8266 examples](examples/esp8266),
@@ -203,6 +210,7 @@ Further details on the [ESP8266 firmware flash procedure](#esp8266_flash)
 and [ESP8266 Wi-Fi configuration](esp8266_configure) are above.
 
 <a name="resources" />
+
 Resources
 ---------
 Workshops ...
