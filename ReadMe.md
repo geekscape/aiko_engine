@@ -87,16 +87,17 @@ Examples ...
 
 ESP8266: Preparation
 --------------------
-- Acquire USB Serial adapter for flashing firmware / serial console
-  - Note: Voltage needs to match that required for your ESP8266 hardware
+Acquire USB Serial adapter for flashing firmware / serial console
 
-        git clone https://github.com/geekscape/aiko_engine.git
-        cd aiko_engine
-        git submodule update --init
+- __Note__: Voltage needs to match that required for your ESP8266 hardware
 
-- __Mac OS X or Linux:__ sudo pip install pyserial
-- __Windows:__ Acquire
-[nodemcu-flasher](https://github.com/nodemcu/nodemcu-flasher)
+        $ git clone https://github.com/geekscape/aiko_engine.git
+        $ cd aiko_engine
+        $ git submodule update --init
+
+__Mac OS X or Linux:__ `$ sudo pip install pyserial`
+
+__Windows:__ Acquire [nodemcu-flasher](https://github.com/nodemcu/nodemcu-flasher)
 
 <a name="esp8266_flash" />
 
