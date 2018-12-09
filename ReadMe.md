@@ -87,16 +87,17 @@ Examples ...
 
 ESP8266: Preparation
 --------------------
-- Acquire USB Serial adapter for flashing firmware / serial console
-  - Note: Voltage needs to match that required for your ESP8266 hardware
+Acquire USB Serial adapter for flashing firmware / serial console
 
-        git clone https://github.com/geekscape/aiko_engine.git
-        cd aiko_engine
-        git submodule update --init
+- __Note__: Voltage needs to match that required for your ESP8266 hardware
 
-- __Mac OS X or Linux:__ sudo pip install pyserial
-- __Windows:__ Acquire
-[nodemcu-flasher](https://github.com/nodemcu/nodemcu-flasher)
+        $ git clone https://github.com/geekscape/aiko_engine.git
+        $ cd aiko_engine
+        $ git submodule update --init
+
+__Mac OS X or Linux:__ `$ sudo pip install pyserial`
+
+__Windows:__ Acquire [nodemcu-flasher](https://github.com/nodemcu/nodemcu-flasher)
 
 <a name="esp8266_flash" />
 
@@ -157,17 +158,17 @@ Note: Currently, the Aiko Engine works on ESP8266 SDK 1.2.0, but not 1.3.0.
 
 - Install Ubuntu VM
 - Install ansible on your local host
-  - brew install ansible ssh-copy-id
-  - ssh-copy-id USERNAME@HOSTNAME\_VM
-- git clone https://github.com/wolfeidau/ansible-esp8266-role
-- cd ansible-esp8266-role
-- vi inventory\_HOSTNAME\_VM
+  - `brew install ansible ssh-copy-id`
+  - `ssh-copy-id USERNAME@HOSTNAME_VM`
+- `git clone https://github.com/wolfeidau/ansible-esp8266-role`
+- `cd ansible-esp8266-role`
+- `vi inventory_HOSTNAME_VM`
 
         [HOSTNAME_VM]
         HOSTNAME_VM.local ansible_ssh_user=USERNAME ask_pass=True
 
-- cp playbook.yml playbook\_HOSTNAME\_VM.yml
-- vi playbook\_HOSTNAME\_VM.yml
+- `cp playbook.yml playbook_HOSTNAME_VM.yml`
+- `vi playbook_HOSTNAME_VM.yml`
 
         ---
         - name: Test the ESP8266 role
@@ -181,16 +182,16 @@ Note: Currently, the Aiko Engine works on ESP8266 SDK 1.2.0, but not 1.3.0.
                 esp_iot_sdk: "esp_iot_sdk_v1.2.0_15_07_03.zip"
                 esp_iot_sdk_path: "esp_iot_sdk_v1.2.0"
 
-- ansible-playbook -i inventory\_HOSTNAME\_VM.yml playbook.HOSTNAME\_VM.yml --ask-sudo-pass --check
+- `ansible-playbook -i inventory_HOSTNAME_VM.yml playbook.HOSTNAME_VM.yml --ask-sudo-pass --check`
 
 If the _ansible-playbook_ dry-run works, then you can do it for real ...
 
-- ansible-playbook -i inventory\_HOSTNAME\_VM.yml playbook.HOSTNAME\_VM.yml --ask-sudo-pass
+- `ansible-playbook -i inventory_HOSTNAME_VM.yml playbook.HOSTNAME_VM.yml --ask-sudo-pass`
 
 Now that the ESP8266 cross-compiler development environment is installed,
 you can login to your Ubuntu VM and update your executable PATH ...
 
-- vi /etc/profile.d/esp8266.sh 
+- `vi /etc/profile.d/esp8266.sh`
 
         export PATH=/opt/Espressif/crosstool-NG/builds/xtensa-lx106-elf/bin:$PATH
 
